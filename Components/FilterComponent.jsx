@@ -1,7 +1,7 @@
 import { faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState, useEffect, useRef } from "react";
-
+import "../Styles/FilterComponent.css";
 const FilterComponent = ({ inputData, setFilteredData }) => {
   const [filterBy, setFilterBy] = useState(""); // Default to empty for filtering all columns
   const [filterValue, setFilterValue] = useState("");
@@ -13,6 +13,7 @@ const FilterComponent = ({ inputData, setFilteredData }) => {
     setFilterValue("");
     setFilterDate("");
     setFilteredData(inputData);
+    setFilterBy("filters");
   }, [inputData]);
 
   const handleFilterChange = (e) => {
@@ -40,7 +41,7 @@ const FilterComponent = ({ inputData, setFilteredData }) => {
     if (filterBy === "" && !value && !date) {
       // Show original data if no filter is applied
       setFilteredData(inputData);
-    } else if (filterBy === "") {
+    } else if (filterBy === "allColumns") {
       // Filter across all columns if filterBy is blank
       const filtered = Object.keys(inputData).reduce((acc, date) => {
         const filteredRows = inputData[date].filter(
@@ -94,21 +95,21 @@ const FilterComponent = ({ inputData, setFilteredData }) => {
     <div
       className="d-flex align-items-center mb-3 p-3"
       style={{
-        width: "100%",
+        width: "80%",
         // backgroundColor: "yellow", // Light gray background
         borderRadius: "5px",
       }}
     >
       <select
         id="filterBy"
-        className="form-select form-select-sm me-2"
+        className="custom-select"
         value={filterBy}
         onChange={handleFilterChange}
-        style={{ maxWidth: "200px" }} // Adjust width as needed
+        style={{ maxWidth: "170px" }} // Adjust width as needed
       >
         {" "}
         <option value="filters">Filters </option>
-        <option value="">All expenses</option>
+        <option value="allColumns">All expenses</option>
         <option value="expenseName">Expense Name</option>
         <option value="amount">Amount</option>
         <option value="type">Type</option>
@@ -120,7 +121,7 @@ const FilterComponent = ({ inputData, setFilteredData }) => {
         <input
           ref={inputRef}
           type={filterBy === "date" ? "date" : "text"}
-          className="form-control form-control-sm me-2"
+          className="custom-select"
           placeholder="Enter value"
           value={filterBy === "date" ? filterDate : filterValue}
           onChange={

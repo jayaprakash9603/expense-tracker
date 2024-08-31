@@ -1,0 +1,38 @@
+/* Custom styles for the select element */
+.custom-select {
+  background-color: #f8f9fa; /* Light background color */
+  border: 1px solid #ced4da; /* Border color */
+  border-radius: 4px; /* Rounded corners */
+  padding: 0.375rem 0.75rem; /* Padding inside the select box */
+  font-size: 0.875rem; /* Font size */
+  color: #495057; /* Text color */
+  max-width: 200px; /* Width of the select box */
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin-left: 10px;
+}
+
+.custom-select:focus {
+  border-color: #80bdff; /* Border color on focus */
+  outline: 0; /* Remove default outline */
+  box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.25); /* Shadow on focus */
+}
+
+/* Custom styles for the option elements */
+.custom-select option {
+  background-color: #ffffff; /* Background color for options */
+  color: #495057; /* Text color for options */
+}
+
+/* Adjust dropdown appearance */
+.custom-select::-ms-expand {
+  display: none; /* Remove default dropdown arrow for IE */
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  background-color: #ffffe0; /* Light yellow background */
+  padding: 1rem;
+  border-radius: 5px;
+  width: 100%;
+}

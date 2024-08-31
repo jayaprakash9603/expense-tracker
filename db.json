@@ -91,19 +91,6 @@
       }
     },
     {
-      "id": "2c8a",
-      "date": "2024-08-30",
-      "expense": {
-        "expenseName": "98798798",
-        "amount": 9999,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 9999,
-        "comments": "comment",
-        "creditDue": 0
-      }
-    },
-    {
       "id": "7ddf",
       "date": "2024-08-30",
       "expense": {
@@ -127,19 +114,6 @@
         "netAmount": 98245,
         "comments": "",
         "creditDue": 0
-      }
-    },
-    {
-      "id": "40c6",
-      "date": "2024-09-05",
-      "expense": {
-        "expenseName": "india",
-        "amount": 3000,
-        "type": "gain",
-        "paymentMethod": "creditNeedToPaid",
-        "netAmount": 3000,
-        "comments": "comments\n",
-        "creditDue": "3000"
       }
     },
     {
