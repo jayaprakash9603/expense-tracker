@@ -12,6 +12,9 @@ const SortableTable = ({ data, date }) => {
     key: "",
     direction: "ascending",
   });
+  {
+    console.log("sortable table received dates and data" + date);
+  }
   const [filteredData, setFilteredData] = useState(data);
 
   const handleSort = (key) => {

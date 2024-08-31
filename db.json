@@ -130,10 +130,23 @@
       }
     },
     {
-      "id": "dffe",
-      "date": "2024-08-16",
+      "id": "40c6",
+      "date": "2024-09-05",
       "expense": {
-        "expenseName": "shoes",
+        "expenseName": "india",
+        "amount": 3000,
+        "type": "gain",
+        "paymentMethod": "creditNeedToPaid",
+        "netAmount": 3000,
+        "comments": "comments\n",
+        "creditDue": "3000"
+      }
+    },
+    {
+      "id": "5ccb",
+      "date": "2024-08-08",
+      "expense": {
+        "expenseName": "hero",
         "amount": 2000,
         "type": "loss",
         "paymentMethod": "creditNeedToPaid",

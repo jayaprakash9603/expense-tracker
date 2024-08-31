@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from "react";
+import { faFilter } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect, useRef } from "react";
 
 const FilterComponent = ({ inputData, setFilteredData }) => {
   const [filterBy, setFilterBy] = useState(""); // Default to empty for filtering all columns
   const [filterValue, setFilterValue] = useState("");
   const [filterDate, setFilterDate] = useState("");
+  const inputRef = useRef(null);
 
   useEffect(() => {
     // Initialize filter values when inputData changes
@@ -18,6 +21,9 @@ const FilterComponent = ({ inputData, setFilteredData }) => {
     setFilterDate(""); // Clear date when filterBy changes
     applyFilter("", e.target.value, ""); // Apply filter when filterBy changes
     setFilteredData(inputData);
+    if (inputRef.current) {
+      inputRef.current.focus(); // Auto-focus the input field
+    }
   };
 
   const handleFilterValueChange = (e) => {
@@ -79,41 +85,58 @@ const FilterComponent = ({ inputData, setFilteredData }) => {
 
   const handleReset = () => {
     setFilteredData(inputData); // Reset filtered data to original data
-    setFilterBy("");
+    setFilterBy("filters");
     setFilterValue("");
     setFilterDate("");
   };
 
   return (
-    <div className="d-flex align-items-center mb-3">
-      <label htmlFor="filterBy" className="me-2">
-        Filter By:
-      </label>
+    <div
+      className="d-flex align-items-center mb-3 p-3"
+      style={{
+        width: "100%",
+        // backgroundColor: "yellow", // Light gray background
+        borderRadius: "5px",
+      }}
+    >
       <select
         id="filterBy"
-        className="form-select me-2"
+        className="form-select form-select-sm me-2"
         value={filterBy}
         onChange={handleFilterChange}
+        style={{ maxWidth: "200px" }} // Adjust width as needed
       >
-        <option value="">All Columns</option>
+        {" "}
+        <option value="filters">Filters </option>
+        <option value="">All expenses</option>
         <option value="expenseName">Expense Name</option>
         <option value="amount">Amount</option>
         <option value="type">Type</option>
         <option value="paymentMethod">Payment Method</option>
         <option value="date">Date</option>
       </select>
-      <input
-        type={filterBy === "date" ? "date" : "text"}
-        className="form-control me-2"
-        placeholder="Enter filter value"
-        value={filterBy === "date" ? filterDate : filterValue}
-        onChange={
-          filterBy === "date" ? handleFilterDateChange : handleFilterValueChange
-        }
-      />
-      <button className="btn btn-secondary ms-2" onClick={handleReset}>
-        Reset
-      </button>
+
+      {filterBy !== "filters" && (
+        <input
+          ref={inputRef}
+          type={filterBy === "date" ? "date" : "text"}
+          className="form-control form-control-sm me-2"
+          placeholder="Enter value"
+          value={filterBy === "date" ? filterDate : filterValue}
+          onChange={
+            filterBy === "date"
+              ? handleFilterDateChange
+              : handleFilterValueChange
+          }
+          style={{ display: filterBy === "filters" ? "none" : "inline-block" }} // Hide input if filterBy is "filters"
+        />
+      )}
+
+      {filterBy !== "filters" && (
+        <button className="btn btn-secondary btn-sm ms-2" onClick={handleReset}>
+          Reset
+        </button>
+      )}
     </div>
   );
 };

@@ -77,6 +77,30 @@ const Home = () => {
     <div>
       <h1 className="display-1 text-bg-dark text-center">Expense Tracker</h1>
       <div className="container">
+        {/* Add FilterComponent */}
+        <div className="d-flex justify-content-between align-items-center mb-3 bg-danger">
+          <div
+            className="d-flex align-items-center mt-3"
+            style={{ width: "50%" }}
+          >
+            <FilterComponent
+              inputData={convertedData}
+              setFilteredData={setFilteredData}
+            />
+          </div>
+          <div className="d-flex flex-column align-items-start justify-content-center">
+            <select
+              id="sortOrder"
+              className="form-select w-auto"
+              value={sortOrder}
+              onChange={handleSortOrderChange}
+            >
+              <option value="desc">Sort By</option>
+              <option value="asc">Ascending</option>
+              <option value="desc">Descending</option>
+            </select>
+          </div>
+        </div>
         <div className="d-flex justify-content-between mb-3">
           <div className="createButton">
             <Link className="btn btn-primary" to="/create">
@@ -84,29 +108,10 @@ const Home = () => {
             </Link>
           </div>
         </div>
-        {/* Add FilterComponent */}
-        <FilterComponent
-          inputData={convertedData}
-          setFilteredData={setFilteredData}
-        />
-        <div className="d-flex align-items-center mb-3">
-          <label htmlFor="sortOrder" className="form-label me-2">
-            Sort By Date:
-          </label>
-          <select
-            id="sortOrder"
-            className="form-select w-auto"
-            value={sortOrder}
-            onChange={handleSortOrderChange}
-          >
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
-          </select>
-        </div>
         {console.log(filteredData)}
-
-        {/* Pass filteredData to RenderTable <FilteredTable filteredData={filteredData} /> */}
-        <RenderTable inputData={filteredData} sortOrder={sortOrder} />
+        {/* Pass filteredData to RenderTable */}
+        <FilteredTable filteredData={filteredData} />
+        {/*<RenderTable inputData={filteredData} sortOrder={sortOrder} />*/}
       </div>
     </div>
   );
