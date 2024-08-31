@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 
 const FilteredTable = ({ filteredData }) => {
@@ -66,6 +66,7 @@ const FilteredTable = ({ filteredData }) => {
         await axios.delete(`http://localhost:3000/name/${id}`);
         // Refresh data after deletion
         const response = await axios.get("http://localhost:3000/name");
+        window.location.reload();
         setData(response.data);
       } catch (error) {
         console.error("Error deleting data:", error);
@@ -128,8 +129,49 @@ const FilteredTable = ({ filteredData }) => {
                       <div className="d-flex justify-content-between align-items-center">
                         <span>{expense.netAmount}</span>
                         <div className="editDiv">
-                          <Link to={`/edit/${expense.id}`} className="editLink">
-                            <FontAwesomeIcon icon={faEdit} />
+                          <Link to={`/read/${expense.id}`} className="editLink">
+                            <FontAwesomeIcon
+                              icon={faEye}
+                              style={{
+                                marginRight: "10px", // Space between icon and text
+                                color: "#007bff", // Bootstrap primary color (blue)
+                                cursor: "pointer", // Pointer cursor on hover
+                                fontSize: "1em", // Slightly larger icon
+                                transition:
+                                  "color 0.3s ease, transform 0.3s ease", // Smooth color and transform transitions
+                              }}
+                              onMouseEnter={(e) =>
+                                (e.target.style.color = "#0056b3")
+                              } // Darker blue on hover
+                              onMouseLeave={(e) =>
+                                (e.target.style.color = "#007bff")
+                              } // Return to original color
+                            />
+                          </Link>
+                          <Link
+                            to={`/edit/${expense.id}`}
+                            style={{
+                              textDecoration: "none", // Remove underline
+                              color: "inherit", // Inherit color from parent (optional)
+                            }}
+                            className="editLink"
+                          >
+                            <FontAwesomeIcon
+                              icon={faEdit}
+                              style={{
+                                color: "#28a745", // Green color for the icon
+                                fontSize: "1em", // Larger icon size
+                                cursor: "pointer", // Pointer cursor on hover
+                                transition:
+                                  "color 0.3s ease, transform 0.3s ease", // Smooth transitions
+                              }}
+                              onMouseEnter={(e) =>
+                                (e.target.style.color = "#218838")
+                              } // Darker green on hover
+                              onMouseLeave={(e) =>
+                                (e.target.style.color = "#28a745")
+                              } // Return to original color
+                            />
                           </Link>
                           <FontAwesomeIcon
                             icon={faTrash}

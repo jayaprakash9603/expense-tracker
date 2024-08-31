@@ -7,6 +7,8 @@ import SortExpenses from "../Components/SortExpenses";
 
 import FilteredTable from "../Components/FilteredTable";
 import EditExpenses from "../Components/EditExpenses";
+import ExpenseCalendar from "../Components/ExpenseCalendar";
+import ReadExpenses from "../Components/ReadExpenses";
 
 const App = () => {
   return (
@@ -18,6 +20,8 @@ const App = () => {
           <Route path="/sort" element={<SortExpenses />} />
           <Route path="/edit/:id" element={<EditExpenses />} />
           <Route path="/filter/filteredData" element={<FilteredTable />} />
+          <Route path="/calendar" element={<ExpenseCalendar />} />
+          <Route path="/read/:id" element={<ReadExpenses />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -18,6 +18,7 @@ const convertToNewFormat = (data) => {
       type: expense.type,
       paymentMethod: expense.paymentMethod,
       netAmount: expense.netAmount,
+      creditDue: expense.creditDue, // Include creditDue here
     });
 
     return acc;
@@ -28,7 +29,16 @@ const convertToNewFormat = (data) => {
 const convertToOldFormat = (data) => {
   return Object.entries(data).flatMap(([date, expensesArray]) =>
     expensesArray.map(
-      ({ id, index, expenseName, amount, type, paymentMethod, netAmount }) => ({
+      ({
+        id,
+        index,
+        expenseName,
+        amount,
+        type,
+        paymentMethod,
+        netAmount,
+        creditDue,
+      }) => ({
         id: id,
         date: date,
         expense: {
@@ -38,7 +48,7 @@ const convertToOldFormat = (data) => {
           paymentMethod: paymentMethod,
           netAmount: netAmount,
           comments: "", // Default values
-          creditDue: 0, // Default values
+          creditDue: creditDue, // Include creditDue here
         },
       })
     )
@@ -53,9 +63,9 @@ const EditExpenses = () => {
     type: "gain",
     paymentMethod: "cash",
     comments: "",
+    creditDue: 0,
   });
   const [newFormatData, setNewFormatData] = useState({});
-  const [oldFormatData, setOldFormatData] = useState([]);
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -79,6 +89,7 @@ const EditExpenses = () => {
             type: expense.type || "gain",
             paymentMethod: expense.paymentMethod || "cash",
             comments: expense.comments || "",
+            creditDue: expense.creditDue || 0, // Initialize creditDue
           });
         }
       })
@@ -97,6 +108,14 @@ const EditExpenses = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Determine netAmount based on type
+    const netAmount =
+      expenses.type === "loss" ? -expenses.amount : expenses.amount;
+
+    // Determine creditDue based on payment method
+    const creditDue =
+      expenses.paymentMethod === "creditNeedToPaid" ? expenses.amount : 0;
+
     // Convert the updated state to old format
     const updatedData = [
       {
@@ -107,9 +126,9 @@ const EditExpenses = () => {
           amount: expenses.amount,
           type: expenses.type,
           paymentMethod: expenses.paymentMethod,
-          netAmount: expenses.amount, // Assuming netAmount is the same as amount
+          netAmount: netAmount,
           comments: expenses.comments,
-          creditDue: 0, // Default value
+          creditDue: creditDue,
         },
       },
     ];

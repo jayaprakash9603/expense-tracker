@@ -1,53 +1,118 @@
 {
   "name": [
     {
-      "id": "94f8",
-      "date": "2024-08-16",
+      "id": "07fc",
+      "date": "2024-08-30",
       "expense": {
-        "expenseName": "hero",
-        "amount": 200,
+        "expenseName": "salary credited",
+        "amount": 39072,
+        "type": "gain",
+        "paymentMethod": "cash",
+        "netAmount": 39072,
+        "comments": "salary is credited",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "dc33",
+      "date": "2024-08-30",
+      "expense": {
+        "expenseName": "investment ",
+        "amount": 7000,
         "type": "loss",
         "paymentMethod": "cash",
-        "netAmount": 200,
-        "comments": "",
+        "netAmount": -7000,
+        "comments": "invested in quant small cap mutual funds",
         "creditDue": 0
       }
     },
     {
-      "id": "2437",
-      "date": "2024-08-28",
+      "id": "b87b",
+      "date": "2024-08-30",
       "expense": {
-        "expenseName": "car",
-        "amount": 20000,
+        "expenseName": "investment",
+        "amount": 2000,
+        "type": "loss",
+        "paymentMethod": "cash",
+        "netAmount": -2000,
+        "comments": "invested in quant mid cap funds",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "fe93",
+      "date": "2024-08-30",
+      "expense": {
+        "expenseName": "dry fruits",
+        "amount": 2470,
+        "type": "loss",
+        "paymentMethod": "cash",
+        "netAmount": -2470,
+        "comments": "bought dry fruits in dmart",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "1b3c",
+      "date": "2024-08-30",
+      "expense": {
+        "expenseName": "investment ",
+        "amount": 2000,
+        "type": "loss",
+        "paymentMethod": "cash",
+        "netAmount": -2000,
+        "comments": "invested in psu funds ",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "2cc9",
+      "date": "2024-08-30",
+      "expense": {
+        "expenseName": "dry fruits for mother",
+        "amount": 402,
         "type": "loss",
         "paymentMethod": "creditNeedToPaid",
-        "netAmount": 20000,
-        "comments": "",
-        "creditDue": 0
+        "netAmount": -402,
+        "comments": "bought dry fruits for mother in flipkart",
+        "creditDue": 402
       }
     },
     {
-      "id": "416c",
-      "date": "2024-08-22",
+      "id": "2771",
+      "date": "2024-08-30",
       "expense": {
         "expenseName": "juice",
-        "amount": 2000,
-        "type": "gain",
+        "amount": 50,
+        "type": "loss",
         "paymentMethod": "cash",
-        "netAmount": 2000,
-        "comments": "",
+        "netAmount": -50,
+        "comments": "mosambi juice",
         "creditDue": 0
       }
     },
     {
-      "id": "07c6",
-      "date": "2024-08-28",
+      "id": "3834",
+      "date": "2024-08-30",
       "expense": {
-        "expenseName": "biryani",
-        "amount": 2000,
+        "expenseName": "credit card bill",
+        "amount": 50,
+        "type": "loss",
+        "paymentMethod": "cash",
+        "netAmount": -50,
+        "comments": "paid previous month credit card bill",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "cebd",
+      "date": "2024-08-31",
+      "expense": {
+        "expenseName": "india",
+        "amount": 298798,
         "type": "gain",
-        "paymentMethod": "creditNeedToPaid",
-        "netAmount": 2000,
+        "paymentMethod": "cash",
+        "netAmount": 298798,
         "comments": "",
         "creditDue": 0
       }

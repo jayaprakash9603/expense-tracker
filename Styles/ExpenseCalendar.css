@@ -1,0 +1,53 @@
+/* Styles for the calendar container */
+.calendar-container {
+  display: flex; /* Aligns calendar and expenses side by side */
+
+  padding: 20px;
+}
+
+/* Styles for the calendar section */
+.calendar-section {
+  flex: 1; /* Takes up space proportionally */
+  max-width: 300px; /* Fixed width for the calendar */
+  margin-right: 20px; /* Space between calendar and expenses */
+}
+
+/* Styles for the calendar */
+.calendar {
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  overflow: hidden; /* Ensure rounded corners */
+}
+
+/* Styles for the expenses section */
+.expenses-section {
+  flex: 2;
+  background-color: aqua; /* Takes up more space compared to the calendar */
+  max-width: 600px;
+  margin-left: 200px; /* Fixed width for the expenses list */
+}
+
+/* Styles for the expenses list */
+.expenses-list {
+  background: #fff; /* White background */
+  border: 1px solid #ddd; /* Light gray border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding around the list */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  max-height: 600px; /* Limit height */
+  overflow-y: auto; /* Scroll if content overflows */
+}
+
+.expenses-list h2 {
+  margin-bottom: 15px; /* Space below the heading */
+}
+
+.expenses-list ul {
+  list-style-type: none; /* Remove default list styling */
+  padding: 0; /* Remove padding */
+}
+
+.expenses-list li {
+  border-bottom: 1px solid #ccc; /* Light gray border between items */
+  padding: 10px 0; /* Padding around each item */
+}

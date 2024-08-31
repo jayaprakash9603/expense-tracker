@@ -45,10 +45,9 @@ const CreateExpense = () => {
       formState;
     const netAmount =
       type === "gain" ? parseFloat(amount) : -parseFloat(amount);
-    let creditDue = 0;
-    if (paymentMethod === "creditNeedToPaid") {
-      creditDue = amount;
-    }
+    const creditDue =
+      paymentMethod === "creditNeedToPaid" ? parseFloat(amount) : 0;
+
     const newExpense = {
       expenseName,
       amount: parseFloat(amount),
@@ -56,11 +55,11 @@ const CreateExpense = () => {
       paymentMethod,
       netAmount,
       comments,
-      creditDue,
+      creditDue, // Ensure creditDue is a number
     };
 
     try {
-      // Post the new expense to the root endpoint
+      // Post the new expense to the server
       const response = await axios.post(
         `http://localhost:3000/name`,
         {
