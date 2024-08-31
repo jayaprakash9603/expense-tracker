@@ -87,9 +87,10 @@ const EditExpenses = () => {
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
+
     setExpenses((prevExpenses) => ({
       ...prevExpenses,
-      [id]: value,
+      [id]: id === "amount" ? parseInt(value, 10) || "" : value,
     }));
   };
 

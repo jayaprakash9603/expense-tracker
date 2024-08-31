@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,6 +7,11 @@ import axios from "axios";
 
 const FilteredTable = ({ filteredData }) => {
   const [sortConfig, setSortConfig] = useState({});
+  const [data, setData] = useState(filteredData);
+
+  useEffect(() => {
+    setData(filteredData);
+  }, [filteredData]);
 
   const handleSort = (date, key) => {
     setSortConfig((prevConfig) => {
@@ -37,28 +42,45 @@ const FilteredTable = ({ filteredData }) => {
     });
   };
 
-  // Calculate the total amount of expenses
+  // Calculate the total amount of expenses for a specific date
   const totalAmount = (date) => {
     const data = sortedData(date);
     if (!Array.isArray(data)) return 0;
     return data.reduce((total, expense) => total + (expense.netAmount || 0), 0);
   };
 
-  const handleDelete = (id) => {
+  // Calculate the total salary amount across all dates
+  const totalSalaryAmount = () => {
+    return Object.keys(filteredData).reduce((total, date) => {
+      const data = filteredData[date] || [];
+      return (
+        total + data.reduce((sum, expense) => sum + (expense.netAmount || 0), 0)
+      );
+    }, 0);
+  };
+
+  const handleDelete = async (id) => {
     const confirm = window.confirm("Would you like to delete?");
     if (confirm) {
-      axios
-        .delete(`http://localhost:3000/name/${id}`)
-        .then((res) => {
-          console.log(res);
-          location.reload(); // Reloading the page after deletion
-        })
-        .catch((err) => console.log(err));
+      try {
+        await axios.delete(`http://localhost:3000/name/${id}`);
+        // Refresh data after deletion
+        const response = await axios.get("http://localhost:3000/name");
+        setData(response.data);
+      } catch (error) {
+        console.error("Error deleting data:", error);
+      }
     }
   };
 
   return (
     <div className="table-responsive">
+      <div className="mb-4 text-center">
+        <h3>
+          Total Salary Amount:{" "}
+          <span className="fw-bold">{totalSalaryAmount()}</span>
+        </h3>
+      </div>
       {Object.keys(filteredData).length > 0 ? (
         Object.keys(filteredData).map((date) => (
           <div key={date} className="mb-4">

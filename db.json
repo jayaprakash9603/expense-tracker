@@ -5,10 +5,10 @@
       "date": "2024-08-16",
       "expense": {
         "expenseName": "hero",
-        "amount": 298374524,
-        "type": "gain",
+        "amount": 200,
+        "type": "loss",
         "paymentMethod": "cash",
-        "netAmount": 298374524,
+        "netAmount": 200,
         "comments": "",
         "creditDue": 0
       }
@@ -19,7 +19,7 @@
       "expense": {
         "expenseName": "car",
         "amount": 20000,
-        "type": "gain",
+        "type": "loss",
         "paymentMethod": "creditNeedToPaid",
         "netAmount": 20000,
         "comments": "",
@@ -45,11 +45,11 @@
       "expense": {
         "expenseName": "biryani",
         "amount": 2000,
-        "type": "loss",
+        "type": "gain",
         "paymentMethod": "creditNeedToPaid",
-        "netAmount": -2000,
+        "netAmount": 2000,
         "comments": "",
-        "creditDue": "2000"
+        "creditDue": 0
       }
     }
   ],
