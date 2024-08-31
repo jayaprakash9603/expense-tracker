@@ -75,6 +75,7 @@ const Home = () => {
 
   return (
     <div>
+      {console.log(convertedData)}
       <h1 className="display-1 text-bg-dark text-center">Expense Tracker</h1>
       <div className="container">
         {/* Add FilterComponent */}

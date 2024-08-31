@@ -121,7 +121,7 @@ const FilterComponent = ({ inputData, setFilteredData }) => {
         <input
           ref={inputRef}
           type={filterBy === "date" ? "date" : "text"}
-          className="custom-select"
+          className="custom-select "
           placeholder="Enter value"
           value={filterBy === "date" ? filterDate : filterValue}
           onChange={
