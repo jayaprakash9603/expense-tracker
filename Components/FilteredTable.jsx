@@ -27,13 +27,21 @@ const FilteredTable = ({ filteredData }) => {
 
   const sortedData = (date) => {
     const { key, direction } = sortConfig[date] || {};
-    if (!key) return filteredData[date];
+    const data = filteredData[date] || [];
+    if (!key) return data;
 
-    return [...filteredData[date]].sort((a, b) => {
+    return [...data].sort((a, b) => {
       if (a[key] < b[key]) return direction === "ascending" ? -1 : 1;
       if (a[key] > b[key]) return direction === "ascending" ? 1 : -1;
       return 0;
     });
+  };
+
+  // Calculate the total amount of expenses
+  const totalAmount = (date) => {
+    const data = sortedData(date);
+    if (!Array.isArray(data)) return 0;
+    return data.reduce((total, expense) => total + (expense.netAmount || 0), 0);
   };
 
   const handleDelete = (id) => {
@@ -115,6 +123,13 @@ const FilteredTable = ({ filteredData }) => {
                     </td>
                   </tr>
                 ))}
+                {/* Add total row */}
+                <tr className="table-info">
+                  <td colSpan="5" className="text-end fw-bold">
+                    Total Expense:
+                  </td>
+                  <td className="fw-bold">{totalAmount(date)}</td>
+                </tr>
               </tbody>
             </table>
           </div>

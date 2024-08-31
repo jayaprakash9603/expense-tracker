@@ -25,6 +25,32 @@
         "comments": "",
         "creditDue": 0
       }
+    },
+    {
+      "id": "416c",
+      "date": "2024-08-22",
+      "expense": {
+        "expenseName": "juice",
+        "amount": 2000,
+        "type": "gain",
+        "paymentMethod": "cash",
+        "netAmount": 2000,
+        "comments": "",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "07c6",
+      "date": "2024-08-28",
+      "expense": {
+        "expenseName": "biryani",
+        "amount": 2000,
+        "type": "loss",
+        "paymentMethod": "creditNeedToPaid",
+        "netAmount": -2000,
+        "comments": "",
+        "creditDue": "2000"
+      }
     }
   ],
   "upload": []
