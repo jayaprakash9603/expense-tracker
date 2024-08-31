@@ -13,19 +13,6 @@
       }
     },
     {
-      "id": "03cf",
-      "date": "2024-08-28",
-      "expense": {
-        "expenseName": "hero",
-        "amount": 2,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 2,
-        "comments": "comments",
-        "creditDue": 0
-      }
-    },
-    {
       "id": "14b1",
       "date": "2024-08-29",
       "expense": {
@@ -35,45 +22,6 @@
         "paymentMethod": "cash",
         "netAmount": 2000,
         "comments": "comments",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "1ee5",
-      "date": "2024-08-30",
-      "expense": {
-        "expenseName": "asdf",
-        "amount": 98234,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 98234,
-        "comments": "",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "53bd",
-      "date": "2024-08-30",
-      "expense": {
-        "expenseName": "juice",
-        "amount": 98091234,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 98091234,
-        "comments": "comemnts",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "0112",
-      "date": "2024-08-30",
-      "expense": {
-        "expenseName": "098209345",
-        "amount": 98092834,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 98092834,
-        "comments": "",
         "creditDue": 0
       }
     },
@@ -91,45 +39,6 @@
       }
     },
     {
-      "id": "1e83",
-      "date": "2024-08-30",
-      "expense": {
-        "expenseName": "india",
-        "amount": 981098324,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 981098324,
-        "comments": "",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "b035",
-      "date": "2024-08-31",
-      "expense": {
-        "expenseName": "098019234",
-        "amount": 9999,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 9999,
-        "comments": "adding expense",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "fb93",
-      "date": "2024-09-01",
-      "expense": {
-        "expenseName": "india",
-        "amount": 82734,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 82734,
-        "comments": "comments added",
-        "creditDue": 0
-      }
-    },
-    {
       "id": "c105",
       "date": "2024-08-29",
       "expense": {
@@ -139,71 +48,6 @@
         "paymentMethod": "cash",
         "netAmount": 11234,
         "comments": "comments",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "3f26",
-      "date": "2024-08-08",
-      "expense": {
-        "expenseName": "juice",
-        "amount": 908298435,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 908298435,
-        "comments": "comments",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "5ceb",
-      "date": "2024-08-08",
-      "expense": {
-        "expenseName": "jualasdflkja",
-        "amount": 245243,
-        "type": "loss",
-        "paymentMethod": "creditNeedToPaid",
-        "netAmount": -245243,
-        "comments": "india",
-        "creditDue": "245243"
-      }
-    },
-    {
-      "id": "dad9",
-      "date": "2024-08-08",
-      "expense": {
-        "expenseName": "juice",
-        "amount": 981987234,
-        "type": "gain",
-        "paymentMethod": "creditPaid",
-        "netAmount": 981987234,
-        "comments": "comments",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "c970",
-      "date": "2024-08-30",
-      "expense": {
-        "expenseName": "converted",
-        "amount": 91879837413,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 91879837413,
-        "comments": "",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "bc40",
-      "date": "2024-08-01",
-      "expense": {
-        "expenseName": "india",
-        "amount": 98109238904123,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 98109238904123,
-        "comments": "comments\n",
         "creditDue": 0
       }
     },
@@ -247,16 +91,55 @@
       }
     },
     {
-      "id": "9b04",
-      "date": "2024-08-31",
+      "id": "2c8a",
+      "date": "2024-08-30",
       "expense": {
-        "expenseName": "india",
-        "amount": 9287934875234,
+        "expenseName": "98798798",
+        "amount": 9999,
         "type": "gain",
         "paymentMethod": "cash",
-        "netAmount": 9287934875234,
+        "netAmount": 9999,
+        "comments": "comment",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "7ddf",
+      "date": "2024-08-30",
+      "expense": {
+        "expenseName": "india",
+        "amount": 998728345,
+        "type": "gain",
+        "paymentMethod": "cash",
+        "netAmount": 998728345,
         "comments": "",
         "creditDue": 0
+      }
+    },
+    {
+      "id": "4bfe",
+      "date": "2024-08-31",
+      "expense": {
+        "expenseName": "colcolalkjd",
+        "amount": 98245,
+        "type": "gain",
+        "paymentMethod": "cash",
+        "netAmount": 98245,
+        "comments": "",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "dffe",
+      "date": "2024-08-16",
+      "expense": {
+        "expenseName": "shoes",
+        "amount": 2000,
+        "type": "loss",
+        "paymentMethod": "creditNeedToPaid",
+        "netAmount": -2000,
+        "comments": "",
+        "creditDue": "2000"
       }
     }
   ],

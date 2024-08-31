@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Styles/Home.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import RenderTable from "./RenderTable";
+import FilterComponent from "./FilterComponent"; // Import the FilterComponent
+import FilteredTable from "./FilteredTable";
 
 const Home = () => {
   const [expenses, setExpenses] = useState([]);
   const [convertedData, setConvertedData] = useState({});
-  const [sortOrder, setSortOrder] = useState("desc"); // Default sorting order
+  const [filteredData, setFilteredData] = useState({});
+  const [originalData, setOriginalData] = useState({});
+  const [sortOrder, setSortOrder] = useState("desc");
 
   useEffect(() => {
     axios
@@ -21,9 +25,7 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    // Function to convert and sort the data
     const convertAndSortData = (data, order) => {
-      // Convert data
       const convertedData = data.reduce((acc, item) => {
         const date = item.date;
 
@@ -50,6 +52,7 @@ const Home = () => {
       const sortedDates = Object.keys(convertedData).sort((a, b) =>
         order === "asc" ? new Date(a) - new Date(b) : new Date(b) - new Date(a)
       );
+
       const sortedData = sortedDates.reduce((acc, date) => {
         acc[date] = convertedData[date];
         return acc;
@@ -58,15 +61,16 @@ const Home = () => {
       return sortedData;
     };
 
-    // Check if expenses have data to convert and sort
     if (expenses.length > 0) {
       const sortedData = convertAndSortData(expenses, sortOrder);
       setConvertedData(sortedData);
+      setOriginalData(sortedData);
+      setFilteredData(sortedData); // Initialize filteredData with sortedData
     }
   }, [expenses, sortOrder]);
 
   const handleSortOrderChange = (e) => {
-    setSortOrder(e.target.value); // Update sortOrder based on user selection
+    setSortOrder(e.target.value);
   };
 
   return (
@@ -79,22 +83,30 @@ const Home = () => {
               <i className="bi bi-plus"></i>
             </Link>
           </div>
-          <div>
-            <label htmlFor="sortOrder" className="me-2">
-              Sort By Date:
-            </label>
-            <select
-              id="sortOrder"
-              className="form-select"
-              value={sortOrder}
-              onChange={handleSortOrderChange}
-            >
-              <option value="asc">Ascending</option>
-              <option value="desc">Descending</option>
-            </select>
-          </div>
         </div>
-        <RenderTable inputData={convertedData} />
+        {/* Add FilterComponent */}
+        <FilterComponent
+          inputData={convertedData}
+          setFilteredData={setFilteredData}
+        />
+        <div className="d-flex align-items-center mb-3">
+          <label htmlFor="sortOrder" className="form-label me-2">
+            Sort By Date:
+          </label>
+          <select
+            id="sortOrder"
+            className="form-select w-auto"
+            value={sortOrder}
+            onChange={handleSortOrderChange}
+          >
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+          </select>
+        </div>
+        {console.log(filteredData)}
+
+        {/* Pass filteredData to RenderTable <FilteredTable filteredData={filteredData} /> */}
+        <RenderTable inputData={filteredData} sortOrder={sortOrder} />
       </div>
     </div>
   );

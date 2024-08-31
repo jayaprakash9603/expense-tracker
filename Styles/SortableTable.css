@@ -1,0 +1,35 @@
+/* SortableTable.css */
+
+.column-id {
+  width: 10%;
+}
+
+.column-expenseName {
+  width: 25%;
+}
+
+.column-amount {
+  width: 15%;
+}
+
+.column-type {
+  width: 15%;
+}
+
+.column-paymentMethod {
+  width: 20%;
+}
+
+.column-netAmount {
+  width: 15%;
+}
+
+.editDiv {
+  display: flex;
+  align-items: center;
+}
+
+.editLink {
+  color: #007bff; /* Bootstrap primary color, adjust as needed */
+  font-size: 1.2rem; /* Adjust size as needed */
+}

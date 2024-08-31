@@ -2,3 +2,12 @@
   margin: 0;
   padding: 0;
 }
+.editDiv {
+  display: flex;
+  align-items: center;
+}
+
+.editLink {
+  color: #007bff; /* Bootstrap primary color, adjust as needed */
+  font-size: 1.2rem; /* Adjust size as needed */
+}

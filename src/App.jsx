@@ -5,6 +5,9 @@ import CreateExpense from "../Components/CreateExpense";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import SortExpenses from "../Components/SortExpenses";
 
+import FilteredTable from "../Components/FilteredTable";
+import EditExpenses from "../Components/EditExpenses";
+
 const App = () => {
   return (
     <div>
@@ -13,6 +16,8 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<CreateExpense />} />
           <Route path="/sort" element={<SortExpenses />} />
+          <Route path="/edit/:id" element={<EditExpenses />} />
+          <Route path="/filter/filteredData" element={<FilteredTable />} />
         </Routes>
       </BrowserRouter>
     </div>
