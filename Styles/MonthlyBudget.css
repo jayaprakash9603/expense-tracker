@@ -1,0 +1,147 @@
+:root {
+  --table-color1: #4f6c6f;
+  --table-color2: #344849;
+  --table-color3: #cddee2;
+  --table-color4: #e0e8e9;
+  --table-last-cell-color-1: #9bbfc8;
+}
+
+.container {
+  width: 100%;
+  background-color: #f7f7f7;
+}
+
+.main-text {
+  width: 100%;
+  height: 100px;
+  padding-top: 10px;
+  background-color: #2c484f;
+}
+
+.main-text h2 {
+  font-size: 56px;
+  color: white;
+  margin: 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Segoe UI", sans-serif;
+  font-style: italic;
+}
+
+.my-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.table-margin-1 {
+  margin-top: 30px;
+}
+.table-margin-2 {
+  margin-top: 10px;
+}
+.my-table td,
+.my-table th {
+  padding: 8px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.my-table th {
+  width: 45%;
+  color: white;
+}
+
+.my-table td {
+  font-family: "Segoe UI", sans-serif;
+}
+
+.first-color {
+  background-color: var(--table-color1);
+}
+
+.small-width {
+  width: 20%;
+}
+
+.second-color {
+  background-color: var(--table-color2);
+}
+
+.first-cell-color {
+  background-color: var(--table-color3);
+}
+
+.second-cell-color {
+  background-color: var(--table-color4);
+}
+
+.third-cell-color {
+  background-color: white !important;
+  color: black;
+}
+
+.table-image-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* gap: 20px; */
+}
+
+.table-image {
+  background-color: rgb(119, 184, 62);
+  width: 520px;
+  margin-top: 30px;
+  aspect-ratio: 3/2;
+}
+
+.table-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* background-color: chartreuse; */
+}
+
+.my-table-container {
+  flex: 1;
+  display: flex;
+  max-width: 60%;
+  flex-direction: column;
+  gap: 20px;
+  /* background-color: aquamarine; */
+}
+.budget-table {
+  width: 60%;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.budget-table th,
+.budget-table td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.budget-table th {
+  background-color: var(--table-color2);
+  color: white;
+  width: 40%;
+}
+
+.budget-table tbody tr:nth-child(odd) {
+  background-color: white;
+}
+
+.budget-table tbody tr:nth-child(even) {
+  background-color: var(--table-color3);
+}
+
+.budget-table td:nth-child(4) {
+  color: red;
+}
+.budget-table tbody tr:last-child {
+  background-color: var(--table-last-cell-color-1);
+  color: black; /* Ensure the text is visible */
+}
