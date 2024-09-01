@@ -71,11 +71,11 @@
       "expense": {
         "expenseName": "dry fruits for mother",
         "amount": 402,
-        "type": "loss",
+        "type": "gain",
         "paymentMethod": "creditNeedToPaid",
-        "netAmount": -402,
-        "comments": "bought dry fruits for mother in flipkart",
-        "creditDue": 402
+        "netAmount": 402,
+        "comments": "",
+        "creditDue": 0
       }
     },
     {
@@ -101,19 +101,6 @@
         "paymentMethod": "cash",
         "netAmount": -50,
         "comments": "paid previous month credit card bill",
-        "creditDue": 0
-      }
-    },
-    {
-      "id": "cebd",
-      "date": "2024-08-31",
-      "expense": {
-        "expenseName": "india",
-        "amount": 298798,
-        "type": "gain",
-        "paymentMethod": "cash",
-        "netAmount": 298798,
-        "comments": "",
         "creditDue": 0
       }
     }

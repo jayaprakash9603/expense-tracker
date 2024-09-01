@@ -112,9 +112,10 @@ const EditExpenses = () => {
     const netAmount =
       expenses.type === "loss" ? -expenses.amount : expenses.amount;
 
-    // Determine creditDue based on payment method
     const creditDue =
-      expenses.paymentMethod === "creditNeedToPaid" ? expenses.amount : 0;
+      expenses.type === "loss" && expenses.paymentMethod === "creditNeedToPaid"
+        ? expenses.amount
+        : 0;
 
     // Convert the updated state to old format
     const updatedData = [
