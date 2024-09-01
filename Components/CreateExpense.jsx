@@ -1,27 +1,30 @@
-import { useState } from "react";
+// CreateExpense.js
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import ExpenseFormLogic from "./ExpenseFormLogic";
 
 const CreateExpense = () => {
-  const [formState, setFormState] = useState({
+  const initialState = {
     expenseName: "",
     amount: "",
-    date: "",
-    type: "gain",
+    date: new Date().toISOString().split("T")[0],
+    type: "loss", // Default to loss
     paymentMethod: "cash",
     comments: "",
-  });
-  const [error, setError] = useState(""); // For displaying validation errors
-  const [finalData, setFinalData] = useState(null); // For storing the final submitted data
-  const navigate = useNavigate();
-
-  const validateForm = () => {
-    const { expenseName, amount, date } = formState;
-    if (!expenseName.trim() || !amount || !date) {
-      return "Please fill in all fields.";
-    }
-    return "";
   };
+
+  const {
+    formState,
+    setFormState,
+    error,
+    setError,
+    isSalaryDate,
+    validateForm,
+  } = ExpenseFormLogic(initialState);
+
+  const [finalData, setFinalData] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -31,10 +34,36 @@ const CreateExpense = () => {
     }));
   };
 
+  const handleDateChange = (e) => {
+    const { value } = e.target;
+    const newDate = new Date(value);
+    const lastDayOfMonth = new Date(
+      newDate.getFullYear(),
+      newDate.getMonth() + 1,
+      0
+    );
+    let salaryDate = lastDayOfMonth;
+
+    if (salaryDate.getDay() === 6) {
+      // If it's Saturday, adjust to Friday
+      salaryDate.setDate(salaryDate.getDate() - 1);
+    } else if (salaryDate.getDay() === 0) {
+      // If it's Sunday, adjust to Friday
+      salaryDate.setDate(salaryDate.getDate() - 2);
+    }
+
+    const isSalary = newDate.toDateString() === salaryDate.toDateString();
+
+    setFormState((prevState) => ({
+      ...prevState,
+      date: value,
+      type: isSalary ? "gain" : "loss", // Ensure type is set correctly
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate the form inputs
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
@@ -55,13 +84,12 @@ const CreateExpense = () => {
       paymentMethod,
       netAmount,
       comments,
-      creditDue, // Ensure creditDue is a number
+      creditDue,
     };
 
     try {
-      // Post the new expense to the server
       const response = await axios.post(
-        `http://localhost:3000/name`,
+        `http://localhost:3000/expenses`,
         {
           date,
           expense: newExpense,
@@ -73,10 +101,7 @@ const CreateExpense = () => {
         }
       );
 
-      // Store the final submitted data in state
       setFinalData(response.data);
-
-      // Navigate to the home page
       navigate("/");
     } catch (error) {
       console.error("Error adding expense:", error);
@@ -118,7 +143,7 @@ const CreateExpense = () => {
               id="date"
               className="form-control"
               value={formState.date}
-              onChange={handleChange}
+              onChange={handleDateChange}
             />
           </div>
           <div className="mb-3">
