@@ -46,16 +46,8 @@ const FilteredTable = ({ filteredData }) => {
   const totalAmount = (date) => {
     const data = sortedData(date);
     if (!Array.isArray(data)) return 0;
-    return data.reduce((total, expense) => total + (expense.netAmount || 0), 0);
-  };
-
-  // Calculate the total salary amount across all dates
-  const totalSalaryAmount = () => {
-    return Object.keys(filteredData).reduce((total, date) => {
-      const data = filteredData[date] || [];
-      return (
-        total + data.reduce((sum, expense) => sum + (expense.netAmount || 0), 0)
-      );
+    return data.reduce((total, expense) => {
+      return total + (expense.netAmount || 0);
     }, 0);
   };
 
@@ -66,8 +58,8 @@ const FilteredTable = ({ filteredData }) => {
         await axios.delete(`http://localhost:3000/name/${id}`);
         // Refresh data after deletion
         const response = await axios.get("http://localhost:3000/name");
-        window.location.reload();
         setData(response.data);
+        location.reload(); // Update state with new data
       } catch (error) {
         console.error("Error deleting data:", error);
       }
@@ -76,12 +68,6 @@ const FilteredTable = ({ filteredData }) => {
 
   return (
     <div className="table-responsive">
-      <div className="mb-4 text-center">
-        <h3>
-          Total Salary Amount:{" "}
-          <span className="fw-bold">{totalSalaryAmount()}</span>
-        </h3>
-      </div>
       {Object.keys(filteredData).length > 0 ? (
         Object.keys(filteredData).map((date) => (
           <div key={date} className="mb-4">

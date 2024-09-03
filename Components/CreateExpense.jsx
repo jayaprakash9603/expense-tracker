@@ -61,6 +61,10 @@ const CreateExpense = () => {
     }));
   };
 
+  const CREDIT_NEED_TO_PAID = "creditNeedToPaid";
+  const CREDIT_PAID = "creditPaid";
+  const GAIN = "gain";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -72,10 +76,14 @@ const CreateExpense = () => {
 
     const { expenseName, amount, date, type, paymentMethod, comments } =
       formState;
-    const netAmount =
-      type === "gain" ? parseFloat(amount) : -parseFloat(amount);
-    const creditDue =
-      paymentMethod === "creditNeedToPaid" ? parseFloat(amount) : 0;
+    const netAmount = type === GAIN ? parseFloat(amount) : -parseFloat(amount);
+
+    let creditDue = 0;
+    if (paymentMethod === CREDIT_NEED_TO_PAID) {
+      creditDue = parseFloat(amount);
+    } else if (paymentMethod === CREDIT_PAID) {
+      creditDue = -parseFloat(amount);
+    }
 
     const newExpense = {
       expenseName,
@@ -83,13 +91,13 @@ const CreateExpense = () => {
       type,
       paymentMethod,
       netAmount,
-      comments,
       creditDue,
+      comments,
     };
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/expenses`,
+        `http://localhost:3000/name`,
         {
           date,
           expense: newExpense,

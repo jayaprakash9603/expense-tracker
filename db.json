@@ -9,7 +9,7 @@
         "type": "gain",
         "paymentMethod": "cash",
         "netAmount": 39072,
-        "comments": "salary is credited",
+        "comments": "salary credited",
         "creditDue": 0
       }
     },
@@ -66,19 +66,6 @@
       }
     },
     {
-      "id": "2cc9",
-      "date": "2024-08-30",
-      "expense": {
-        "expenseName": "dry fruits for mother",
-        "amount": 402,
-        "type": "gain",
-        "paymentMethod": "creditNeedToPaid",
-        "netAmount": 402,
-        "comments": "",
-        "creditDue": 0
-      }
-    },
-    {
       "id": "2771",
       "date": "2024-08-30",
       "expense": {
@@ -102,6 +89,97 @@
         "netAmount": -50,
         "comments": "paid previous month credit card bill",
         "creditDue": 0
+      }
+    },
+    {
+      "id": "3448",
+      "date": "2024-08-31",
+      "expense": {
+        "expenseName": "credit card bill paid",
+        "amount": 402,
+        "type": "loss",
+        "paymentMethod": "creditPaid",
+        "netAmount": -402,
+        "comments": "credit card bill paid",
+        "creditDue": -402
+      }
+    },
+    {
+      "id": "0cc4",
+      "date": "2024-09-01",
+      "expense": {
+        "expenseName": "Mother expenses ",
+        "amount": 6000,
+        "type": "loss",
+        "paymentMethod": "cash",
+        "netAmount": -6000,
+        "comments": "expenses given to mother\n",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "0ae1",
+      "date": "2024-08-30",
+      "expense": {
+        "expenseName": "dry fruits for mother",
+        "amount": 302,
+        "type": "gain",
+        "paymentMethod": "creditNeedToPaid",
+        "netAmount": 302,
+        "comments": "bought walnuts 500g in flipkart",
+        "creditDue": 302
+      }
+    },
+    {
+      "id": "5172",
+      "date": "2024-09-02",
+      "expense": {
+        "expenseName": "snacks",
+        "amount": 40,
+        "type": "loss",
+        "paymentMethod": "creditNeedToPaid",
+        "netAmount": -40,
+        "comments": "bought some snacks in the bazaar",
+        "creditDue": 40
+      }
+    },
+    {
+      "id": "de0f",
+      "date": "2024-09-02",
+      "expense": {
+        "expenseName": "Data add-on recharge",
+        "amount": 19,
+        "type": "loss",
+        "paymentMethod": "cash",
+        "netAmount": -19,
+        "comments": "",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "f4c9",
+      "date": "2024-09-03",
+      "expense": {
+        "expenseName": "Zepto",
+        "amount": 674,
+        "type": "loss",
+        "paymentMethod": "creditNeedToPaid",
+        "netAmount": -674,
+        "comments": "bought some snacks in zepto",
+        "creditDue": 674
+      }
+    },
+    {
+      "id": "9d23",
+      "date": "2024-07-23",
+      "expense": {
+        "expenseName": "india",
+        "amount": 98729435,
+        "type": "loss",
+        "paymentMethod": "cash",
+        "netAmount": -98729435,
+        "creditDue": 0,
+        "comments": ""
       }
     }
   ],

@@ -18,7 +18,8 @@ const convertToNewFormat = (data) => {
       type: expense.type,
       paymentMethod: expense.paymentMethod,
       netAmount: expense.netAmount,
-      creditDue: expense.creditDue, // Include creditDue here
+      creditDue: expense.creditDue,
+      comments: expense.comments || "", // Include creditDue here
     });
 
     return acc;
@@ -38,6 +39,7 @@ const convertToOldFormat = (data) => {
         paymentMethod,
         netAmount,
         creditDue,
+        comments,
       }) => ({
         id: id,
         date: date,
@@ -47,7 +49,7 @@ const convertToOldFormat = (data) => {
           type: type,
           paymentMethod: paymentMethod,
           netAmount: netAmount,
-          comments: "", // Default values
+          comments: comments || "", // Default values
           creditDue: creditDue, // Include creditDue here
         },
       })
@@ -78,10 +80,12 @@ const EditExpenses = () => {
           // Convert to new format
           const fetchedData = [res.data]; // Wrapping data in array
           const convertedData = convertToNewFormat(fetchedData);
+
           setNewFormatData(convertedData);
 
           // Set state with the fetched expense
           const expense = res.data.expense;
+
           setExpenses({
             expenseName: expense.expenseName || "",
             amount: expense.amount || "",
@@ -112,10 +116,12 @@ const EditExpenses = () => {
     const netAmount =
       expenses.type === "loss" ? -expenses.amount : expenses.amount;
 
-    const creditDue =
-      expenses.type === "loss" && expenses.paymentMethod === "creditNeedToPaid"
-        ? expenses.amount
-        : 0;
+    let creditDue = 0;
+    if (expenses.paymentMethod === "creditNeedToPaid") {
+      creditDue = parseFloat(expenses.amount);
+    } else if (expenses.paymentMethod === "creditPaid") {
+      creditDue = -parseFloat(expenses.amount);
+    }
 
     // Convert the updated state to old format
     const updatedData = [

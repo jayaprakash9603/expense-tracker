@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "../Styles/Home.css";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import RenderTable from "./RenderTable";
 import FilterComponent from "./FilterComponent"; // Import the FilterComponent
 import FilteredTable from "./FilteredTable";
 
@@ -68,18 +67,41 @@ const Home = () => {
       setFilteredData(sortedData); // Initialize filteredData with sortedData
     }
   }, [expenses, sortOrder]);
-
+  const creditDueAmount = () => {
+    if (!Array.isArray(expenses)) return 0;
+    return expenses.reduce((total, expense) => {
+      return total + (expense.expense ? expense.expense.creditDue || 0 : 0);
+    }, 0);
+  };
+  // Calculate the total salary amount across all dates
+  const totalSalaryAmount = () => {
+    return Object.keys(filteredData).reduce((total, date) => {
+      const data = filteredData[date] || [];
+      return (
+        total +
+        data.reduce((sum, expense) => {
+          // Exclude amount if type is 'gain' and paymentMethod is 'creditNeedToPaid'
+          if (
+            (expense.type === "gain" || expense.type === "loss") &&
+            expense.paymentMethod === "creditNeedToPaid"
+          ) {
+            return sum;
+          }
+          return sum + (expense.netAmount || 0);
+        }, 0)
+      );
+    }, 0);
+  };
   const handleSortOrderChange = (e) => {
     setSortOrder(e.target.value);
   };
 
   return (
     <div>
-      {console.log(convertedData)}
       <h1 className="display-1 text-bg-dark text-center">Expense Tracker</h1>
       <div className="container">
         {/* Add FilterComponent */}
-        <div className="d-flex justify-content-between align-items-center mb-3 bg-danger">
+        <div className="d-flex justify-content-between align-items-center mb-3 bg-info-subtle">
           <div
             className="d-flex align-items-center mt-3"
             style={{ width: "50%" }}
@@ -109,8 +131,19 @@ const Home = () => {
             </Link>
           </div>
         </div>
-        {console.log(filteredData)}
+        {/*console.log(filteredData)*/}
         {/* Pass filteredData to RenderTable */}
+        {/* <MonthFilterTableHelper inputData={filteredData} />*/}
+        <div className="mb-4 text-center">
+          <h3>
+            Total Salary Amount:{" "}
+            <span className="fw-bold">{totalSalaryAmount()}</span>
+          </h3>
+          <h3>
+            Credit Due: <span className="fw-bold">{creditDueAmount()}</span>
+          </h3>
+        </div>
+
         <FilteredTable filteredData={filteredData} />
         {/*<RenderTable inputData={filteredData} sortOrder={sortOrder} />*/}
       </div>
