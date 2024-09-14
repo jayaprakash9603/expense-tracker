@@ -14,7 +14,7 @@ const Home = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/name")
+      .get("http://localhost:3000/fetch-expenses")
       .then((res) => {
         if (res && res.data) {
           setExpenses(res.data);

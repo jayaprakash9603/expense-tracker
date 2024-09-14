@@ -143,7 +143,7 @@ const EditExpenses = () => {
     // Update data on the server
     axios
       .put(
-        `http://localhost:3000/name/${id}`,
+        `http://localhost:3000/edit-expense/${id}`,
         convertToOldFormat(convertToNewFormat(updatedData))[0]
       )
       .then((res) => {

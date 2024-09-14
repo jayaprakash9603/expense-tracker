@@ -63,29 +63,41 @@ const MonthFilterTable = () => {
     }, {});
 
     setGroupedExpenses(grouped);
+    console.log(groupedExpenses);
   };
 
   useEffect(() => {
+    // Initialize dates
+    const todayStr = new Date().toISOString().split("T")[0];
+    const initialDate = initialFromDate();
+    setFromDate(initialDate);
+    setToDate(todayStr);
+  }, []); // Run only once to initialize dates
+
+  useEffect(() => {
+    // Fetch data whenever fromDate or toDate changes
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/name");
+        const res = await axios.get(
+          "http://localhost:3000/fetch-expenses-by-date",
+          {
+            params: { from: fromDate, to: toDate },
+          }
+        );
         if (res && res.data) {
           setExpenses(res.data);
-
-          // Initialize dates and filter data
-          const todayStr = new Date().toISOString().split("T")[0];
-          setToDate(todayStr);
-          const initialDate = initialFromDate();
-          setFromDate(initialDate);
-          filterData(); // Filter data on initial load
+          filterData(); // Filter data after fetching
         }
       } catch (err) {
         console.log(err);
       }
     };
 
-    fetchData();
-  }, []);
+    // Fetch data only if both fromDate and toDate are available
+    if (fromDate && toDate) {
+      fetchData();
+    }
+  }, [fromDate, toDate]); // Depend on fromDate and toDate
 
   useEffect(() => {
     if (expenses.length > 0) {

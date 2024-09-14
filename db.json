@@ -174,12 +174,25 @@
       "date": "2024-07-23",
       "expense": {
         "expenseName": "india",
-        "amount": 98729435,
+        "amount": 2000,
         "type": "loss",
         "paymentMethod": "cash",
-        "netAmount": -98729435,
-        "creditDue": 0,
-        "comments": ""
+        "netAmount": -2000,
+        "comments": "",
+        "creditDue": 0
+      }
+    },
+    {
+      "id": "de2a",
+      "date": "2024-09-26",
+      "expense": {
+        "expenseName": "credit paid",
+        "amount": 614,
+        "type": "loss",
+        "paymentMethod": "creditPaid",
+        "netAmount": -614,
+        "comments": "",
+        "creditDue": -614
       }
     }
   ],

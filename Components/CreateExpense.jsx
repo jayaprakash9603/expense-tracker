@@ -97,7 +97,7 @@ const CreateExpense = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:3000/name`,
+        `http://localhost:3000/add-expense`,
         {
           date,
           expense: newExpense,
@@ -112,7 +112,10 @@ const CreateExpense = () => {
       setFinalData(response.data);
       navigate("/");
     } catch (error) {
-      console.error("Error adding expense:", error);
+      console.error(
+        "Error adding expense:",
+        error.response?.data || error.message
+      );
       setError("There was an error adding your expense. Please try again.");
     }
   };

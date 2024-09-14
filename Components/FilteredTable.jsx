@@ -55,17 +55,20 @@ const FilteredTable = ({ filteredData }) => {
     const confirm = window.confirm("Would you like to delete?");
     if (confirm) {
       try {
+        // Send delete request
         await axios.delete(`http://localhost:3000/name/${id}`);
+
         // Refresh data after deletion
-        const response = await axios.get("http://localhost:3000/name");
-        setData(response.data);
-        location.reload(); // Update state with new data
+        const response = await axios.get(
+          "http://localhost:3000/fetch-expenses"
+        );
+        setData(response.data); // Update state with new data
       } catch (error) {
         console.error("Error deleting data:", error);
       }
     }
+    location.reload();
   };
-
   return (
     <div className="table-responsive">
       {Object.keys(filteredData).length > 0 ? (
