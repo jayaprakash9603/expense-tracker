@@ -17,7 +17,7 @@ const App = () => {
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<MonthFilterTable />} />
           <Route path="/create" element={<CreateExpense />} />
           <Route path="/sort" element={<SortExpenses />} />
           <Route path="/edit/:id" element={<EditExpenses />} />
@@ -25,7 +25,7 @@ const App = () => {
           <Route path="/calendar" element={<ExpenseCalendar />} />
           <Route path="/read/:id" element={<ReadExpenses />} />
           <Route path="/budget" element={<MonthlyBudget />} />
-          <Route path="monthfilter" element={<MonthFilterTable />} />
+          <Route path="/data" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </div>

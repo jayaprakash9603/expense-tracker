@@ -184,13 +184,11 @@ const MonthFilterTable = () => {
   };
 
   const creditDueAmount = () => {
-    return Object.values(groupedExpenses)
-      .flat()
-      .reduce((total, expense) => {
-        return total + (expense.creditDue || 0);
-      }, 0);
+    if (!Array.isArray(expenses)) return 0;
+    return expenses.reduce((total, expense) => {
+      return total + (expense.expense ? expense.expense.creditDue || 0 : 0);
+    }, 0);
   };
-
   return (
     <div className="container mt-4">
       <h1 className="display-4 text-center mb-4">Expense Tracker</h1>

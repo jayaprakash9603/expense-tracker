@@ -93,9 +93,9 @@ const FilterComponent = ({ inputData, setFilteredData }) => {
 
   return (
     <div
-      className="d-flex align-items-center mb-3 p-3"
+      className="d-flex align-items-center mb-3 p-2"
       style={{
-        width: "80%",
+        width: "100%",
         // backgroundColor: "yellow", // Light gray background
         borderRadius: "5px",
       }}
