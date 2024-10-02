@@ -1,0 +1,39 @@
+.btn {
+  background-color: #ebf9f5; /* Background color */
+  color: #00b386; /* Text color */
+  border-radius: 8px; /* Border radius */
+  transition: all 0.4s ease; /* Smooth transition for all properties */
+  position: relative; /* Positioning for the pseudo-elements */
+  padding: 10px 20px; /* Adjust padding */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+.btn.active {
+  background-color: #00b386; /* Active background color */
+  color: #fff; /* Active text color */
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px; /* Match border radius */
+  background-color: #00b386; /* Background color for the transition effect */
+  transform: scaleX(0); /* Start hidden */
+  transition: transform 0.4s ease; /* Transition for scaling */
+  z-index: 0; /* Underneath the text */
+}
+
+.btn.active::before {
+  transform: scaleX(0); /* Scale to full width when active */
+  z-index: -1; /* Move behind the text */
+}
+
+.btn span {
+  position: relative; /* Positioning for the text */
+  z-index: 1; /* On top of the background */
+}

@@ -1,5 +1,6 @@
 import React from "react";
 import "../Styles/MonthlyBudget.css";
+import BudgetPieChart from "./BudgetPieChart";
 const MonthlyBudget = () => {
   return (
     <div className="container">
@@ -154,6 +155,7 @@ const MonthlyBudget = () => {
           </tbody>
         </table>
       </div>
+      <BudgetPieChart />
     </div>
   );
 };

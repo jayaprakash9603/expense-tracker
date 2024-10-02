@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import "../Styles/MonthFilterTable.css";
 import {
   endOfMonth,
   startOfMonth,
@@ -8,9 +9,13 @@ import {
   format,
   getDay,
   addDays,
+  isToday,
+  isWeekend,
 } from "date-fns";
 import FilteredTable from "./FilteredTable";
 import FilterComponent from "./FilterComponent";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalculator } from "@fortawesome/free-solid-svg-icons";
 
 const MonthFilterTable = () => {
   const [expenses, setExpenses] = useState([]);
@@ -18,10 +23,22 @@ const MonthFilterTable = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [convertedData, setConvertedData] = useState({});
-  const [sortOrder, setSortOrder] = useState("desc");
+  const [sortOrder, setSortOrder] = useState("");
 
   const formatDateToYYYYMMDD = (date) => {
     return format(date, "yyyy-MM-dd");
+  };
+
+  const getLastMonthSalaryDate = (todayDate) => {
+    const firstDayOfCurrentMonth = startOfMonth(todayDate);
+    const lastDayOfLastMonth = endOfMonth(subMonths(firstDayOfCurrentMonth, 1));
+    const dayOfWeek = getDay(lastDayOfLastMonth);
+    if (dayOfWeek === 6) {
+      return addDays(lastDayOfLastMonth, -1);
+    } else if (dayOfWeek === 0) {
+      return addDays(lastDayOfLastMonth, -2);
+    }
+    return lastDayOfLastMonth;
   };
 
   const initialFromDate = () => {
@@ -29,27 +46,10 @@ const MonthFilterTable = () => {
     return formatDateToYYYYMMDD(lastMonthSalaryDate);
   };
 
-  const getLastMonthSalaryDate = (todayDate) => {
-    const firstDayOfCurrentMonth = startOfMonth(todayDate);
-    const lastDayOfLastMonth = endOfMonth(subMonths(firstDayOfCurrentMonth, 1));
-
-    // Adjust for weekend if necessary
-    const dayOfWeek = getDay(lastDayOfLastMonth);
-    if (dayOfWeek === 6) {
-      // If it's Saturday, go back to Friday
-      return addDays(lastDayOfLastMonth, -1);
-    } else if (dayOfWeek === 0) {
-      // If it's Sunday, go back to Friday
-      return addDays(lastDayOfLastMonth, -2);
-    }
-
-    return lastDayOfLastMonth;
-  };
-
   const filterData = () => {
     const start = new Date(fromDate);
     const end = new Date(toDate);
-    end.setHours(23, 59, 59, 999); // Ensure the end date includes the whole day
+    end.setHours(23, 59, 59, 999);
 
     const filtered = expenses.filter(({ date }) => {
       const expenseDate = new Date(date);
@@ -63,19 +63,48 @@ const MonthFilterTable = () => {
     }, {});
 
     setGroupedExpenses(grouped);
-    console.log(groupedExpenses);
   };
+  const isSalaryDay = () => {
+    const today = new Date();
+    const lastDayOfMonth = endOfMonth(today);
+    const lastDayOfMonthDay = getDay(lastDayOfMonth);
 
+    let salaryDate;
+
+    if (isWeekend(lastDayOfMonthDay)) {
+      salaryDate = new Date(lastDayOfMonth);
+      salaryDate.setDate(
+        salaryDate.getDate() - (lastDayOfMonthDay === 6 ? 1 : 2)
+      );
+    } else {
+      salaryDate = lastDayOfMonth;
+    }
+
+    return isToday(salaryDate);
+  };
   useEffect(() => {
-    // Initialize dates
     const todayStr = new Date().toISOString().split("T")[0];
     const initialDate = initialFromDate();
     setFromDate(initialDate);
     setToDate(todayStr);
-  }, []); // Run only once to initialize dates
+  }, []);
 
   useEffect(() => {
-    // Fetch data whenever fromDate or toDate changes
+    if (toDate) {
+      const newFromDate = formatDateToYYYYMMDD(
+        getLastMonthSalaryDate(new Date(toDate))
+      );
+      //const today = new Date();
+      // if (isSalaryDay(today)) {
+      //   console.log("enter salary date block");
+      //   setFromDate(toDate);
+      //   setToDate(toDate);
+      // }
+      setFromDate(newFromDate);
+    }
+  }, [toDate]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
@@ -86,18 +115,17 @@ const MonthFilterTable = () => {
         );
         if (res && res.data) {
           setExpenses(res.data);
-          filterData(); // Filter data after fetching
+          filterData();
         }
       } catch (err) {
         console.log(err);
       }
     };
 
-    // Fetch data only if both fromDate and toDate are available
     if (fromDate && toDate) {
       fetchData();
     }
-  }, [fromDate, toDate]); // Depend on fromDate and toDate
+  }, [fromDate, toDate]);
 
   useEffect(() => {
     if (expenses.length > 0) {
@@ -164,8 +192,26 @@ const MonthFilterTable = () => {
   const handleSortOrderChange = (e) => {
     setSortOrder(e.target.value);
   };
+  const incomeAmount = () => {
+    return Object.keys(groupedExpenses).reduce((total, date) => {
+      const data = groupedExpenses[date] || [];
+      return (
+        total +
+        data.reduce((sum, expense) => {
+          // Check for gain but exclude "creditNeedToPaid" payment method
+          if (
+            expense.type === "gain" &&
+            expense.paymentMethod !== "creditNeedToPaid"
+          ) {
+            return sum + (expense.amount || 0);
+          }
+          return sum; // Return the sum unchanged if the condition is not met
+        }, 0)
+      );
+    }, 0);
+  };
 
-  const totalSalaryAmount = () => {
+  const balanceAmount = () => {
     return Object.keys(groupedExpenses).reduce((total, date) => {
       const data = groupedExpenses[date] || [];
       return (
@@ -182,16 +228,81 @@ const MonthFilterTable = () => {
       );
     }, 0);
   };
-
   const creditDueAmount = () => {
-    if (!Array.isArray(expenses)) return 0;
-    return expenses.reduce((total, expense) => {
-      return total + (expense.expense ? expense.expense.creditDue || 0 : 0);
+    return Object.keys(groupedExpenses).reduce((total, date) => {
+      const data = groupedExpenses[date] || [];
+      return (
+        total +
+        data.reduce((sum, expense) => {
+          if (expense.paymentMethod === "creditNeedToPaid") {
+            return sum + (expense.amount || 0);
+          }
+          if (expense.paymentMethod === "creditPaid") {
+            return sum - (expense.amount || 0);
+          }
+          return sum;
+        }, 0)
+      );
     }, 0);
   };
+  {
+    console.log(groupedExpenses);
+  }
+  const expensesAmount = () => {
+    return Object.keys(groupedExpenses).reduce((total, date) => {
+      const data = groupedExpenses[date] || [];
+      return (
+        total +
+        data.reduce((sum, expense) => {
+          // Include conditions
+          if (
+            (expense.type === "loss" && expense.paymentMethod === "cash") ||
+            ((expense.type === "loss" || expense.type === "gain") &&
+              expense.paymentMethod === "creditPaid")
+          ) {
+            return sum + (expense.amount || 0); // Add the expense amount
+          }
+          // Exclude "creditPaid" or other cases not matching the conditions
+          return sum;
+        }, 0)
+      );
+    }, 0);
+  };
+
   return (
     <div className="container mt-4">
-      <h1 className="display-4 text-center mb-4">Expense Tracker</h1>
+      <div className="row mb-4 main-div">
+        <h1 className="display-3 text-center mb-4 heading">Expense Tracker</h1>
+        <div className="balance-display">
+          <FontAwesomeIcon icon={faCalculator} className="calculator-icon" />
+          <div className="header-text">
+            <h1>YOUR BALANCE</h1>
+            <h2
+              className={
+                balanceAmount() < 0 ? "negative-balance" : "positive-balance"
+              }
+            >
+              ₹ {balanceAmount()}
+            </h2>
+          </div>
+          <div className="col text-center income-display">
+            <div className="income-div">
+              <h2 className="income-heading">INCOME</h2>
+              <h3 className="fw-bold">₹{incomeAmount()}</h3>
+            </div>
+            <div className="creditDue-div">
+              <h2 className="due-heading">DUE</h2>
+              <h3 className="fw-bold">₹{creditDueAmount()}</h3>
+            </div>
+            <div className="expenses-div">
+              <h2 className="expenses-heading">EXPENSES</h2>
+              <h3 className="fw-bold">
+                ₹{expensesAmount() + creditDueAmount()}
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="row mb-3">
         <div className="col-md-3">
           <div className="input-group">
@@ -234,7 +345,7 @@ const MonthFilterTable = () => {
               value={sortOrder}
               onChange={handleSortOrderChange}
             >
-              <option value="desc">Sort By</option>
+              <option value="">Sort By</option>
               <option value="asc">Ascending</option>
               <option value="desc">Descending</option>
             </select>
@@ -248,17 +359,7 @@ const MonthFilterTable = () => {
           </Link>
         </div>
       </div>
-      <div className="row mb-4">
-        <div className="col text-center">
-          <h3>
-            Total Salary Amount:{" "}
-            <span className="fw-bold">{totalSalaryAmount()}</span>
-          </h3>
-          <h3>
-            Credit Due: <span className="fw-bold">{creditDueAmount()}</span>
-          </h3>
-        </div>
-      </div>
+
       <FilteredTable filteredData={groupedExpenses} />
     </div>
   );

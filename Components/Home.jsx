@@ -68,9 +68,20 @@ const Home = () => {
     }
   }, [expenses, sortOrder]);
   const creditDueAmount = () => {
-    if (!Array.isArray(expenses)) return 0;
-    return expenses.reduce((total, expense) => {
-      return total + (expense.expense ? expense.expense.creditDue || 0 : 0);
+    return Object.keys(filteredData).reduce((total, date) => {
+      const data = filteredData[date] || [];
+      return (
+        total +
+        data.reduce((sum, expense) => {
+          if (expense.paymentMethod === "creditNeedToPaid") {
+            return sum + (expense.amount || 0);
+          }
+          if (expense.paymentMethod === "creditPaid") {
+            return sum - (expense.amount || 0);
+          }
+          return sum;
+        }, 0)
+      );
     }, 0);
   };
   // Calculate the total salary amount across all dates
