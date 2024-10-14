@@ -22,6 +22,7 @@ const MonthFilterTable = () => {
   const [expenses, setExpenses] = useState([]);
   const [allExpenses, setAllExpenses] = useState([]);
   const [groupedExpenses, setGroupedExpenses] = useState({});
+  const [convertedAllExpenses, setConvertedAllExpenses] = useState({});
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [convertedData, setConvertedData] = useState({});
@@ -31,7 +32,10 @@ const MonthFilterTable = () => {
   const formatDateToYYYYMMDD = (date) => {
     return format(date, "yyyy-MM-dd");
   };
-
+  {
+    console.log(groupedExpenses);
+    console.log(allExpenses);
+  }
   const getLastMonthSalaryDate = (todayDate) => {
     const firstDayOfCurrentMonth = startOfMonth(todayDate);
     const lastDayOfLastMonth = endOfMonth(subMonths(firstDayOfCurrentMonth, 1));
@@ -125,7 +129,7 @@ const MonthFilterTable = () => {
           );
           if (res && res.data) {
             setExpenses(res.data);
-            console.log("rest" + res[0].data);
+            // console.log("rest" + res[0].data);
             filterData();
           }
         }
@@ -276,7 +280,7 @@ const MonthFilterTable = () => {
     }, 0);
   };
   {
-    console.log(groupedExpenses);
+    // console.log(groupedExpenses);
   }
   const expensesAmount = (groupedExpenses) => {
     return Object.keys(groupedExpenses).reduce((total, date) => {
@@ -298,6 +302,37 @@ const MonthFilterTable = () => {
       );
     }, 0);
   };
+  const convertDataFormat = (data) => {
+    // Initialize an empty object to hold the transformed data
+    const formattedData = {};
+
+    data.forEach((entry) => {
+      const { date, expense } = entry;
+
+      // If the date is not already a key in formattedData, initialize it with an empty array
+      if (!formattedData[date]) {
+        formattedData[date] = [];
+      }
+
+      // Push the formatted expense object into the array for the corresponding date
+      formattedData[date].push({
+        id: entry.id,
+        index: formattedData[date].length + 1, // Index is the next number in the array
+        expenseName: expense.expenseName,
+        amount: expense.amount,
+        type: expense.type,
+        paymentMethod: expense.paymentMethod,
+        netAmount: expense.netAmount,
+      });
+    });
+
+    return formattedData;
+  };
+
+  useEffect(() => {
+    const data = convertDataFormat(allExpenses);
+    setConvertedAllExpenses(data);
+  }, [groupedExpenses]);
 
   return (
     <div className="container mt-4">
@@ -309,23 +344,31 @@ const MonthFilterTable = () => {
             <h1>YOUR BALANCE</h1>
             <h2
               className={
-                balanceAmount(groupedExpenses) < 0
+                balanceAmount(convertedAllExpenses) < 0
                   ? "negative-balance"
                   : "positive-balance"
               }
             >
-              ₹ {balanceAmount(groupedExpenses)}
+              ₹ {balanceAmount(convertedAllExpenses)}
             </h2>
           </div>
           <div className="col text-center income-display">
             <div className="income-div">
               <h2 className="income-heading">INCOME</h2>
-              <h3 className="fw-bold">{incomeAmount(groupedExpenses)}</h3>
+              <h3 className="fw-bold">
+                {isValidDateRange(fromDate, toDate, initialFromDate)
+                  ? incomeAmount(groupedExpenses)
+                  : incomeAmount(convertedAllExpenses)}
+              </h3>
             </div>
-            {console.log("ella" + allExpenses)}
             <div className="creditDue-div">
               <h2 className="due-heading">DUE</h2>
-              <h3 className="fw-bold">₹{creditDueAmount(groupedExpenses)}</h3>
+              <h3 className="fw-bold">
+                ₹
+                {isValidDateRange(fromDate, toDate, initialFromDate)
+                  ? creditDueAmount(convertedAllExpenses)
+                  : creditDueAmount(groupedExpenses)}
+              </h3>
             </div>
             <div className="expenses-div">
               <h2 className="expenses-heading">EXPENSES</h2>
@@ -394,8 +437,9 @@ const MonthFilterTable = () => {
           </Link>
         </div>
       </div>
-
-      <FilteredTable filteredData={groupedExpenses} />
+      <div>
+        <FilteredTable filteredData={groupedExpenses} />
+      </div>
     </div>
   );
 };

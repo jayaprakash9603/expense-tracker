@@ -89,6 +89,7 @@ const FilterComponent = ({ inputData, setFilteredData }) => {
     setFilterBy("filters");
     setFilterValue("");
     setFilterDate("");
+    location.reload(1);
   };
 
   return (

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faEye, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
-
+import "../Styles/FilteredTable.css";
 const FilteredTable = ({ filteredData }) => {
   const [sortConfig, setSortConfig] = useState({});
   const [data, setData] = useState(filteredData);
@@ -188,7 +188,7 @@ const FilteredTable = ({ filteredData }) => {
           </div>
         ))
       ) : (
-        <div className="alert alert-info">No data found.</div>
+        <div className="alert alert-info text-center">No data found.</div>
       )}
     </div>
   );

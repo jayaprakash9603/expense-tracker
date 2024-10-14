@@ -23,8 +23,8 @@ const App = () => {
       {/* Wrap with ExpensesProvider */}
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/monthfilter" element={<MonthFilterTable />} />
+          <Route path="/monthfilter" element={<Home />} />
+          <Route path="/" element={<MonthFilterTable />} />
           <Route path="/create" element={<CreateExpense />} />
           <Route path="/sort" element={<SortExpenses />} />
           <Route path="/edit/:id" element={<EditExpenses />} />

@@ -5,6 +5,11 @@
   justify-content: center;
   margin-bottom: 20px;
 }
+* {
+  margin: 0px;
+  padding: 0px;
+  /* background-color: aqua; */
+}
 .heading {
   font-weight: 600;
 }
