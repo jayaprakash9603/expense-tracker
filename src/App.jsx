@@ -14,10 +14,13 @@ import MonthFilterTable from "../Components/MonthFilterTable";
 import { PieChart } from "recharts";
 import BudgetPieChart from "../Components/BudgetPieChart";
 import InvestmentCalculator from "../Components/InvestmentCalculator";
+import { ExpensesProvider } from "../Contexts/ExpensesContext"; // Adjust the path based on your folder structure
 
 const App = () => {
   return (
-    <div>
+    <ExpensesProvider>
+      {" "}
+      {/* Wrap with ExpensesProvider */}
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -33,7 +36,7 @@ const App = () => {
           <Route path="/investment" element={<InvestmentCalculator />} />
         </Routes>
       </BrowserRouter>
-    </div>
+    </ExpensesProvider>
   );
 };
 

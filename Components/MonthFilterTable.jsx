@@ -11,6 +11,7 @@ import {
   addDays,
   isToday,
   isWeekend,
+  isEqual,
 } from "date-fns";
 import FilteredTable from "./FilteredTable";
 import FilterComponent from "./FilterComponent";
@@ -19,11 +20,13 @@ import { faCalculator } from "@fortawesome/free-solid-svg-icons";
 
 const MonthFilterTable = () => {
   const [expenses, setExpenses] = useState([]);
+  const [allExpenses, setAllExpenses] = useState([]);
   const [groupedExpenses, setGroupedExpenses] = useState({});
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [convertedData, setConvertedData] = useState({});
   const [sortOrder, setSortOrder] = useState("");
+  const [isDateRangeValid, setIsDateRangeValid] = useState(false);
 
   const formatDateToYYYYMMDD = (date) => {
     return format(date, "yyyy-MM-dd");
@@ -107,15 +110,24 @@ const MonthFilterTable = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3000/fetch-expenses-by-date",
-          {
-            params: { from: fromDate, to: toDate },
+        if (1 == 1) {
+          const res = await axios.get("http://localhost:3000/fetch-expenses");
+          if (res && res.data) {
+            setAllExpenses(res.data);
           }
-        );
-        if (res && res.data) {
-          setExpenses(res.data);
-          filterData();
+        }
+        if (1 == 1) {
+          const res = await axios.get(
+            "http://localhost:3000/fetch-expenses-by-date",
+            {
+              params: { from: fromDate, to: toDate },
+            }
+          );
+          if (res && res.data) {
+            setExpenses(res.data);
+            console.log("rest" + res[0].data);
+            filterData();
+          }
         }
       } catch (err) {
         console.log(err);
@@ -126,7 +138,25 @@ const MonthFilterTable = () => {
       fetchData();
     }
   }, [fromDate, toDate]);
+  const isValidDateRange = (fromDate, toDate, initialFromDate) => {
+    const isToDateToday = isToday(new Date(toDate));
+    const lastMonthSalaryDate = initialFromDate(); // The function you use to calculate last salary date
+    const isFromDateLastSalaryDay = isEqual(
+      new Date(fromDate),
+      new Date(lastMonthSalaryDate)
+    );
 
+    return isToDateToday && isFromDateLastSalaryDay;
+  };
+
+  useEffect(() => {
+    const checkDateRange = () => {
+      const valid = isValidDateRange(fromDate, toDate, initialFromDate);
+      setIsDateRangeValid(valid);
+    };
+
+    checkDateRange();
+  }, [fromDate, toDate]);
   useEffect(() => {
     if (expenses.length > 0) {
       const convertAndSortData = (data, order) => {
@@ -192,7 +222,7 @@ const MonthFilterTable = () => {
   const handleSortOrderChange = (e) => {
     setSortOrder(e.target.value);
   };
-  const incomeAmount = () => {
+  const incomeAmount = (groupedExpenses) => {
     return Object.keys(groupedExpenses).reduce((total, date) => {
       const data = groupedExpenses[date] || [];
       return (
@@ -211,7 +241,7 @@ const MonthFilterTable = () => {
     }, 0);
   };
 
-  const balanceAmount = () => {
+  const balanceAmount = (groupedExpenses) => {
     return Object.keys(groupedExpenses).reduce((total, date) => {
       const data = groupedExpenses[date] || [];
       return (
@@ -228,7 +258,7 @@ const MonthFilterTable = () => {
       );
     }, 0);
   };
-  const creditDueAmount = () => {
+  const creditDueAmount = (groupedExpenses) => {
     return Object.keys(groupedExpenses).reduce((total, date) => {
       const data = groupedExpenses[date] || [];
       return (
@@ -248,7 +278,7 @@ const MonthFilterTable = () => {
   {
     console.log(groupedExpenses);
   }
-  const expensesAmount = () => {
+  const expensesAmount = (groupedExpenses) => {
     return Object.keys(groupedExpenses).reduce((total, date) => {
       const data = groupedExpenses[date] || [];
       return (
@@ -279,25 +309,30 @@ const MonthFilterTable = () => {
             <h1>YOUR BALANCE</h1>
             <h2
               className={
-                balanceAmount() < 0 ? "negative-balance" : "positive-balance"
+                balanceAmount(groupedExpenses) < 0
+                  ? "negative-balance"
+                  : "positive-balance"
               }
             >
-              ₹ {balanceAmount()}
+              ₹ {balanceAmount(groupedExpenses)}
             </h2>
           </div>
           <div className="col text-center income-display">
             <div className="income-div">
               <h2 className="income-heading">INCOME</h2>
-              <h3 className="fw-bold">₹{incomeAmount()}</h3>
+              <h3 className="fw-bold">{incomeAmount(groupedExpenses)}</h3>
             </div>
+            {console.log("ella" + allExpenses)}
             <div className="creditDue-div">
               <h2 className="due-heading">DUE</h2>
-              <h3 className="fw-bold">₹{creditDueAmount()}</h3>
+              <h3 className="fw-bold">₹{creditDueAmount(groupedExpenses)}</h3>
             </div>
             <div className="expenses-div">
               <h2 className="expenses-heading">EXPENSES</h2>
               <h3 className="fw-bold">
-                ₹{expensesAmount() + creditDueAmount()}
+                ₹
+                {expensesAmount(groupedExpenses) +
+                  creditDueAmount(groupedExpenses)}
               </h3>
             </div>
           </div>
