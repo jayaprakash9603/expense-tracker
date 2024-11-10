@@ -68,16 +68,21 @@ const CreateExpense = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Form validation
     const validationError = validateForm();
     if (validationError) {
       setError(validationError);
       return;
     }
 
+    // Extract values from formState
     const { expenseName, amount, date, type, paymentMethod, comments } =
       formState;
+
+    // Calculate netAmount based on expense type
     const netAmount = type === GAIN ? parseFloat(amount) : -parseFloat(amount);
 
+    // Determine creditDue based on payment method
     let creditDue = 0;
     if (paymentMethod === CREDIT_NEED_TO_PAID) {
       creditDue = parseFloat(amount);
@@ -85,6 +90,7 @@ const CreateExpense = () => {
       creditDue = -parseFloat(amount);
     }
 
+    // Create the newExpense object
     const newExpense = {
       expenseName,
       amount: parseFloat(amount),
@@ -95,22 +101,25 @@ const CreateExpense = () => {
       comments,
     };
 
+    // Send the request to the backend
     try {
       const response = await axios.post(
-        `http://localhost:3000/add-expense`,
+        `http://localhost:3000/add-expense`, // Ensure your backend endpoint is correct
         {
-          date,
-          expense: newExpense,
+          date, // This is the date field from formState
+          expense: newExpense, // Send the nested expense data
         },
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json", // Set content type to JSON
           },
         }
       );
 
+      // Handle the response
       setFinalData(response.data);
-      navigate("/");
+      console.log(response.data);
+      navigate("/"); // Navigate to the appropriate page after submission
     } catch (error) {
       console.error(
         "Error adding expense:",
@@ -205,6 +214,7 @@ const CreateExpense = () => {
         {finalData && (
           <div className="mt-3 alert alert-success">
             <h4>Expense Added Successfully!</h4>
+
             <pre>{JSON.stringify(finalData, null, 2)}</pre>
           </div>
         )}

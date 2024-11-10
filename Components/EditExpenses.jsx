@@ -123,29 +123,26 @@ const EditExpenses = () => {
       creditDue = -parseFloat(expenses.amount);
     }
 
-    // Convert the updated state to old format
-    const updatedData = [
-      {
-        id: id,
-        date: expenses.date,
-        expense: {
-          expenseName: expenses.expenseName,
-          amount: expenses.amount,
-          type: expenses.type,
-          paymentMethod: expenses.paymentMethod,
-          netAmount: netAmount,
-          comments: expenses.comments,
-          creditDue: creditDue,
-        },
+    // Prepare the data in the expected format
+    const updatedData = {
+      date: expenses.date, // Date is at the top level
+      expense: {
+        // Expense details are inside the "expense" object
+        expenseName: expenses.expenseName,
+        amount: expenses.amount,
+        type: expenses.type,
+        paymentMethod: expenses.paymentMethod,
+        netAmount: netAmount,
+        comments: expenses.comments,
+        creditDue: creditDue,
       },
-    ];
+    };
+
+    console.log("Data to send:", updatedData);
 
     // Update data on the server
     axios
-      .put(
-        `http://localhost:3000/edit-expense/${id}`,
-        convertToOldFormat(convertToNewFormat(updatedData))[0]
-      )
+      .put(`http://localhost:3000/edit-expense/${id}`, updatedData)
       .then((res) => {
         if (res.status === 200) {
           alert("Expense updated successfully!");
@@ -153,7 +150,10 @@ const EditExpenses = () => {
         }
       })
       .catch((err) => {
-        console.error("Error updating expense:", err);
+        console.error(
+          "Error updating expense:",
+          err.response?.data || err.message
+        );
         alert("Failed to update expense. Please try again.");
       });
   };

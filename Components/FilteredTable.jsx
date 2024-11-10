@@ -69,12 +69,24 @@ const FilteredTable = ({ filteredData }) => {
     }
     location.reload();
   };
+
+  // Function to format date as dd MonthName yyyy
+  const formatDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
   return (
     <div className="table-responsive">
       {Object.keys(filteredData).length > 0 ? (
         Object.keys(filteredData).map((date) => (
           <div key={date} className="mb-4">
-            <h3 className="text-center">{date}</h3>
+            <h3 className="text-center">{formatDate(date)}</h3>{" "}
+            {/* Date formatted */}
             <table className="table table-striped table-bordered">
               <thead className="thead-light">
                 <tr>
@@ -122,44 +134,44 @@ const FilteredTable = ({ filteredData }) => {
                             <FontAwesomeIcon
                               icon={faEye}
                               style={{
-                                marginRight: "10px", // Space between icon and text
-                                color: "#007bff", // Bootstrap primary color (blue)
-                                cursor: "pointer", // Pointer cursor on hover
-                                fontSize: "1em", // Slightly larger icon
+                                marginRight: "10px",
+                                color: "#007bff",
+                                cursor: "pointer",
+                                fontSize: "1em",
                                 transition:
-                                  "color 0.3s ease, transform 0.3s ease", // Smooth color and transform transitions
+                                  "color 0.3s ease, transform 0.3s ease",
                               }}
                               onMouseEnter={(e) =>
                                 (e.target.style.color = "#0056b3")
-                              } // Darker blue on hover
+                              }
                               onMouseLeave={(e) =>
                                 (e.target.style.color = "#007bff")
-                              } // Return to original color
+                              }
                             />
                           </Link>
                           <Link
                             to={`/edit/${expense.id}`}
                             style={{
-                              textDecoration: "none", // Remove underline
-                              color: "inherit", // Inherit color from parent (optional)
+                              textDecoration: "none",
+                              color: "inherit",
                             }}
                             className="editLink"
                           >
                             <FontAwesomeIcon
                               icon={faEdit}
                               style={{
-                                color: "#28a745", // Green color for the icon
-                                fontSize: "1em", // Larger icon size
-                                cursor: "pointer", // Pointer cursor on hover
+                                color: "#28a745",
+                                fontSize: "1em",
+                                cursor: "pointer",
                                 transition:
-                                  "color 0.3s ease, transform 0.3s ease", // Smooth transitions
+                                  "color 0.3s ease, transform 0.3s ease",
                               }}
                               onMouseEnter={(e) =>
                                 (e.target.style.color = "#218838")
-                              } // Darker green on hover
+                              }
                               onMouseLeave={(e) =>
                                 (e.target.style.color = "#28a745")
-                              } // Return to original color
+                              }
                             />
                           </Link>
                           <FontAwesomeIcon

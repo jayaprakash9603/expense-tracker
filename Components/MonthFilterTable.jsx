@@ -358,7 +358,7 @@ const MonthFilterTable = () => {
               <h3 className="fw-bold">
                 {isValidDateRange(fromDate, toDate, initialFromDate)
                   ? incomeAmount(groupedExpenses)
-                  : incomeAmount(convertedAllExpenses)}
+                  : incomeAmount(groupedExpenses)}
               </h3>
             </div>
             <div className="creditDue-div">
