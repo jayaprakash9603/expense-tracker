@@ -24,15 +24,59 @@ function CreateExpenses() {
     isSalaryDate,
     validateForm,
   } = ExpenseFormLogic(initialState);
+
   const [suggestions, setSuggestions] = useState([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isInputClicked, setIsInputClicked] = useState(false);
   const navigate = useNavigate();
-
+  const [paymentMethods, setPaymentMethods] = useState([]);
   const suggestionsContainerRef = useRef(null);
 
   const [finalData, setFinalData] = useState(null);
+  const methodMapping = {
+    cash: "Cash",
+    creditNeedToPaid: "Credit Card Due",
+    creditPaid: "Credit Paid",
+  };
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/top-payment-methods")
+      .then((response) => {
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          const mappedMethods = response.data.map(
+            (method) => methodMapping[method] || method
+          );
+          setPaymentMethods(mappedMethods);
+          setFormState((prevState) => ({
+            ...prevState,
+            paymentMethod: mappedMethods[0], // Set payment method to the first item
+          }));
+        } else {
+          const defaultMethods = ["cash", "creditNeedToPaid", "creditPaid"];
+          const mappedMethods = defaultMethods.map(
+            (method) => methodMapping[method]
+          );
+          setPaymentMethods(mappedMethods);
+          setFormState((prevState) => ({
+            ...prevState,
+            paymentMethod: mappedMethods[0], // Ensure default method is set
+          }));
+        }
+      })
+      .catch((error) => {
+        const defaultMethods = ["cash", "creditNeedToPaid", "creditPaid"];
+        const mappedMethods = defaultMethods.map(
+          (method) => methodMapping[method]
+        );
+        setPaymentMethods(mappedMethods);
+        setFormState((prevState) => ({
+          ...prevState,
+          paymentMethod: mappedMethods[0], // Set payment method to default
+        }));
+      });
+  }, []);
+
   const fetchSuggestions = async () => {
     try {
       const response = await fetch(
@@ -44,7 +88,9 @@ function CreateExpenses() {
       console.error("Error fetching suggestions:", error);
     }
   };
-
+  {
+    console.log(formState);
+  }
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -110,10 +156,22 @@ function CreateExpenses() {
   };
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setFormState((prevState) => ({
-      ...prevState,
-      [id]: value,
-    }));
+
+    setFormState((prevState) => {
+      // If the value is for paymentMethod, we need to make sure we update correctly
+      if (id === "paymentMethod") {
+        // Directly use the value as the id might be the mapped name like 'Cash', 'Credit Paid'
+        return {
+          ...prevState,
+          [id]: value,
+        };
+      } else {
+        return {
+          ...prevState,
+          [id]: value,
+        };
+      }
+    });
   };
   const handleDateChange = (e) => {
     const { value } = e.target;
@@ -288,7 +346,7 @@ function CreateExpenses() {
                           selectedIndex === index ? "#79E0EE" : "transparent",
                         transition: "background-color 0.3s ease",
                       }}
-                      onMouseDown={() => setExpenses(item)}
+                      onMouseDown={() => setFormState(item)}
                       onMouseEnter={() => setSelectedIndex(index)}
                     >
                       {item}
@@ -339,9 +397,11 @@ function CreateExpenses() {
               value={formState.paymentMethod}
               onChange={handleChange}
             >
-              <option value="cash">Cash</option>
-              <option value="creditNeedToPaid">Credit Card Due</option>
-              <option value="creditPaid">Credit Card Paid</option>
+              {paymentMethods.map((method, index) => (
+                <option key={index} value={method}>
+                  {method}
+                </option>
+              ))}
             </select>
           </div>
           <div className="mb-3">

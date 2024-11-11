@@ -9,6 +9,11 @@ const FilteredTable = ({ filteredData }) => {
   const [sortConfig, setSortConfig] = useState({});
   const [data, setData] = useState(filteredData);
 
+  const methodMapping = {
+    cash: "Cash",
+    creditNeedToPaid: "Credit Card Due",
+    creditPaid: "Credit Paid",
+  };
   useEffect(() => {
     setData(filteredData);
   }, [filteredData]);
@@ -121,12 +126,19 @@ const FilteredTable = ({ filteredData }) => {
               <tbody>
                 {sortedData(date).map((expense) => (
                   <tr key={expense.id}>
-                    <td>{expense.index}</td>
-                    <td>{expense.expenseName}</td>
-                    <td>{expense.amount}</td>
-                    <td>{expense.type}</td>
-                    <td>{expense.paymentMethod}</td>
-                    <td>
+                    <td style={{ width: "100px" }}>{expense.index}</td>
+                    <td style={{ width: "300px" }}>{expense.expenseName}</td>
+                    <td style={{ width: "150px", textAlign: "center" }}>
+                      {expense.amount}
+                    </td>
+                    <td style={{ width: "120px", textAlign: "center" }}>
+                      {expense.type}
+                    </td>
+                    <td style={{ width: "250px", textAlign: "center" }}>
+                      {methodMapping[expense.paymentMethod] ||
+                        expense.paymentMethod}
+                    </td>
+                    <td style={{ width: "200px" }}>
                       <div className="d-flex justify-content-between align-items-center">
                         <span>{expense.netAmount}</span>
                         <div className="editDiv">
