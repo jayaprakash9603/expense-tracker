@@ -36,7 +36,7 @@ function CreateExpenses() {
   const fetchSuggestions = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/expenses/top-expense-names?topN=100"
+        "http://localhost:3000/expenses/top-expense-names?topN=500"
       );
       const data = await response.json();
       setSuggestions(data);
@@ -272,6 +272,8 @@ function CreateExpenses() {
                     maxHeight: "200px",
                     overflowY: "auto",
                     borderRadius: "0 0 5px 5px",
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "#A7C4C2 transparent",
                   }}
                 >
                   {filteredSuggestions.map((item, index) => (

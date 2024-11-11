@@ -54,7 +54,7 @@ const convertToOldFormat = (data) => {
     )
   );
 };
-function SearchInput() {
+function EditExpense() {
   {
     // console.log(input);
   }
@@ -260,7 +260,7 @@ function SearchInput() {
                 id="expenseName"
                 className="form-control"
                 value={expenses.expenseName}
-                onChange={handleChange} // Trigger handleChange on input change
+                onChange={handleChange}
                 onClick={handleClick}
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}
@@ -268,13 +268,7 @@ function SearchInput() {
                 placeholder="Search expense name..."
                 style={{
                   width: "100%",
-                  // padding: "10px",
-                  // borderRadius: "5px",
-                  // border: "2px solid #6A42C2",
-                  // boxSizing: "border-box",
-                  // fontSize: "14px",
-                  // backgroundColor: "white",
-                  // color: "#333",
+                  marginTop: "5px",
                   fontFamily: "Arial, sans-serif",
                   zIndex: 1,
                 }}
@@ -295,6 +289,8 @@ function SearchInput() {
                     maxHeight: "200px",
                     overflowY: "auto",
                     borderRadius: "0 0 5px 5px",
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "#A7C4C2 transparent",
                   }}
                 >
                   {filteredSuggestions.map((item, index) => (
@@ -399,4 +395,4 @@ function SearchInput() {
   );
 }
 
-export default SearchInput;
+export default EditExpense;

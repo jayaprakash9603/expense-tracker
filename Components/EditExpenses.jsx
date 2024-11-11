@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import SearchInput from "./SearchInput";
+import SearchInput from "./EditExpense";
 
 // Helper function to convert to new format
 const convertToNewFormat = (data) => {

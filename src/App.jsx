@@ -15,10 +15,11 @@ import { PieChart } from "recharts";
 import BudgetPieChart from "../Components/BudgetPieChart";
 import InvestmentCalculator from "../Components/InvestmentCalculator";
 import { ExpensesProvider } from "../Contexts/ExpensesContext"; // Adjust the path based on your folder structure
-import SearchInput from "../Components/SearchInput";
+import SearchInput from "../Components/EditExpense";
 import ExpenseForm from "../Components/ExpenseFormLogic";
 import ExpenseFormLogic from "../Components/ExpenseFormLogic";
 import CreateExpenses from "../Components/CreateExpenses";
+import EditExpense from "../Components/EditExpense";
 
 const App = () => {
   return (
@@ -31,14 +32,13 @@ const App = () => {
           <Route path="/monthfilter" element={<MonthFilterTable />} />
           <Route path="/create" element={<CreateExpenses />} />
           <Route path="/sort" element={<SortExpenses />} />
-          <Route path="/edit/:id" element={<SearchInput />} />
+          <Route path="/edit/:id" element={<EditExpense />} />
           <Route path="/filter/filteredData" element={<FilteredTable />} />
           <Route path="/calendar" element={<ExpenseCalendar />} />
           <Route path="/read/:id" element={<ReadExpenses />} />
           <Route path="/budget" element={<MonthlyBudget />} />
           <Route path="/data" element={<MonthFilterTable />} />
           <Route path="/investment" element={<InvestmentCalculator />} />
-          <Route path="/input" element={<SearchInput />} />
         </Routes>
       </BrowserRouter>
     </ExpensesProvider>
