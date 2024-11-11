@@ -252,7 +252,7 @@ function SearchInput() {
         <form onKeyDown={handleKeyDown1} onSubmit={handleSubmit}>
           <div className="mb-2">
             <label htmlFor="expenseName">Expense Name:</label>
-            <div style={{ position: "relative", width: "300px" }}>
+            <div style={{ position: "relative", width: "100%" }}>
               <input
                 type="text"
                 id="expenseName"
@@ -266,13 +266,13 @@ function SearchInput() {
                 placeholder="Search expense name..."
                 style={{
                   width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                  border: "2px solid #6A42C2",
-                  boxSizing: "border-box",
-                  fontSize: "14px",
-                  backgroundColor: "white",
-                  color: "#333",
+                  // padding: "10px",
+                  // borderRadius: "5px",
+                  // border: "2px solid #6A42C2",
+                  // boxSizing: "border-box",
+                  // fontSize: "14px",
+                  // backgroundColor: "white",
+                  // color: "#333",
                   fontFamily: "Arial, sans-serif",
                   zIndex: 1,
                 }}
@@ -287,7 +287,7 @@ function SearchInput() {
                     width: "100%",
                     border: "1px solid white",
                     borderTop: "none",
-                    backgroundColor: "yellow",
+                    backgroundColor: "white",
                     zIndex: 10,
                     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
                     maxHeight: "200px",
