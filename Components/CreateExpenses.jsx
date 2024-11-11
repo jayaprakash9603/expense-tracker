@@ -35,9 +35,9 @@ function CreateExpenses() {
 
   const [finalData, setFinalData] = useState(null);
   const methodMapping = {
-    cash: "Cash",
-    creditNeedToPaid: "Credit Card Due",
-    creditPaid: "Credit Paid",
+    cash: "cash",
+    creditNeedToPaid: "creditNeedToPaid",
+    creditPaid: "creditPaid",
   };
   useEffect(() => {
     axios
