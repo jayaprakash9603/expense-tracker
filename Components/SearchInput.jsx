@@ -216,10 +216,12 @@ function SearchInput() {
         setFilteredSuggestions([]); // Clear suggestions after selecting
       }
     } else if (e.key === "ArrowDown") {
+      e.preventDefault();
       setSelectedIndex((prevIndex) =>
         Math.min(filteredSuggestions.length - 1, prevIndex + 1)
       );
     } else if (e.key === "ArrowUp") {
+      e.preventDefault();
       setSelectedIndex((prevIndex) => Math.max(0, prevIndex - 1));
     }
   };
