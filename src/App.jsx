@@ -18,6 +18,7 @@ import { ExpensesProvider } from "../Contexts/ExpensesContext"; // Adjust the pa
 import SearchInput from "../Components/SearchInput";
 import ExpenseForm from "../Components/ExpenseFormLogic";
 import ExpenseFormLogic from "../Components/ExpenseFormLogic";
+import CreateExpenses from "../Components/CreateExpenses";
 
 const App = () => {
   return (
@@ -28,7 +29,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/monthfilter" element={<MonthFilterTable />} />
-          <Route path="/create" element={<CreateExpense />} />
+          <Route path="/create" element={<CreateExpenses />} />
           <Route path="/sort" element={<SortExpenses />} />
           <Route path="/edit/:id" element={<SearchInput />} />
           <Route path="/filter/filteredData" element={<FilteredTable />} />
