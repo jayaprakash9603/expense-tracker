@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import SearchInput from "./SearchInput";
 
 // Helper function to convert to new format
 const convertToNewFormat = (data) => {
@@ -107,6 +108,14 @@ const EditExpenses = () => {
       ...prevExpenses,
       [id]: id === "amount" ? parseInt(value, 10) || "" : value,
     }));
+
+    // Update the state for SearchInput as well
+    if (id === "expenseName") {
+      setExpenses((prevState) => ({
+        ...prevState,
+        expenseName: value, // Update the expenseName in the expenses state
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
@@ -123,26 +132,29 @@ const EditExpenses = () => {
       creditDue = -parseFloat(expenses.amount);
     }
 
-    // Prepare the data in the expected format
-    const updatedData = {
-      date: expenses.date, // Date is at the top level
-      expense: {
-        // Expense details are inside the "expense" object
-        expenseName: expenses.expenseName,
-        amount: expenses.amount,
-        type: expenses.type,
-        paymentMethod: expenses.paymentMethod,
-        netAmount: netAmount,
-        comments: expenses.comments,
-        creditDue: creditDue,
+    // Convert the updated state to old format
+    const updatedData = [
+      {
+        id: id,
+        date: expenses.date,
+        expense: {
+          expenseName: expenses.expenseName,
+          amount: expenses.amount,
+          type: expenses.type,
+          paymentMethod: expenses.paymentMethod,
+          netAmount: netAmount,
+          comments: expenses.comments,
+          creditDue: creditDue,
+        },
       },
-    };
-
-    console.log("Data to send:", updatedData);
+    ];
 
     // Update data on the server
     axios
-      .put(`http://localhost:3000/edit-expense/${id}`, updatedData)
+      .put(
+        `http://localhost:3000/edit-expense/${id}`,
+        convertToOldFormat(convertToNewFormat(updatedData))[0]
+      )
       .then((res) => {
         if (res.status === 200) {
           alert("Expense updated successfully!");
@@ -150,19 +162,40 @@ const EditExpenses = () => {
         }
       })
       .catch((err) => {
-        console.error(
-          "Error updating expense:",
-          err.response?.data || err.message
-        );
+        console.error("Error updating expense:", err);
         alert("Failed to update expense. Please try again.");
       });
   };
+  const handleKeyDown1 = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevent form submission on Enter
+    }
+  };
+  const [input, setInput] = useState("");
+  {
+    console.log(input);
+  }
 
+  const fetchSuggestions = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/expenses/top-expense-names?topN=100"
+      );
+      const data = await response.json();
+      setSuggestions(data); // Store all suggestions
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSuggestions();
+  }, []);
   return (
     <div className="d-flex w-100 vh-100 justify-content-center align-items-center bg-light">
       <div className="w-50 border bg-white shadow px-5 pt-3 pb-5 rounded">
         <h1>Edit an Expense</h1>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} onKeyDown={handleKeyDown1}>
           <div className="mb-2">
             <label htmlFor="expenseName">Expense Name:</label>
             <input

@@ -357,8 +357,8 @@ const MonthFilterTable = () => {
               <h2 className="income-heading">INCOME</h2>
               <h3 className="fw-bold">
                 {isValidDateRange(fromDate, toDate, initialFromDate)
-                  ? incomeAmount(groupedExpenses)
-                  : incomeAmount(groupedExpenses)}
+                  ? incomeAmount(convertedAllExpenses)
+                  : incomeAmount(convertedAllExpenses)}
               </h3>
             </div>
             <div className="creditDue-div">
@@ -374,8 +374,8 @@ const MonthFilterTable = () => {
               <h2 className="expenses-heading">EXPENSES</h2>
               <h3 className="fw-bold">
                 ₹
-                {expensesAmount(groupedExpenses) +
-                  creditDueAmount(groupedExpenses)}
+                {expensesAmount(convertedAllExpenses) +
+                  creditDueAmount(convertedAllExpenses)}
               </h3>
             </div>
           </div>
