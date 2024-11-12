@@ -39,6 +39,11 @@ function CreateExpenses() {
     creditNeedToPaid: "creditNeedToPaid",
     creditPaid: "creditPaid",
   };
+  const methodMapping1 = {
+    cash: "Cash",
+    creditNeedToPaid: "Credit Due",
+    creditPaid: "Credit Paid",
+  };
   useEffect(() => {
     axios
       .get("http://localhost:3000/top-payment-methods")
@@ -399,7 +404,7 @@ function CreateExpenses() {
             >
               {paymentMethods.map((method, index) => (
                 <option key={index} value={method}>
-                  {method}
+                  {methodMapping1[method] || method}
                 </option>
               ))}
             </select>
