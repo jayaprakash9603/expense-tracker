@@ -23,6 +23,7 @@ import EditExpense from "../Components/EditExpense";
 import AuditLogsEmailSender from "../Components/AuditLogsEmailSender";
 import AuditLogsEmailSender1 from "../Components/AuditLogsEmailSender1";
 import ExpenseSummaryEmailSender from "../Components/ExpenseSummaryEmailSender";
+import ExpensesEmail from "../Components/ExpensesEmail";
 
 const App = () => {
   return (
@@ -44,7 +45,7 @@ const App = () => {
           <Route path="/investment" element={<InvestmentCalculator />} />
           <Route path="/email" element={<AuditLogsEmailSender />} />
           <Route path="/email1" element={<AuditLogsEmailSender1 />} />
-          <Route path="/expense" element={<ExpenseSummaryEmailSender />} />
+          <Route path="/expense" element={<ExpensesEmail />} />
         </Routes>
       </BrowserRouter>
     </ExpensesProvider>
