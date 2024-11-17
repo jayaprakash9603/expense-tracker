@@ -20,6 +20,7 @@ import ExpenseForm from "../Components/ExpenseFormLogic";
 import ExpenseFormLogic from "../Components/ExpenseFormLogic";
 import CreateExpenses from "../Components/CreateExpenses";
 import EditExpense from "../Components/EditExpense";
+import AuditLogsEmailSender from "../Components/AuditLogsEmailSender";
 
 const App = () => {
   return (
@@ -39,6 +40,7 @@ const App = () => {
           <Route path="/budget" element={<MonthlyBudget />} />
           <Route path="/data" element={<MonthFilterTable />} />
           <Route path="/investment" element={<InvestmentCalculator />} />
+          <Route path="/email" element={<AuditLogsEmailSender />} />
         </Routes>
       </BrowserRouter>
     </ExpensesProvider>
