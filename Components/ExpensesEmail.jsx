@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { toDate } from "date-fns";
 
 const ExpensesEmail = () => {
   const [logTypes, setLogTypes] = useState([]);
@@ -18,6 +19,13 @@ const ExpensesEmail = () => {
   const [endYear, setEndYear] = useState("");
   const [startMonth, setStartMonth] = useState("");
   const [endMonth, setEndMonth] = useState("");
+  const [fromDay, setFromDay] = useState("");
+  const [toDay, setToDay] = useState("");
+  const [expenseName, setExpenseName] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [category, setCategory] = useState("");
+  const [minAmount, setMinAmount] = useState("");
+  const [maxAmount, setMaxAmount] = useState("");
 
   useEffect(() => {
     axios
@@ -110,50 +118,60 @@ const ExpensesEmail = () => {
     let params = { email };
 
     switch (searchTerm) {
-      case "Monthly Wise Daily Expense Summary":
-        url = "http://localhost:3000/daily-summary/monthly/email";
-        params.year = specificYear;
-        params.month = specificMonth;
+      case "Today":
+        url = "http://localhost:3000/expenses/today/email";
+        break;
+      case "Yesterday":
+        url = "http://localhost:3000/expenses/yesterday/email";
+        break;
+      case "Last Week":
+        url = "http://localhost:3000/expenses/current-week/email";
+        break;
+      case "Current Week":
+        url = "http://localhost:3000/expenses/last-week/email";
+        break;
+      case "Current Month":
+        url = "http://localhost:3000/expenses/current-month/email";
+        break;
+      case "Last Month":
+        url = "http://localhost:3000/expenses/last-month/email";
+        break;
+      case "All Expenses":
+        url = "http://localhost:3000/fetch-expenses/email";
         break;
       case "Monthly Summary":
         url = `http://localhost:3000/monthly-summary/${specificYear}/${specificMonth}/email`;
         break;
-      case "Summary Between Dates":
-        url = `http://localhost:3000/between-dates/email`;
-        params.startMonth = startMonth;
-        params.startYear = startYear;
-        params.endMonth = endMonth;
-        params.endYear = endYear;
+      case "Within Range Expenses":
+        url = `http://localhost:3000/fetch-expenses-by-date/email`;
+        params.from = fromDay;
+        params.to = toDay;
         break;
-      case "Payment Method Summary":
-        url = "http://localhost:3000/payment-method-summary";
+      case "Expenses By Name":
+        url = "http://localhost:3000/expenses/search/email";
+        params.expenseName = expenseName;
         break;
-      case "Yearly Wise Daily Expense Summary":
-        const parsedYear = parseInt(specificYear, 10);
-        if (isNaN(parsedYear)) {
-          setError("Year must be an integer.");
-          return;
-        }
-        url = `http://localhost:3000/daily-summary/yearly/email`;
-        params.year = parsedYear;
+      case "Expenses By Payment Method":
+        url = `http://localhost:3000/payment-method/${paymentMethod}/email`;
         break;
-      case "Yearly Summary":
-        const parsedYear1 = parseInt(specificYear, 10);
-        if (isNaN(parsedYear1)) {
-          setError("Year must be an integer.");
-          return;
-        }
-        url = `http://localhost:3000/daily-summary/yearly/email`;
-        params.year = parsedYear1;
+      case "Expenses By Type and Payment Method":
+        url = `http://localhost:3000/expenses/${category}/${paymentMethod}/email`;
         break;
-      case "Expense Summary for Specific Date":
-        const parsedDate = specificDay;
-        if (!parsedDate) {
-          setError("Date must be provided.");
-          return;
-        }
-        url = `http://localhost:3000/daily-summary/date/email/${parsedDate}`;
+      case "Expenses Within Amount Range":
+        url = `http://localhost:3000/expenses/amount-range/email`;
+        params.minAmount = minAmount;
+        params.maxAmount = maxAmount;
         // params.date = parsedDate;
+        break;
+      case "Particular Month Expenses":
+        url = `http://localhost:3000/expenses/by-month/email`;
+        params.month = startMonth;
+        params.year = startYear;
+        // params.date = parsedDate;
+        break;
+      case "Particular Date Expenses":
+        url = `http://localhost:3000/expenses/date/email`;
+        params.date = fromDay;
         break;
       default:
         setError("Please select a valid option.");
@@ -182,7 +200,10 @@ const ExpensesEmail = () => {
   };
 
   return (
-    <div className="container mt-5" style={{ height: "450px", width: "600px" }}>
+    <div
+      className="container bg-white mt-5"
+      style={{ height: "450px", width: "600px" }}
+    >
       <h2>Send Expenses by Email</h2>
       {error && <p className="text-danger">{error}</p>}
       <div className="form-group mb-3">
@@ -247,25 +268,18 @@ const ExpensesEmail = () => {
           )}
         </div>
       </div>
-      {searchTerm === "Monthly Wise Daily Expense Summary" && (
+      {searchTerm === "Particular Date Expenses" && (
         <div className="form-group mb-3">
-          <label>Enter Year:</label>
+          <label>Enter Date (yyyy-MM-dd):</label>
           <input
-            type="number"
+            type="date"
             className="form-control"
-            value={specificYear}
-            onChange={(e) => setSpecificYear(e.target.value)}
-          />
-          <label>Enter Month:</label>
-          <input
-            type="number"
-            className="form-control"
-            value={specificMonth}
-            onChange={(e) => setSpecificMonth(e.target.value)}
+            value={fromDay}
+            onChange={(e) => setFromDay(e.target.value)}
           />
         </div>
       )}
-      {searchTerm === "Summary Between Dates" && (
+      {searchTerm === "Particular Month Expenses" && (
         <div className="form-group mb-3">
           <label>Enter Start Year:</label>
           <input
@@ -281,76 +295,103 @@ const ExpensesEmail = () => {
             value={startMonth}
             onChange={(e) => setStartMonth(e.target.value)}
           />
-          <label>Enter End Year:</label>
+        </div>
+      )}
+      {searchTerm === "Expenses By Name" && (
+        <div className="form-group mb-3">
+          <label>Enter Expense Name:</label>
           <input
-            type="number"
+            type="text"
             className="form-control"
-            value={endYear}
-            onChange={(e) => setEndYear(e.target.value)}
-          />
-          <label>Enter End Month:</label>
-          <input
-            type="number"
-            className="form-control"
-            value={endMonth}
-            onChange={(e) => setEndMonth(e.target.value)}
+            value={expenseName}
+            onChange={(e) => setExpenseName(e.target.value)}
           />
         </div>
       )}
-      {searchTerm === "Yearly Wise Daily Expense Summary" && (
+      {searchTerm === "Expenses By Payment Method" && (
         <div className="form-group mb-3">
-          <label>Enter Year:</label>
-          <input
-            type="number"
+          <label>Select Payment Method:</label>
+          <select
             className="form-control"
-            value={specificYear}
-            onChange={(e) => setSpecificYear(e.target.value)}
-          />
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
+          >
+            <option value="">-- Select Payment Method --</option>
+            <option value="cash">Cash</option>
+            <option value="creditNeedToPaid">Credit Due</option>
+            <option value="creditPaid">Credit Paid</option>
+          </select>
         </div>
       )}
-      {searchTerm === "Yearly Summary" && (
+      {searchTerm === "Within Range Expenses" && (
         <div className="form-group mb-3">
-          <label>Enter Year:</label>
-          <input
-            type="number"
-            className="form-control"
-            value={specificYear}
-            onChange={(e) => setSpecificYear(e.target.value)}
-          />
-        </div>
-      )}
-      {searchTerm === "Expense Summary for Specific Date" && (
-        <div className="form-group mb-3">
-          <label>Enter Date (yyyy-MM-dd):</label>
+          <label>Enter From Date (yyyy-MM-dd):</label>
           <input
             type="date"
             className="form-control"
-            value={specificDay}
-            onChange={(e) => setSpecificDay(e.target.value)}
+            value={fromDay}
+            onChange={(e) => setFromDay(e.target.value)}
+          />
+          <label>Enter To Date (yyyy-MM-dd):</label>
+          <input
+            type="date"
+            className="form-control"
+            value={toDay}
+            onChange={(e) => setToDay(e.target.value)}
           />
         </div>
       )}
-      {searchTerm === "Payment Method Summary" && (
-        <div className="form-group mb-3"></div>
-      )}
-      {searchTerm === "Monthly Summary" && (
+      {searchTerm === "Expenses By Type and Payment Method" && (
         <div className="form-group mb-3">
-          <label>Enter Year:</label>
+          <label>Select Category:</label>
+          <select
+            className="form-control mb-3"
+            value={category} // State variable for the first dropdown
+            onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
+          >
+            <option value="">-- Select Category --</option>
+            <option value="loss">Loss</option>
+            <option value="gain">Gain</option>
+          </select>
+
+          <label>Select Payment Method:</label>
+          <select
+            className="form-control"
+            value={paymentMethod} // State variable for the second dropdown
+            onChange={(e) => setPaymentMethod(e.target.value)} // Update the setter accordingly
+          >
+            <option value="">-- Select Payment Method --</option>
+            <option value="cash">Cash</option>
+            <option value="creditNeedToPaid">Credit Due</option>
+            <option value="creditPaid">Credit Paid</option>
+          </select>
+        </div>
+      )}
+
+      {searchTerm === "Expenses Within Amount Range" && (
+        <div className="form-group mb-3">
+          <label>Enter Minimum Amount:</label>
           <input
             type="number"
-            className="form-control"
-            value={specificYear}
-            onChange={(e) => setSpecificYear(e.target.value)}
+            step="0.01"
+            className="form-control mb-3"
+            value={minAmount} // State variable for min amount
+            onChange={(e) => setMinAmount(e.target.value)} // Update the setter for min amount
+            placeholder="Enter minimum amount"
           />
-          <label>Enter Month:</label>
+
+          <label>Enter Maximum Amount:</label>
           <input
             type="number"
+            step="0.01"
             className="form-control"
-            value={specificMonth}
-            onChange={(e) => setSpecificMonth(e.target.value)}
+            value={maxAmount} // State variable for max amount
+            onChange={(e) => setMaxAmount(e.target.value)} // Update the setter for max amount
+            placeholder="Enter maximum amount"
           />
         </div>
       )}
+
       <div className="form-group mb-3">
         <label>Enter Email:</label>
         <input

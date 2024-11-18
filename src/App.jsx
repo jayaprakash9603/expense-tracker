@@ -24,6 +24,7 @@ import AuditLogsEmailSender from "../Components/AuditLogsEmailSender";
 import AuditLogsEmailSender1 from "../Components/AuditLogsEmailSender1";
 import ExpenseSummaryEmailSender from "../Components/ExpenseSummaryEmailSender";
 import ExpensesEmail from "../Components/ExpensesEmail";
+import ReportsGeneration from "../Components/ReportsGeneration";
 
 const App = () => {
   return (
@@ -46,6 +47,7 @@ const App = () => {
           <Route path="/email" element={<AuditLogsEmailSender />} />
           <Route path="/email1" element={<AuditLogsEmailSender1 />} />
           <Route path="/expense" element={<ExpensesEmail />} />
+          <Route path="/reports" element={<ReportsGeneration />} />
         </Routes>
       </BrowserRouter>
     </ExpensesProvider>

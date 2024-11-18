@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { faAlignCenter } from "@fortawesome/free-solid-svg-icons";
 
 const AuditLogsEmailSender = () => {
   const [logTypes, setLogTypes] = useState([]);
@@ -210,8 +211,11 @@ const AuditLogsEmailSender = () => {
   };
 
   return (
-    <div className="container mt-5" style={{ height: "450px", width: "600px" }}>
-      <h1>Send Audit Logs by Email</h1>
+    <div
+      className="container bg-white mt-5"
+      style={{ height: "450px", width: "600px" }}
+    >
+      <h2 style={faAlignCenter}>Send Audit Logs by Email</h2>
       {error && <p className="text-danger">{error}</p>}
       <div className="form-group mb-3">
         <label>Search Log Period:</label>
