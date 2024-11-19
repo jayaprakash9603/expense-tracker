@@ -1,0 +1,39 @@
+.custom-table {
+  width: 1000px;
+  table-layout: fixed;
+}
+
+.custom-thead {
+  background-color: #344849;
+}
+
+.custom-th,
+.custom-td {
+  height: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 8px;
+}
+
+.custom-th:nth-child(1),
+.custom-td:nth-child(1) {
+  width: 100px; /* First column */
+}
+
+.custom-th:nth-child(2),
+.custom-td:nth-child(2) {
+  width: 200px; /* Second column */
+}
+
+.custom-th:nth-child(3),
+.custom-td:nth-child(3) {
+  width: 50px; /* Third column */
+}
+
+.custom-tr {
+  height: 50px;
+}
+
+.custom-tbody {
+  background-color: #f9f9f9;
+}

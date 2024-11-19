@@ -1,19 +1,41 @@
 import React from "react";
 import { useTable, usePagination, useSortBy } from "react-table";
 import "../Styles/MonthlyBudget.css"; // Ensure this file contains the provided CSS
-
-const ExpensesTable = ({ data, loading, error }) => {
+import { faSort } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+const DetailedExpensesTable = ({ data, loading, error }) => {
   const columns = React.useMemo(
     () => [
       {
-        Header: "Expense Name",
-        accessor: "expenseName",
+        Header: "Date",
+        accessor: "date",
         sortType: "basic",
       },
       {
-        Header: "Total",
-        accessor: "totalAmount",
-        Cell: ({ value }) => value.toFixed(2),
+        Header: "Expense Name",
+        accessor: "expense.expenseName",
+        sortType: "basic",
+      },
+      {
+        Header: "Amount",
+        accessor: "expense.amount",
+        Cell: ({ value }) => value.toFixed(0),
+        sortType: "basic",
+      },
+      {
+        Header: "Type",
+        accessor: "expense.type",
+        sortType: "basic",
+      },
+      {
+        Header: "Payment Method",
+        accessor: "expense.paymentMethod",
+        sortType: "basic",
+      },
+      {
+        Header: "Comments",
+        accessor: "expense.comments",
+        Cell: ({ value }) => value || "No Comments",
         sortType: "basic",
       },
     ],
@@ -39,10 +61,10 @@ const ExpensesTable = ({ data, loading, error }) => {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 10 },
+      initialState: { pageIndex: 0, pageSize: 7 },
     },
-    useSortBy, // Hook for enabling sorting
-    usePagination // Hook for pagination
+    useSortBy,
+    usePagination
   );
 
   if (loading) return <p>Loading...</p>;
@@ -61,11 +83,16 @@ const ExpensesTable = ({ data, loading, error }) => {
                 >
                   {column.render("Header")}
                   <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? " 🔽"
-                        : " 🔼"
-                      : ""}
+                    {column.isSorted ? (
+                      <FontAwesomeIcon
+                        icon={faSort}
+                        className={
+                          column.isSortedDesc ? "sorted-desc" : "sorted-asc"
+                        }
+                      />
+                    ) : (
+                      <FontAwesomeIcon icon={faSort} />
+                    )}
                   </span>
                 </th>
               ))}
@@ -93,7 +120,7 @@ const ExpensesTable = ({ data, loading, error }) => {
         <button onClick={() => previousPage()} disabled={!canPreviousPage}>
           {"<"}
         </button>
-        <span>
+        <span className="page-of">
           Page{" "}
           <strong>
             {pageIndex + 1} of {pageOptions.length}
@@ -123,4 +150,4 @@ const ExpensesTable = ({ data, loading, error }) => {
   );
 };
 
-export default ExpensesTable;
+export default DetailedExpensesTable;
