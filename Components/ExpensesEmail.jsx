@@ -218,7 +218,7 @@ const ExpensesEmail = () => {
             onBlur={handleBlur}
             onKeyDown={handleKeyDown}
             autoComplete="off"
-            placeholder="Search summary period..."
+            placeholder="Search expense period..."
             style={{
               width: "100%",
               marginTop: "5px",

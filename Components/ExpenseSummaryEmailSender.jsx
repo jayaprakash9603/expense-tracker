@@ -182,7 +182,10 @@ const ExpenseSummaryEmailSender = () => {
   };
 
   return (
-    <div className="container mt-5" style={{ height: "450px", width: "600px" }}>
+    <div
+      className="container bg-white mt-5"
+      style={{ height: "450px", width: "600px" }}
+    >
       <h2>Send Expense Summaries by Email</h2>
       {error && <p className="text-danger">{error}</p>}
       <div className="form-group mb-3">
