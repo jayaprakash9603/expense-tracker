@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import ExpensesTable from "./ExpensesTable"; // Import the child component
 import DetailedExpensesTable from "./DetailedExpensesTable";
 
-const ExpenseTableParent = () => {
+const ExpenseTableParent = ({ Url, setUrl }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch expenses data in the parent component
+  // Log the URL whenever it changes
+  useEffect(() => {
+    console.log("URL in parent component: " + Url);
+    fetchExpenses(); // Call fetch function when the URL changes
+  }, [Url]); // Dependency array with Url, so it triggers when Url changes
+
   const fetchExpenses = async () => {
     setLoading(true);
+
+    // Set the default URL if Url is not provided
+    const fetchUrl = Url || "http://localhost:3000/fetch-expenses";
+
     try {
-      const response = await axios.get("http://localhost:3000/fetch-expenses");
+      const response = await axios.get(fetchUrl);
       setData(response.data); // Pass the data to the child component
-      setLoading(false);
     } catch (err) {
       setError("Failed to fetch data");
-      setLoading(false);
+    } finally {
+      setLoading(false); // Ensure loading state is updated
     }
   };
 
-  useEffect(() => {
-    fetchExpenses(); // Call API when the component mounts
-  }, []);
-
   return (
     <div>
-      {/* Pass the data, loading, and error state as props to the child component */}
-      {/*<ExpensesTable data={data} loading={loading} error={error} />*/}
       <DetailedExpensesTable data={data} loading={loading} error={error} />
     </div>
   );

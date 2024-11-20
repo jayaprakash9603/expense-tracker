@@ -28,6 +28,7 @@ import ReportsGeneration from "../Components/ReportsGeneration";
 import ExpensesTable from "../Components/ExpensesTable";
 import ExpenseTableParent from "../Components/ExpenseTableParent";
 import TestTable from "../Components/TestTable";
+import SearchExpenses from "../Components/SearchExpenses";
 
 const App = () => {
   return (
@@ -54,6 +55,7 @@ const App = () => {
           <Route path="/expense1" element={<ExpenseSummaryEmailSender />} />
           <Route path="/search1" element={<ExpenseTableParent />} />
           <Route path="/test" element={<TestTable />} />
+          <Route path="/searchexpenses" element={<SearchExpenses />} />
         </Routes>
       </BrowserRouter>
     </ExpensesProvider>

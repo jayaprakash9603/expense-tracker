@@ -22,12 +22,6 @@ const DefaultColumnFilter = ({
 };
 
 const DetailedExpensesTable = ({ data, loading, error }) => {
-  const [showFilters, setShowFilters] = useState(false); // State to control filter visibility
-
-  const toggleFilters = () => {
-    setShowFilters(!showFilters);
-  };
-
   const columns = React.useMemo(
     () => [
       {
@@ -110,42 +104,43 @@ const DetailedExpensesTable = ({ data, loading, error }) => {
   return (
     <div className="table-container">
       <div className="top-buttons">
-        <button className="toggle-btn" onClick={toggleFilters}>
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </button>
-
         <button className="clear-filters-btn" onClick={clearAllFilters}>
           Clear All Filters
         </button>
       </div>
-      <table {...getTableProps()} className="budget-table">
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <>
-              {/* Render Header Row */}
-              <tr {...headerGroup.getHeaderGroupProps()} className="custom-tr">
-                {headerGroup.headers.map((column) => (
-                  <th {...column.getHeaderProps(column.getSortByToggleProps())}>
-                    <div>
-                      {column.render("Header")}
-                      <span>
-                        {column.isSorted ? (
-                          column.isSortedDesc ? (
-                            <FontAwesomeIcon icon={faSortDown} />
+      <div>
+        <table {...getTableProps()} className="budget-table">
+          <thead>
+            {headerGroups.map((headerGroup) => (
+              <>
+                {/* Render Header Row */}
+                <tr
+                  {...headerGroup.getHeaderGroupProps()}
+                  className="custom-tr"
+                >
+                  {headerGroup.headers.map((column) => (
+                    <th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                    >
+                      <div>
+                        {column.render("Header")}
+                        <span>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <FontAwesomeIcon icon={faSortDown} />
+                            ) : (
+                              <FontAwesomeIcon icon={faSortUp} />
+                            )
                           ) : (
-                            <FontAwesomeIcon icon={faSortUp} />
-                          )
-                        ) : (
-                          <FontAwesomeIcon icon={faSort} />
-                        )}
-                      </span>
-                    </div>
-                  </th>
-                ))}
-              </tr>
+                            <FontAwesomeIcon icon={faSort} />
+                          )}
+                        </span>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
 
-              {/* Render Filter Row */}
-              {showFilters && (
+                {/* Render Filter Row (Always Visible) */}
                 <tr className="filter-row">
                   {headerGroup.headers.map((column) => (
                     <td className="showfilters-td">
@@ -153,24 +148,23 @@ const DetailedExpensesTable = ({ data, loading, error }) => {
                     </td>
                   ))}
                 </tr>
-              )}
-            </>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row) => {
-            prepareRow(row);
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => (
-                  <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                ))}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-
+              </>
+            ))}
+          </thead>
+          <tbody {...getTableBodyProps()}>
+            {page.map((row) => {
+              prepareRow(row);
+              return (
+                <tr {...row.getRowProps()}>
+                  {row.cells.map((cell) => (
+                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                  ))}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
       <div className="pagination">
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {"<<"}
