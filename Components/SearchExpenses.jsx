@@ -3,7 +3,9 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { toDate } from "date-fns";
 import ExpenseTableParent from "./ExpenseTableParent";
-
+import "../Styles/SearchExpenses.css";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const SearchExpenses = () => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
@@ -30,15 +32,23 @@ const SearchExpenses = () => {
   const [Url, setUrl] = useState("");
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/expenses/expenses-types")
-      .then((response) => {
-        setLogTypes(response.data);
-        setFilteredLogTypes(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching log types:", error);
-      });
+    const fetchLogTypes = () => {
+      axios
+        .get("http://localhost:3000/expenses/expenses-types")
+        .then((response) => {
+          setLogTypes(response.data);
+          setFilteredLogTypes(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching log types:", error);
+        });
+    };
+
+    fetchLogTypes(); // Call it once initially
+    const interval = setInterval(fetchLogTypes, 10000); // Call it every 5 seconds
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(interval);
   }, []);
 
   const handleChange1 = (e) => {
@@ -122,10 +132,10 @@ const SearchExpenses = () => {
         url = "http://localhost:3000/expenses/yesterday";
         break;
       case "Last Week":
-        url = "http://localhost:3000/expenses/current-week";
+        url = "http://localhost:3000/expenses/last-week";
         break;
       case "Current Week":
-        url = "http://localhost:3000/expenses/last-week";
+        url = "http://localhost:3000/expenses/current-week";
         break;
       case "Current Month":
         url = "http://localhost:3000/expenses/current-month";
@@ -154,10 +164,18 @@ const SearchExpenses = () => {
       case "Expenses By Type and Payment Method":
         url = `http://localhost:3000/expenses/${category}/${paymentMethod}`;
         break;
+      case "Expenses By Type":
+        url = `http://localhost:3000/expenses/${category}`;
+        break;
       case "Particular Month Expenses":
         url = `http://localhost:3000/expenses/by-month`;
         params.month = startMonth;
         params.year = startYear;
+        break;
+      case "Expenses Within Amount Range":
+        url = `http://localhost:3000/expenses/amount-range`;
+        params.minAmount = minAmount;
+        params.maxAmount = maxAmount;
         break;
       case "Particular Date Expenses":
         url = `http://localhost:3000/expenses/particular-date`;
@@ -177,19 +195,58 @@ const SearchExpenses = () => {
     setUrl(url);
   };
 
+  const handleClearAll = () => {
+    // Reset all state variables
+    setSearchTerm("");
+    setSpecificYear("");
+    setSpecificMonth("");
+    setSpecificDay("");
+    setStartYear("");
+    setEndYear("");
+    setStartMonth("");
+    setEndMonth("");
+    setFromDay("");
+    setToDay("");
+    setExpenseName("");
+    setPaymentMethod("");
+    setCategory("");
+    setMinAmount("");
+    setMaxAmount("");
+    setUrl("");
+    setError("");
+    setFilteredLogTypes(logTypes); // Reset suggestions to default
+    setSelectedIndex(-1);
+  };
   return (
     <div
       className="bg-white mt-0 d-flex flex-row"
-      style={{ height: "100vh", width: "100vw" }}
+      style={{ height: "100vh", width: "100vw", margin: "0px" }}
     >
       <div className="search-input">
-        {error && <p className="text-danger">{error}</p>}
+        <div className="error-message">
+          {error && (
+            <div className="error-message-div">
+              <div className="error-icon-div">
+                <FontAwesomeIcon
+                  icon={faCircleExclamation}
+                  className="me-2 error-icon"
+                />
+              </div>
+              <div className="error-message">
+                <p className="text-danger mt-3 fw-bold">{error}</p>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div className="form-group mb-3">
-          <label>Search Expense Period:</label>
-          <div style={{ position: "relative", width: "100%" }}>
+          <div
+            style={{ position: "relative" }}
+            className="search-expense-period-div"
+          >
             <input
               type="text"
-              className="form-control"
+              className="search-expense-period"
               value={searchTerm}
               onChange={handleChange1}
               onClick={handleClick}
@@ -210,7 +267,7 @@ const SearchExpenses = () => {
                 style={{
                   position: "absolute",
                   top: "100%",
-                  left: 0,
+                  left: "1vw",
                   width: "100%",
                   border: "1px solid white",
                   borderTop: "none",
@@ -247,18 +304,18 @@ const SearchExpenses = () => {
           </div>
         </div>
         {searchTerm === "Particular Date Expenses" && (
-          <div className="form-group mb-3 ">
-            <label>Enter Date (yyyy-MM-dd):</label>
+          <div className="form-group mb-3 width">
             <input
               type="date"
               className="form-control"
               value={fromDay}
               onChange={(e) => setFromDay(e.target.value)}
+              title="Enter Date (yyyy-MM-dd)" // Tooltip on hover
             />
           </div>
         )}
         {searchTerm === "Particular Month Expenses" && (
-          <div className="form-group mb-3">
+          <div className="form-group mb-3 width">
             <label>Enter Start Year:</label>
             <input
               type="number"
@@ -276,7 +333,7 @@ const SearchExpenses = () => {
           </div>
         )}
         {searchTerm === "Expenses By Name" && (
-          <div className="form-group mb-3">
+          <div className="form-group mb-3 width">
             <label>Enter Expense Name:</label>
             <input
               type="text"
@@ -287,7 +344,7 @@ const SearchExpenses = () => {
           </div>
         )}
         {searchTerm === "Expenses By Payment Method" && (
-          <div className="form-group mb-3">
+          <div className="form-group mb-3 width">
             <label>Select Payment Method:</label>
             <select
               className="form-control"
@@ -302,15 +359,15 @@ const SearchExpenses = () => {
           </div>
         )}
         {searchTerm === "Within Range Expenses" && (
-          <div className="form-group mb-3">
-            <label>Enter From Date (yyyy-MM-dd):</label>
+          <div className="form-group mb-3 width">
+            <label>Enter From Date</label>
             <input
               type="date"
               className="form-control"
               value={fromDay}
               onChange={(e) => setFromDay(e.target.value)}
             />
-            <label>Enter To Date (yyyy-MM-dd):</label>
+            <label>Enter To Date</label>
             <input
               type="date"
               className="form-control"
@@ -321,58 +378,80 @@ const SearchExpenses = () => {
         )}
         {searchTerm === "Expenses By Type and Payment Method" && (
           <div className="form-group mb-3">
-            <label>Select Category:</label>
-            <select
-              className="form-control mb-3"
-              value={category} // State variable for the first dropdown
-              onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
-            >
-              <option value="">-- Select Category --</option>
-              <option value="loss">Loss</option>
-              <option value="gain">Gain</option>
-            </select>
-
-            <label>Select Payment Method:</label>
-            <select
-              className="form-control"
-              value={paymentMethod} // State variable for the second dropdown
-              onChange={(e) => setPaymentMethod(e.target.value)} // Update the setter accordingly
-            >
-              <option value="">-- Select Payment Method --</option>
-              <option value="cash">Cash</option>
-              <option value="creditNeedToPaid">Credit Due</option>
-              <option value="creditPaid">Credit Paid</option>
-            </select>
+            <div className="width">
+              <select
+                className="form-control mb-3"
+                value={category} // State variable for the first dropdown
+                onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
+              >
+                <option value="">-- Select Category --</option>
+                <option value="loss">Loss</option>
+                <option value="gain">Gain</option>
+              </select>
+            </div>
+            <div className="width">
+              <select
+                className="form-control"
+                value={paymentMethod} // State variable for the second dropdown
+                onChange={(e) => setPaymentMethod(e.target.value)} // Update the setter accordingly
+              >
+                <option value="">-- Select Payment Method --</option>
+                <option value="cash">Cash</option>
+                <option value="creditNeedToPaid">Credit Due</option>
+                <option value="creditPaid">Credit Paid</option>
+              </select>
+            </div>
           </div>
         )}
 
-        {searchTerm === "Expenses Within Amount Range" && (
+        {searchTerm === "Expenses By Type" && (
           <div className="form-group mb-3">
-            <label>Enter Minimum Amount:</label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-control mb-3"
-              value={minAmount} // State variable for min amount
-              onChange={(e) => setMinAmount(e.target.value)} // Update the setter for min amount
-              placeholder="Enter minimum amount"
-            />
-
-            <label>Enter Maximum Amount:</label>
-            <input
-              type="number"
-              step="0.01"
-              className="form-control"
-              value={maxAmount} // State variable for max amount
-              onChange={(e) => setMaxAmount(e.target.value)} // Update the setter for max amount
-              placeholder="Enter maximum amount"
-            />
+            <div className="width">
+              <select
+                className="form-control mb-3"
+                value={category} // State variable for the first dropdown
+                onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
+              >
+                <option value="">-- Select Category --</option>
+                <option value="loss">Loss</option>
+                <option value="gain">Gain</option>
+              </select>
+            </div>
+          </div>
+        )}
+        {searchTerm === "Expenses Within Amount Range" && (
+          <div className="form-group mb-3 ">
+            <div className="width">
+              <label>Enter Minimum Amount:</label>
+              <input
+                type="number"
+                step="0.01"
+                className="form-control mb-3"
+                value={minAmount} // State variable for min amount
+                onChange={(e) => setMinAmount(e.target.value)} // Update the setter for min amount
+                placeholder="Enter minimum amount"
+              />
+            </div>
+            <div className="width">
+              <label>Enter Maximum Amount:</label>
+              <input
+                type="number"
+                step="0.01"
+                className="form-control"
+                value={maxAmount} // State variable for max amount
+                onChange={(e) => setMaxAmount(e.target.value)} // Update the setter for max amount
+                placeholder="Enter maximum amount"
+              />
+            </div>
           </div>
         )}
 
-        <div className="form-group">
+        <div className="show-button">
           <button className="btn btn-primary mt-3" onClick={handleShowExpenses}>
             Show Expenses
+          </button>
+          <button className="btn btn-primary mt-3" onClick={handleClearAll}>
+            Clear All
           </button>
         </div>
         {console.log(Url)}
