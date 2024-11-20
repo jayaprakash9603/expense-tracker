@@ -2,28 +2,41 @@ import React, { useState } from "react";
 import ExpensesEmail from "./ExpensesEmail";
 import AuditLogsEmailSender from "./AuditLogsEmailSender";
 import ExpenseSummaryEmailSender from "./ExpenseSummaryEmailSender";
-
+import "../Styles/ReportsGeneration.css";
+import ExpenseTableParent from "./ExpenseTableParent";
+import SearchExpenses from "./SearchExpenses";
 const ReportsGeneration = () => {
   const [selectedReport, setSelectedReport] = useState(null);
 
   const handleDropdownChange = (event) => {
     setSelectedReport(event.target.value);
   };
+  const [Url, setUrl] = useState(null);
 
   return (
-    <div>
-      <select onChange={handleDropdownChange}>
-        <option value="select">Select Report</option>
-        <option value="auditLogsReport">Audit Logs Report</option>
-        <option value="expenseReport">Expense Report</option>
-        <option value="expenseSummary">Expense Summary Report</option>
-      </select>
+    <div className="main-container">
+      <div>
+        <div className="select-div">
+          <select onChange={handleDropdownChange}>
+            <option value="select">Select Report</option>
+            <option value="auditLogsReport">Audit Logs Report</option>
+            <option value="expenseReport">Expense Report</option>
+            <option value="expenseSummary">Expense Summary Report</option>
+            <option value="searchExpenses">Search Expenses</option>
+          </select>
+        </div>
+        <div className="component-div">
+          {selectedReport === "select" && <></>}
 
-      {selectedReport === "select" && <></>}
-
-      {selectedReport === "auditLogsReport" && <AuditLogsEmailSender />}
-      {selectedReport === "expenseReport" && <ExpensesEmail />}
-      {selectedReport === "expenseSummary" && <ExpenseSummaryEmailSender />}
+          {selectedReport === "auditLogsReport" && <AuditLogsEmailSender />}
+          {selectedReport === "expenseReport" && <ExpensesEmail />}
+          {selectedReport === "expenseSummary" && <ExpenseSummaryEmailSender />}
+          {selectedReport === "searchExpenses" && <SearchExpenses />}
+        </div>
+      </div>
+      <div className="display-expenses">
+        <ExpenseTableParent Url={Url} setUrl={setUrl} className="w-100" />
+      </div>
     </div>
   );
 };

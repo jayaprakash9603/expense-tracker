@@ -273,10 +273,7 @@ const SearchExpenses = () => {
     setSelectedIndex(-1);
   };
   return (
-    <div
-      className="bg-white mt-0 d-flex flex-row"
-      style={{ height: "100vh", width: "100vw", margin: "0px" }}
-    >
+    <div className="bg-white mt-0 d-flex flex-row">
       <div className="search-input">
         <div className="error-message">
           {error && (
@@ -513,9 +510,6 @@ const SearchExpenses = () => {
           </button>
         </div>
         {console.log(Url)}
-      </div>
-      <div className="display-expenses">
-        <ExpenseTableParent Url={Url} setUrl={setUrl} className="w-100" />
       </div>
     </div>
   );

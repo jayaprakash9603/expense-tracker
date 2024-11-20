@@ -110,9 +110,10 @@ const DetailedExpensesTable = ({ data, loading, error }) => {
   return (
     <div className="table-container">
       <div className="top-buttons">
-        <button className="clear-filters-btn" onClick={clearAllFilters}>
+        <h1 className="summary-header-text">Expenses</h1>
+        <span className="clear-all-btn" onClick={clearAllFilters}>
           Clear All Filters
-        </button>
+        </span>
       </div>
       <div>
         <table {...getTableProps()} className="budget-table">

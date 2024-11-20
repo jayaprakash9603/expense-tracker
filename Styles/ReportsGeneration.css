@@ -1,0 +1,33 @@
+.select-div {
+  margin-left: 1vw;
+  margin-top: 1vw;
+  width: 5vw;
+  height: 6vh;
+}
+.select-div select {
+  border: none;
+  outline: none;
+  padding: 2px;
+  border-radius: 7px;
+  width: 18vw;
+  border: none;
+  padding: 10px;
+  outline: none;
+  border: 1px solid gray;
+  font-size: 14px;
+}
+.display-expenses {
+  top: 0;
+  left: 20vw;
+  height: 100vh;
+  position: absolute;
+  /* background-color: bisque; */
+}
+.main-container {
+  display: flex;
+  width: 20vw;
+  height: 100vh;
+  /* z-index: 100; */
+  position: relative;
+  /* background-color: yellow; */
+}

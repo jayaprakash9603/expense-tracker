@@ -45,6 +45,7 @@
   padding: 10px;
   margin-top: 10px;
   border-radius: 5px;
+  margin-left: auto;
   background-color: cornflowerblue;
 }
 .top-buttons {
@@ -257,4 +258,10 @@
 .filters-text {
   color: #212121;
   font-weight: 700;
+}
+.clear-all-btn {
+  color: #2874f0;
+  margin-left: auto;
+  cursor: pointer;
+  margin-right: 15px;
 }

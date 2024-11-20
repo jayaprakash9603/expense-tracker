@@ -6,6 +6,7 @@
 .log-period {
   margin-left: 1vw;
   width: 18vw;
+
   /* background-color: aqua; */
   padding: 2px;
   border-radius: 7px;
@@ -17,7 +18,7 @@
 }
 .audit-container {
   width: 20vw;
-  height: 100vh;
+  height: 80vh;
   /* background-color: aqua; */
 }
 .audit-expense-period-div {

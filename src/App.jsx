@@ -29,6 +29,7 @@ import ExpensesTable from "../Components/ExpensesTable";
 import ExpenseTableParent from "../Components/ExpenseTableParent";
 import TestTable from "../Components/TestTable";
 import SearchExpenses from "../Components/SearchExpenses";
+import DetailedExpensesTable from "../Components/DetailedExpensesTable";
 
 const App = () => {
   return (
