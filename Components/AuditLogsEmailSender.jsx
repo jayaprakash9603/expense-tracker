@@ -1,8 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { faAlignCenter } from "@fortawesome/free-solid-svg-icons";
-
+import {
+  faAlignCenter,
+  faCircleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
+import "../Styles/AuditLogsEmailSender.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const AuditLogsEmailSender = () => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
@@ -15,7 +19,7 @@ const AuditLogsEmailSender = () => {
   const [specificYear, setSpecificYear] = useState("");
   const [specificMonth, setSpecificMonth] = useState("");
   const [specificDay, setSpecificDay] = useState("");
-  const [actionType, setActionType] = useState("create");
+  const [actionType, setActionType] = useState("");
   const [expenseId, setExpenseId] = useState("");
   const [nMinutes, setNMinutes] = useState("");
   const [nHours, setNHours] = useState("");
@@ -113,6 +117,72 @@ const AuditLogsEmailSender = () => {
     let url = "";
     let params = { email };
 
+    // Validation function to check if required params are missing
+    const validateParams = () => {
+      switch (searchTerm) {
+        case "Logs for Specific Year":
+          if (!specificYear) {
+            setError("Please enter a year.");
+            return false;
+          }
+          break;
+        case "Logs for Specific Month":
+          if (!specificYear || !specificMonth) {
+            setError("Please enter a year and month.");
+            return false;
+          }
+          break;
+        case "Logs for Specific Day":
+          if (!specificDay) {
+            setError("Please enter a day.");
+            return false;
+          }
+          break;
+        case "Logs by Action Type":
+          if (!actionType) {
+            setError("Please enter an action type.");
+            return false;
+          }
+          break;
+        case "Logs by Expense ID and Action Type":
+          if (!expenseId || !actionType) {
+            setError("Please enter ID and action type.");
+            return false;
+          }
+          break;
+        case "Logs from Last N Minutes":
+          if (!nMinutes) {
+            setError("Please enter the no of minutes.");
+            return false;
+          }
+          break;
+        case "Logs from Last N Hours":
+          if (!nHours) {
+            setError("Please enter the no of hours.");
+            return false;
+          }
+          break;
+        case "Logs from Last N Days":
+          if (!nDays) {
+            setError("Please enter the no of days.");
+            return false;
+          }
+          break;
+        case "Logs from Last N Seconds":
+          if (!nSeconds) {
+            setError("Please enter the no of seconds.");
+            return false;
+          }
+          break;
+        default:
+          // No additional params needed for other cases
+          break;
+      }
+      return true; // All required params are valid
+    };
+
+    if (!validateParams()) return; // If validation fails, stop further execution
+
     switch (searchTerm) {
       case "Current Month Logs":
         url = "http://localhost:3000/audit-logs/current-month/email";
@@ -140,15 +210,15 @@ const AuditLogsEmailSender = () => {
         break;
       case "Logs for Specific Month":
         url = "http://localhost:3000/audit-logs/month/email";
-        params.year = specificYear; // Use specificYear state variable
-        params.month = specificMonth; // Use specificMonth state variable
+        params.year = specificYear;
+        params.month = specificMonth;
         break;
       case "Logs for Specific Day":
         url = "http://localhost:3000/audit-logs/day/email";
-        params.date = specificDay; // Use specificDay state variable
+        params.date = specificDay;
         break;
       case "Logs by Action Type":
-        url = "http://localhost:3000/audit-logs/action/${actiontype}/email"; // Use actionType state variable
+        url = `http://localhost:3000/audit-logs/action/${actionType}/email`;
         break;
       case "Logs by Expense ID and Action Type":
         const parsedExpenseId = parseInt(expenseId, 10);
@@ -160,19 +230,19 @@ const AuditLogsEmailSender = () => {
         break;
       case "Logs from Last N Minutes":
         url = "http://localhost:3000/audit-logs/last-n-minutes/email";
-        params.minutes = nMinutes; // Use nMinutes state variable
+        params.minutes = nMinutes;
         break;
       case "Logs from Last N Hours":
         url = "http://localhost:3000/audit-logs/last-n-hours/email";
-        params.hours = nHours; // Use nHours state variable
+        params.hours = nHours;
         break;
       case "Logs from Last N Days":
         url = "http://localhost:3000/audit-logs/last-n-days/email";
-        params.days = nDays; // Use nDays state variable
+        params.days = nDays;
         break;
       case "Logs from Last N Seconds":
         url = "http://localhost:3000/audit-logs/last-n-seconds/email";
-        params.seconds = nSeconds; // Use nSeconds state variable
+        params.seconds = nSeconds;
         break;
       case "Logs from Last 5 Minutes":
         url = "http://localhost:3000/audit-logs/last-5-minutes/email";
@@ -211,18 +281,33 @@ const AuditLogsEmailSender = () => {
   };
 
   return (
-    <div
-      className="container bg-white mt-5"
-      style={{ height: "450px", width: "600px" }}
-    >
-      <h2 style={faAlignCenter}>Send Audit Logs by Email</h2>
-      {error && <p className="text-danger">{error}</p>}
-      <div className="form-group mb-3">
-        <label>Search Log Period:</label>
-        <div style={{ position: "relative", width: "100%" }}>
+    <div className="audit-container">
+      <div className="error-message">
+        {error && (
+          <div className="error-message-div">
+            <div className="error-icon-div">
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                className="me-2 error-icon"
+              />
+            </div>
+            <div className="error-message">
+              <p className="text-danger mt-3 fw-bold">{error}</p>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="header">
+        <h5>Send Audit Logs by Email</h5>
+      </div>
+      <div className="mb-3">
+        <div
+          style={{ position: "relative", width: "100%" }}
+          className="audit-expense-period-div"
+        >
           <input
             type="text"
-            className="form-control"
+            className="log-period"
             value={searchTerm}
             onChange={handleChange1}
             onClick={handleClick}
@@ -231,7 +316,6 @@ const AuditLogsEmailSender = () => {
             autoComplete="off"
             placeholder="Search log period..."
             style={{
-              width: "100%",
               marginTop: "5px",
               fontFamily: "Arial, sans-serif",
               zIndex: 1,
@@ -243,8 +327,8 @@ const AuditLogsEmailSender = () => {
               style={{
                 position: "absolute",
                 top: "100%",
-                left: 0,
-                width: "100%",
+                left: "1vw",
+                width: "18vw",
                 border: "1px solid white",
                 borderTop: "none",
                 backgroundColor: "white",
@@ -280,40 +364,41 @@ const AuditLogsEmailSender = () => {
         </div>
       </div>
       {searchTerm === "Logs for Specific Year" && (
-        <div className="form-group mb-3">
-          <label>Enter Year:</label>
+        <div className="mb-3">
           <input
             type="number"
-            className="form-control"
+            className="log-period"
             value={specificYear}
+            placeholder="Enter a specific year"
             onChange={(e) => setSpecificYear(e.target.value)}
           />
         </div>
       )}
       {searchTerm === "Logs for Specific Month" && (
         <div className="form-group mb-3">
-          <label>Enter Year:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
             value={specificYear}
+            placeholder="Enter Year"
             onChange={(e) => setSpecificYear(e.target.value)}
           />
-          <label>Enter Month:</label>
+
           <input
             type="number"
-            className="form-control"
+            className="log-period"
             value={specificMonth}
+            placeholder="Enter Month"
             onChange={(e) => setSpecificMonth(e.target.value)}
           />
         </div>
       )}
       {searchTerm === "Logs for Specific Day" && (
         <div className="form-group mb-3">
-          <label>Enter Date (yyyy-MM-dd):</label>
+          <label className="label">Enter Date</label>
           <input
             type="date"
-            className="form-control"
+            className="form-control width mb-4"
             value={specificDay}
             onChange={(e) => setSpecificDay(e.target.value)}
           />
@@ -321,12 +406,13 @@ const AuditLogsEmailSender = () => {
       )}
       {searchTerm === "Logs by Action Type" && (
         <div className="form-group mb-3">
-          <label>Enter Action Type:</label>
           <select
-            className="form-control"
+            className="log-period"
+            placeholder="Enter Action Type"
             value={actionType}
             onChange={(e) => setActionType(e.target.value)}
           >
+            <option value="">Select</option>
             <option value="create">Create</option>
             <option value="update">Update</option>
             <option value="delete">Delete</option>
@@ -335,19 +421,20 @@ const AuditLogsEmailSender = () => {
       )}
       {searchTerm === "Logs by Expense ID and Action Type" && (
         <div className="form-group mb-3">
-          <label>Enter Expense ID:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
+            placeholder="Enter Expense ID"
             value={expenseId}
             onChange={(e) => setExpenseId(e.target.value)}
           />
-          <label>Enter Action Type:</label>
+
           <select
-            className="form-control"
+            className="log-period"
             value={actionType}
             onChange={(e) => setActionType(e.target.value)}
           >
+            <option value="">Select</option>
             <option value="create">Create</option>
             <option value="update">Update</option>
             <option value="delete">Delete</option>
@@ -356,10 +443,10 @@ const AuditLogsEmailSender = () => {
       )}
       {searchTerm === "Logs from Last N Minutes" && (
         <div className="form-group mb-3">
-          <label>Enter N Minutes:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period"
+            placeholder="Enter Minutes Number"
             value={nMinutes}
             onChange={(e) => setNMinutes(e.target.value)}
           />
@@ -367,10 +454,10 @@ const AuditLogsEmailSender = () => {
       )}
       {searchTerm === "Logs from Last N Hours" && (
         <div className="form-group mb-3">
-          <label>Enter N Hours:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period"
+            placeholder="Enter Hours Number"
             value={nHours}
             onChange={(e) => setNHours(e.target.value)}
           />
@@ -378,10 +465,10 @@ const AuditLogsEmailSender = () => {
       )}
       {searchTerm === "Logs from Last N Days" && (
         <div className="form-group mb-3">
-          <label>Enter N Days:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period"
+            placeholder="Enter the number of days"
             value={nDays}
             onChange={(e) => setNDays(e.target.value)}
           />
@@ -389,10 +476,10 @@ const AuditLogsEmailSender = () => {
       )}
       {searchTerm === "Logs from Last N Seconds" && (
         <div className="form-group mb-3">
-          <label>Enter N Seconds:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period"
+            placeholder="Enter Seconds..."
             value={nSeconds}
             onChange={(e) => setNSeconds(e.target.value)}
           />
@@ -400,26 +487,26 @@ const AuditLogsEmailSender = () => {
       )}
       {searchTerm === "Logs by Expense ID" && (
         <div className="form-group mb-3">
-          <label>Enter Expense ID:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period"
+            placeholder="Enter Expense ID"
             value={expenseId}
             onChange={(e) => setExpenseId(e.target.value)}
           />
         </div>
       )}
       <div className="form-group mb-3">
-        <label>Enter Email:</label>
         <input
           type="email"
-          className="form-control"
+          className="log-period"
           value={email}
+          placeholder="Enter Email Address"
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div className="form-group">
-        <button className="btn btn-primary mt-3" onClick={handleSendEmail}>
+        <button className=" send-mail-btn mt-3 width" onClick={handleSendEmail}>
           Send Email
         </button>
       </div>

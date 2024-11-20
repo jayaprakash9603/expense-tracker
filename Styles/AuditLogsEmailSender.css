@@ -1,0 +1,66 @@
+.width {
+  margin-left: 1vw;
+  width: 18vw;
+  /* background-color: aqua; */
+}
+.log-period {
+  margin-left: 1vw;
+  width: 18vw;
+  /* background-color: aqua; */
+  padding: 2px;
+  border-radius: 7px;
+  border: none;
+  padding: 10px;
+  outline: none;
+  border: 1px solid gray;
+}
+.audit-container {
+  width: 20vw;
+  height: 100vh;
+  background-color: aqua;
+}
+.audit-expense-period-div {
+  width: 18vw;
+  font-size: 14px;
+}
+.label {
+  margin-left: 1vw;
+  margin-bottom: 5px;
+}
+.header h5 {
+  margin-left: 1vw;
+}
+.error-message {
+  display: flex;
+  align-items: center;
+  /* background-color: green; */
+}
+.error-message {
+  color: red;
+  width: 20vw;
+  height: 4vh;
+  /* background-color: red; */
+}
+.error-message-div {
+  display: flex;
+  align-items: center;
+  margin-left: 1vw;
+  /* background-color: green; */
+}
+
+.error-icon {
+  font-size: 1rem;
+  margin-right: 10px;
+}
+.error-icon-div {
+  display: flex;
+  align-items: center;
+}
+.send-mail-btn {
+  border: none;
+  outline: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: rgb(250, 113, 113);
+}

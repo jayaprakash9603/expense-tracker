@@ -192,7 +192,7 @@ const SearchExpenses = () => {
 
       case "Expenses By Type and Payment Method":
         if (!category || !paymentMethod) {
-          setError("Please provide type or payment");
+          setError("Please provide type and payment");
           return;
         }
         url = `http://localhost:3000/expenses/${category}/${paymentMethod}`;
