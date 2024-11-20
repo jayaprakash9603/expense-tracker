@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import "../Styles/ExpenseSummaryEmailSender.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 const ExpenseSummaryEmailSender = () => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
@@ -182,18 +184,31 @@ const ExpenseSummaryEmailSender = () => {
   };
 
   return (
-    <div
-      className="container bg-white mt-5"
-      style={{ height: "450px", width: "600px" }}
-    >
-      <h2>Send Expense Summaries by Email</h2>
-      {error && <p className="text-danger">{error}</p>}
+    <div className="audit-container">
+      <div className="error-message">
+        {error && (
+          <div className="error-message-div">
+            <div className="error-icon-div">
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                className="me-2 error-icon"
+              />
+            </div>
+            <div className="error-message">
+              <p className="text-danger mt-3 fw-bold">{error}</p>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="header">
+        <h5>Send Expense Summaries</h5>
+      </div>
+
       <div className="form-group mb-3">
-        <label>Search Summary Period:</label>
         <div style={{ position: "relative", width: "100%" }}>
           <input
             type="text"
-            className="form-control"
+            className="log-period"
             value={searchTerm}
             onChange={handleChange1}
             onClick={handleClick}
@@ -202,7 +217,6 @@ const ExpenseSummaryEmailSender = () => {
             autoComplete="off"
             placeholder="Search summary period..."
             style={{
-              width: "100%",
               marginTop: "5px",
               fontFamily: "Arial, sans-serif",
               zIndex: 1,
@@ -214,8 +228,8 @@ const ExpenseSummaryEmailSender = () => {
               style={{
                 position: "absolute",
                 top: "100%",
-                left: 0,
-                width: "100%",
+                left: "1vw",
+                width: "18vw",
                 border: "1px solid white",
                 borderTop: "none",
                 backgroundColor: "white",
@@ -252,82 +266,84 @@ const ExpenseSummaryEmailSender = () => {
       </div>
       {searchTerm === "Monthly Wise Daily Expense Summary" && (
         <div className="form-group mb-3">
-          <label>Enter Year:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
             value={specificYear}
+            placeholder="Enter Year"
             onChange={(e) => setSpecificYear(e.target.value)}
           />
-          <label>Enter Month:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period"
             value={specificMonth}
+            placeholder="Enter Month"
             onChange={(e) => setSpecificMonth(e.target.value)}
           />
         </div>
       )}
       {searchTerm === "Summary Between Dates" && (
         <div className="form-group mb-3">
-          <label>Enter Start Year:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
             value={startYear}
+            placeholder="Enter Start Year"
             onChange={(e) => setStartYear(e.target.value)}
           />
-          <label>Enter Start Month:</label>
+
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
             value={startMonth}
+            placeholder="Enter Start Month"
             onChange={(e) => setStartMonth(e.target.value)}
           />
-          <label>Enter End Year:</label>
+
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
             value={endYear}
+            placeholder="Enter End Year"
             onChange={(e) => setEndYear(e.target.value)}
           />
-          <label>Enter End Month:</label>
+
           <input
             type="number"
-            className="form-control"
+            className="log-period"
             value={endMonth}
+            placeholder="Enter End Month"
             onChange={(e) => setEndMonth(e.target.value)}
           />
         </div>
       )}
       {searchTerm === "Yearly Wise Daily Expense Summary" && (
         <div className="form-group mb-3">
-          <label>Enter Year:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period"
             value={specificYear}
+            placeholder="Enter Year"
             onChange={(e) => setSpecificYear(e.target.value)}
           />
         </div>
       )}
       {searchTerm === "Yearly Summary" && (
         <div className="form-group mb-3">
-          <label>Enter Year:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period"
             value={specificYear}
+            placeholder="Enter Year"
             onChange={(e) => setSpecificYear(e.target.value)}
           />
         </div>
       )}
       {searchTerm === "Expense Summary for Specific Date" && (
         <div className="form-group mb-3">
-          <label>Enter Date (yyyy-MM-dd):</label>
           <input
             type="date"
-            className="form-control"
+            className="log-period"
             value={specificDay}
             onChange={(e) => setSpecificDay(e.target.value)}
           />
@@ -355,16 +371,16 @@ const ExpenseSummaryEmailSender = () => {
         </div>
       )}
       <div className="form-group mb-3">
-        <label>Enter Email:</label>
         <input
           type="email"
-          className="form-control"
+          className="log-period"
           value={email}
+          placeholder="Enter your email address"
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div className="form-group">
-        <button className="btn btn-primary mt-3" onClick={handleSendEmail}>
+        <button className=" send-mail-btn mt-3 width" onClick={handleSendEmail}>
           Send Email
         </button>
       </div>

@@ -13,6 +13,7 @@
   padding: 10px;
   outline: none;
   border: 1px solid gray;
+  font-size: 14px;
 }
 .audit-container {
   width: 20vw;
