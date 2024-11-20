@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { toDate } from "date-fns";
-
+import "../Styles/ExpensesEmail.css";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 const ExpensesEmail = () => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
@@ -200,18 +202,33 @@ const ExpensesEmail = () => {
   };
 
   return (
-    <div
-      className="container bg-white mt-5"
-      style={{ height: "450px", width: "600px" }}
-    >
-      <h2>Send Expenses by Email</h2>
-      {error && <p className="text-danger">{error}</p>}
+    <div className="audit-container">
+      <div className="error-message">
+        {error && (
+          <div className="error-message-div">
+            <div className="error-icon-div">
+              <FontAwesomeIcon
+                icon={faCircleExclamation}
+                className="me-2 error-icon"
+              />
+            </div>
+            <div className="error-message">
+              <p className="text-danger mt-3 fw-bold">{error}</p>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="header">
+        <h5>Send Expenses by Email</h5>
+      </div>
       <div className="form-group mb-3">
-        <label>Search Expense Period:</label>
-        <div style={{ position: "relative", width: "100%" }}>
+        <div
+          style={{ position: "relative", width: "100%" }}
+          className="audit-expense-period-div"
+        >
           <input
             type="text"
-            className="form-control"
+            className="log-period"
             value={searchTerm}
             onChange={handleChange1}
             onClick={handleClick}
@@ -220,7 +237,6 @@ const ExpensesEmail = () => {
             autoComplete="off"
             placeholder="Search expense period..."
             style={{
-              width: "100%",
               marginTop: "5px",
               fontFamily: "Arial, sans-serif",
               zIndex: 1,
@@ -232,8 +248,8 @@ const ExpensesEmail = () => {
               style={{
                 position: "absolute",
                 top: "100%",
-                left: 0,
-                width: "100%",
+                left: "1vw",
+                width: "18vw",
                 border: "1px solid white",
                 borderTop: "none",
                 backgroundColor: "white",
@@ -270,10 +286,10 @@ const ExpensesEmail = () => {
       </div>
       {searchTerm === "Particular Date Expenses" && (
         <div className="form-group mb-3">
-          <label>Enter Date (yyyy-MM-dd):</label>
+          <label className="label">Enter Date</label>
           <input
             type="date"
-            className="form-control"
+            className="log-period"
             value={fromDay}
             onChange={(e) => setFromDay(e.target.value)}
           />
@@ -281,17 +297,17 @@ const ExpensesEmail = () => {
       )}
       {searchTerm === "Particular Month Expenses" && (
         <div className="form-group mb-3">
-          <label>Enter Start Year:</label>
+          <label className="label">Enter Start Year:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
             value={startYear}
             onChange={(e) => setStartYear(e.target.value)}
           />
-          <label>Enter Start Month:</label>
+          <label className="label">Enter Start Month:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
             value={startMonth}
             onChange={(e) => setStartMonth(e.target.value)}
           />
@@ -299,20 +315,19 @@ const ExpensesEmail = () => {
       )}
       {searchTerm === "Expenses By Name" && (
         <div className="form-group mb-3">
-          <label>Enter Expense Name:</label>
           <input
             type="text"
-            className="form-control"
+            className="log-period"
             value={expenseName}
+            placeholder="Enter Expense Name"
             onChange={(e) => setExpenseName(e.target.value)}
           />
         </div>
       )}
       {searchTerm === "Expenses By Payment Method" && (
-        <div className="form-group mb-3">
-          <label>Select Payment Method:</label>
+        <div className="form-group mb-3 ">
           <select
-            className="form-control"
+            className="log-period"
             value={paymentMethod}
             onChange={(e) => setPaymentMethod(e.target.value)}
           >
@@ -325,17 +340,17 @@ const ExpensesEmail = () => {
       )}
       {searchTerm === "Within Range Expenses" && (
         <div className="form-group mb-3">
-          <label>Enter From Date (yyyy-MM-dd):</label>
+          <label className="label">From Date</label>
           <input
             type="date"
-            className="form-control"
+            className="log-period mb-3"
             value={fromDay}
             onChange={(e) => setFromDay(e.target.value)}
           />
-          <label>Enter To Date (yyyy-MM-dd):</label>
+          <label className="label">To Date</label>
           <input
             type="date"
-            className="form-control"
+            className="log-period mb-3"
             value={toDay}
             onChange={(e) => setToDay(e.target.value)}
           />
@@ -343,9 +358,8 @@ const ExpensesEmail = () => {
       )}
       {searchTerm === "Expenses By Type and Payment Method" && (
         <div className="form-group mb-3">
-          <label>Select Category:</label>
           <select
-            className="form-control mb-3"
+            className="log-period mb-3"
             value={category} // State variable for the first dropdown
             onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
           >
@@ -354,9 +368,8 @@ const ExpensesEmail = () => {
             <option value="gain">Gain</option>
           </select>
 
-          <label>Select Payment Method:</label>
           <select
-            className="form-control"
+            className="log-period"
             value={paymentMethod} // State variable for the second dropdown
             onChange={(e) => setPaymentMethod(e.target.value)} // Update the setter accordingly
           >
@@ -370,21 +383,19 @@ const ExpensesEmail = () => {
 
       {searchTerm === "Expenses Within Amount Range" && (
         <div className="form-group mb-3">
-          <label>Enter Minimum Amount:</label>
           <input
             type="number"
             step="0.01"
-            className="form-control mb-3"
+            className="log-period mb-3"
             value={minAmount} // State variable for min amount
             onChange={(e) => setMinAmount(e.target.value)} // Update the setter for min amount
             placeholder="Enter minimum amount"
           />
 
-          <label>Enter Maximum Amount:</label>
           <input
             type="number"
             step="0.01"
-            className="form-control"
+            className="log-period"
             value={maxAmount} // State variable for max amount
             onChange={(e) => setMaxAmount(e.target.value)} // Update the setter for max amount
             placeholder="Enter maximum amount"
@@ -393,16 +404,16 @@ const ExpensesEmail = () => {
       )}
 
       <div className="form-group mb-3">
-        <label>Enter Email:</label>
         <input
           type="email"
-          className="form-control"
+          className="log-period"
           value={email}
+          placeholder="Enter Your Email Address"
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div className="form-group">
-        <button className="btn btn-primary mt-3" onClick={handleSendEmail}>
+        <button className="send-mail-btn width mt-3" onClick={handleSendEmail}>
           Send Email
         </button>
       </div>
