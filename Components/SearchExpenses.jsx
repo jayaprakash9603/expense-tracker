@@ -6,7 +6,7 @@ import ExpenseTableParent from "./ExpenseTableParent";
 import "../Styles/SearchExpenses.css";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-const SearchExpenses = () => {
+const SearchExpenses = ({ Url, setUrl }) => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,7 +29,7 @@ const SearchExpenses = () => {
   const [category, setCategory] = useState("");
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
-  const [Url, setUrl] = useState("");
+  // const [Url, setUrl] = useState("");
 
   useEffect(() => {
     const fetchLogTypes = () => {

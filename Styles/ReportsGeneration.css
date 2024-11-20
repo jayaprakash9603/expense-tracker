@@ -1,8 +1,9 @@
 .select-div {
   margin-left: 1vw;
   margin-top: 1vw;
-  width: 5vw;
+  width: 18vw;
   height: 6vh;
+  background-color: aqua;
 }
 .select-div select {
   border: none;
@@ -14,10 +15,11 @@
   padding: 10px;
   outline: none;
   border: 1px solid gray;
+
   font-size: 14px;
 }
 .display-expenses {
-  top: 0;
+  top: 0px;
   left: 20vw;
   height: 100vh;
   position: absolute;

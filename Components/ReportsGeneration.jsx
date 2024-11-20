@@ -39,9 +39,14 @@ const ReportsGeneration = () => {
           {selectedReport === "searchSummary" && <SearchSummary />}
           {selectedReport === "searchAudits" && <SearchAudits />}
         </div>
-      </div>
-      <div className="display-expenses">
-        <ExpenseTableParent Url={Url} setUrl={setUrl} className="w-100" />
+        <div className="display-expenses">
+          <ExpenseTableParent
+            Url={Url}
+            setUrl={setUrl}
+            className="w-100"
+            selectedReport={selectedReport}
+          />
+        </div>
       </div>
     </div>
   );

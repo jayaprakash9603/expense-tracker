@@ -34,7 +34,7 @@ const SearchSummary = () => {
   useEffect(() => {
     const fetchLogTypes = () => {
       axios
-        .get("http://localhost:3000/expenses/expenses-types")
+        .get("http://localhost:3000/expenses/daily-summary-types")
         .then((response) => {
           setLogTypes(response.data);
           setFilteredLogTypes(response.data);
@@ -509,6 +509,7 @@ const SearchSummary = () => {
             Show Expenses
           </button>
         </div>
+
         {console.log(Url)}
       </div>
     </div>

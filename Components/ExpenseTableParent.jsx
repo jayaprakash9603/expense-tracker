@@ -4,27 +4,56 @@ import DetailedExpensesTable from "./DetailedExpensesTable";
 import DailySummary from "./DailySummary";
 import ExpensesAudits from "./ExpensesAudits";
 
-const ExpenseTableParent = ({ Url, setUrl }) => {
-  const [data, setData] = useState([]);
+const ExpenseTableParent = ({ Url, setUrl, selectedReport }) => {
+  // Separate state variables for each type of data
+  const [expensesData, setExpensesData] = useState([]);
+  const [summaryData, setSummaryData] = useState([]);
+  const [auditsData, setAuditsData] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Log the URL whenever it changes
   useEffect(() => {
-    console.log("URL in parent component: " + Url);
-    fetchExpenses(); // Call fetch function when the URL changes
-  }, [Url]); // Dependency array with Url, so it triggers when Url changes
+    // Determine which API to call based on selectedReport
+    if (selectedReport) {
+      fetchData(selectedReport);
+    }
+  }, [selectedReport, Url]); // Trigger when selectedReport or Url changes
 
-  const fetchExpenses = async () => {
+  const fetchData = async (reportType) => {
     setLoading(true);
-
-    // Set the default URL if Url is not provided
-    const fetchUrl =
-      Url || "http://localhost:3000/daily-summary/monthly?year=2024&month=11";
+    setError(null); // Clear any existing errors
 
     try {
-      const response = await axios.get(fetchUrl);
-      setData(response.data); // Pass the data to the child component
+      let response;
+
+      switch (reportType) {
+        case "searchExpenses":
+          response = await axios.get(
+            Url || "http://localhost:3000/fetch-expenses"
+          );
+          setExpensesData(response.data);
+          break;
+
+        case "searchSummary":
+          response = await axios.get(
+            Url ||
+              "http://localhost:3000/daily-summary/monthly?year=2024&month=11"
+          );
+          setSummaryData(response.data);
+          break;
+
+        case "searchAudits":
+          response = await axios.get(
+            Url || "http://localhost:3000/audit-logs/all"
+          );
+          setAuditsData(response.data);
+          break;
+
+        default:
+          setError("Invalid report type selected.");
+          return;
+      }
     } catch (err) {
       setError("Failed to fetch data");
     } finally {
@@ -34,9 +63,19 @@ const ExpenseTableParent = ({ Url, setUrl }) => {
 
   return (
     <div>
-      {/*<DetailedExpensesTable data={data} loading={loading} error={error} />*/}
-      {<DailySummary data={data} loading={loading} error={error} />}
-      {/*<ExpensesAudits data={data} loading={loading} error={error} />*/}
+      {selectedReport === "searchExpenses" && (
+        <DetailedExpensesTable
+          data={expensesData}
+          loading={loading}
+          error={error}
+        />
+      )}
+      {selectedReport === "searchSummary" && (
+        <DailySummary data={summaryData} loading={loading} error={error} />
+      )}
+      {selectedReport === "searchAudits" && (
+        <ExpensesAudits data={auditsData} loading={loading} error={error} />
+      )}
     </div>
   );
 };
