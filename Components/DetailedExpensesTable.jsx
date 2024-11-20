@@ -86,7 +86,7 @@ const DetailedExpensesTable = ({ data, loading, error }) => {
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 7 },
+      initialState: { pageIndex: 0, pageSize: 10 },
       defaultColumn: { Filter: DefaultColumnFilter },
     },
     useFilters,
@@ -98,7 +98,13 @@ const DetailedExpensesTable = ({ data, loading, error }) => {
     setAllFilters([]); // Clears all the filters
   };
 
-  if (loading) return <p>Loading...</p>;
+  if (loading)
+    return (
+      <div className="loader-container">
+        <div className="loader"></div>
+      </div>
+    );
+
   if (error) return <p>{error}</p>;
 
   return (

@@ -45,7 +45,7 @@ const SearchExpenses = () => {
     };
 
     fetchLogTypes(); // Call it once initially
-    const interval = setInterval(fetchLogTypes, 10000); // Call it every 5 seconds
+    const interval = setInterval(fetchLogTypes, 1000000); // Call it every 5 seconds
 
     // Cleanup interval on component unmount
     return () => clearInterval(interval);
@@ -238,7 +238,12 @@ const SearchExpenses = () => {
             </div>
           )}
         </div>
-
+        <div className="width main-text">
+          <p className="filters-text">Filters</p>
+          <p className="clear-all-text" onClick={handleClearAll}>
+            Clear All
+          </p>
+        </div>
         <div className="form-group mb-3">
           <div
             style={{ position: "relative" }}
@@ -334,18 +339,17 @@ const SearchExpenses = () => {
         )}
         {searchTerm === "Expenses By Name" && (
           <div className="form-group mb-3 width">
-            <label>Enter Expense Name:</label>
             <input
               type="text"
               className="form-control"
               value={expenseName}
+              placeholder="Enter expense name"
               onChange={(e) => setExpenseName(e.target.value)}
             />
           </div>
         )}
         {searchTerm === "Expenses By Payment Method" && (
           <div className="form-group mb-3 width">
-            <label>Select Payment Method:</label>
             <select
               className="form-control"
               value={paymentMethod}
@@ -360,20 +364,24 @@ const SearchExpenses = () => {
         )}
         {searchTerm === "Within Range Expenses" && (
           <div className="form-group mb-3 width">
-            <label>Enter From Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={fromDay}
-              onChange={(e) => setFromDay(e.target.value)}
-            />
-            <label>Enter To Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={toDay}
-              onChange={(e) => setToDay(e.target.value)}
-            />
+            <div className="from-date">
+              <label>From</label>
+              <input
+                type="date"
+                className="form-control"
+                value={fromDay}
+                onChange={(e) => setFromDay(e.target.value)}
+              />
+            </div>
+            <div className="to-date">
+              <label>To</label>
+              <input
+                type="date"
+                className="form-control"
+                value={toDay}
+                onChange={(e) => setToDay(e.target.value)}
+              />
+            </div>
           </div>
         )}
         {searchTerm === "Expenses By Type and Payment Method" && (
@@ -422,7 +430,6 @@ const SearchExpenses = () => {
         {searchTerm === "Expenses Within Amount Range" && (
           <div className="form-group mb-3 ">
             <div className="width">
-              <label>Enter Minimum Amount:</label>
               <input
                 type="number"
                 step="0.01"
@@ -433,7 +440,6 @@ const SearchExpenses = () => {
               />
             </div>
             <div className="width">
-              <label>Enter Maximum Amount:</label>
               <input
                 type="number"
                 step="0.01"
@@ -449,9 +455,6 @@ const SearchExpenses = () => {
         <div className="show-button">
           <button className="btn btn-primary mt-3" onClick={handleShowExpenses}>
             Show Expenses
-          </button>
-          <button className="btn btn-primary mt-3" onClick={handleClearAll}>
-            Clear All
           </button>
         </div>
         {console.log(Url)}
