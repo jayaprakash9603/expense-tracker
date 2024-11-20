@@ -5,6 +5,8 @@ import ExpenseSummaryEmailSender from "./ExpenseSummaryEmailSender";
 import "../Styles/ReportsGeneration.css";
 import ExpenseTableParent from "./ExpenseTableParent";
 import SearchExpenses from "./SearchExpenses";
+import SearchSummary from "./SearchSummary";
+import SearchAudits from "./SearchAudits";
 const ReportsGeneration = () => {
   const [selectedReport, setSelectedReport] = useState(null);
 
@@ -23,6 +25,8 @@ const ReportsGeneration = () => {
             <option value="expenseReport">Expense Report</option>
             <option value="expenseSummary">Expense Summary Report</option>
             <option value="searchExpenses">Search Expenses</option>
+            <option value="searchSummary">Search Summary</option>
+            <option value="searchAudits">Search Audits</option>
           </select>
         </div>
         <div className="component-div">
@@ -32,6 +36,8 @@ const ReportsGeneration = () => {
           {selectedReport === "expenseReport" && <ExpensesEmail />}
           {selectedReport === "expenseSummary" && <ExpenseSummaryEmailSender />}
           {selectedReport === "searchExpenses" && <SearchExpenses />}
+          {selectedReport === "searchSummary" && <SearchSummary />}
+          {selectedReport === "searchAudits" && <SearchAudits />}
         </div>
       </div>
       <div className="display-expenses">

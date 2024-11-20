@@ -1,0 +1,78 @@
+.search-input {
+  width: 20vw;
+  height: 90vh;
+  /* background-color: aqua; */
+  margin-right: 20px;
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+}
+.display-expenses {
+  width: calc(100vw - 20vw - 20px);
+  height: 100vh;
+  /* background-color: bisque; */
+}
+.error-message {
+  color: red;
+  width: 20vw;
+  height: 4vh;
+  /* background-color: red; */
+}
+.error-message-div {
+  display: flex;
+  align-items: center;
+  margin-left: 1vw;
+  /* background-color: green; */
+}
+
+.error-icon {
+  font-size: 1rem;
+  margin-right: 10px;
+}
+.error-icon-div {
+  display: flex;
+  align-items: center;
+}
+
+.text-danger {
+  font-size: 0.9rem;
+}
+.error-message {
+  display: flex;
+  align-items: center;
+  /* background-color: green; */
+}
+.search-expense-period {
+  margin-left: 1vw;
+  width: 15vw;
+  /* background-color: aqua; */
+  border-radius: 7px;
+  border: none;
+  padding: 10px;
+  outline: none;
+  border: 1px solid gray;
+}
+.search-expense-period-div {
+  width: 18vw;
+  font-size: 14px;
+}
+
+.width {
+  margin-left: 1vw;
+  width: 18vw;
+  /* background-color: yellow; */
+}
+.show-button {
+  width: 18vw;
+  margin-left: 1vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.from-date label,
+.to-date label {
+  margin-bottom: 5px;
+}
+.from-date {
+  margin-bottom: 5px;
+}
