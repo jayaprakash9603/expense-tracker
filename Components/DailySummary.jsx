@@ -127,7 +127,7 @@ const DailySummary = ({ data, loading, error }) => {
   return (
     <div className="table-container">
       <div className="top-buttons">
-        <h1 className="summary-header-text">Summaries Of Expenses</h1>
+        <h1 className="summary-header-text">Expenses Daily Summary</h1>
         <span className="clear-all-btn" onClick={clearAllFilters}>
           Clear All Filters
         </span>
