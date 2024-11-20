@@ -1,0 +1,234 @@
+.table-container {
+  width: 79vw;
+  height: 100vh;
+  margin-left: 10px;
+  /* padding: 15px; */
+  border-radius: 8px;
+  background-color: #fbfbfb;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.budget-table {
+  width: 78vw;
+  height: 79vh;
+  border-collapse: collapse;
+  /* margin: 20px 0; */
+  /* background-color: #2874f0; */
+  table-layout: auto;
+  overflow: auto;
+  display: block;
+}
+
+.filter-input {
+  width: 100px;
+  padding: 6px;
+  border: 1px solid #ccc;
+  margin: 0;
+  border-radius: 4px;
+  font-size: 12px;
+  box-sizing: border-box;
+  outline: none;
+}
+.toggle-btn {
+  outline: none;
+  border: none;
+  padding: 15px 20px;
+  background-color: aquamarine;
+  border-radius: 5px;
+}
+
+.budget-table th {
+  background-color: #344849;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 14px;
+  white-space: nowrap;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.budget-table::-webkit-scrollbar {
+  width: 2px;
+  height: 0px;
+}
+
+.budget-table::-webkit-scrollbar-thumb {
+  background-color: red;
+  margin-left: 20px;
+  border-radius: 10px;
+}
+
+.budget-table::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.budget-table td {
+  background-color: #ffffff;
+  color: #444;
+  border-bottom: 1px solid #ddd;
+  /* padding: 12px 15px; */
+  text-align: left;
+  font-size: 14px;
+  white-space: nowrap;
+  /* width: 20%; */
+}
+
+.budget-table td,
+.budget-table th .filter-data {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  /* max-width: 200px; */
+}
+
+.filter-row {
+  position: sticky;
+  top: 50px;
+  background-color: #f9f9f9;
+  z-index: 1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.filter-row td {
+  /* padding: 12px 15px; */
+  text-align: left;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  height: 7vh;
+  justify-content: space-between;
+  margin-top: 0px;
+  width: 100%;
+  position: sticky;
+  bottom: 0;
+  background-color: #f9f9f9;
+  padding: 10px 0;
+  /* z-index: 1; */
+}
+
+.pagination button {
+  background-color: #344849;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  margin: 0 5px;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #2a353a;
+}
+
+.pagination select {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: #ffffff;
+  cursor: pointer;
+  margin: 0 5px;
+}
+
+.pagination select:focus {
+  outline: none;
+  border-color: #344849;
+}
+
+.page-of {
+  display: inline-block;
+  width: 150px;
+}
+
+.sorted-asc {
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.sorted-desc {
+  transform: rotate(0deg);
+  transition: transform 0.2s ease;
+}
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  width: 100%;
+  position: fixed; /* Keeps it in the center of the screen */
+  top: 0;
+  left: 0;
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Optional background for better visibility */
+  z-index: 9999; /* Ensures it's above other elements */
+}
+
+.loader {
+  border: 8px solid #f3f3f3; /* Light gray */
+  border-top: 8px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.main-text {
+  display: flex;
+  justify-content: space-between;
+}
+.clear-all-btn {
+  color: #2874f0;
+  margin-left: auto;
+  cursor: pointer;
+  margin-right: 15px;
+}
+.filters-text {
+  color: #212121;
+  font-weight: 700;
+}
+.summary-header-text {
+  text-align: center;
+  margin-left: auto;
+}
+.top-buttons {
+  display: flex;
+  width: 100%;
+  height: 8vh;
+  align-items: center;
+  justify-content: center;
+  /* background-color: #212121; */
+}

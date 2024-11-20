@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DetailedExpensesTable from "./DetailedExpensesTable";
 import DailySummary from "./DailySummary";
+import ExpensesAudits from "./ExpensesAudits";
 
 const ExpenseTableParent = ({ Url, setUrl }) => {
   const [data, setData] = useState([]);
@@ -18,8 +19,7 @@ const ExpenseTableParent = ({ Url, setUrl }) => {
     setLoading(true);
 
     // Set the default URL if Url is not provided
-    const fetchUrl =
-      Url || "http://localhost:3000/daily-summary/yearly?year=2024";
+    const fetchUrl = Url || "http://localhost:3000/audit-logs/all";
 
     try {
       const response = await axios.get(fetchUrl);
@@ -34,7 +34,8 @@ const ExpenseTableParent = ({ Url, setUrl }) => {
   return (
     <div>
       {/* <DetailedExpensesTable data={data} loading={loading} error={error} />*/}
-      <DailySummary data={data} loading={loading} error={error} />
+      {/*<DailySummary data={data} loading={loading} error={error} />*/}
+      <ExpensesAudits data={data} loading={loading} error={error} />
     </div>
   );
 };
