@@ -471,8 +471,21 @@ const SearchExpenses = ({ Url, setUrl }) => {
             </div>
           </div>
         )}
-        <div className="show-button">
-          <button className="btn btn-primary mt-3" onClick={handleShowExpenses}>
+        <div className="">
+          <button
+            className="send-email-btn mt-3"
+            style={{
+              width: "18vw",
+              marginLeft: "1vw",
+              border: "none",
+              outline: "none",
+              padding: "10px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              backgroundColor: "rgb(250, 113, 113)",
+            }}
+            onClick={handleShowExpenses}
+          >
             Show Expenses
           </button>
         </div>

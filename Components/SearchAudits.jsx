@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { toDate } from "date-fns";
-import ExpenseTableParent from "./ExpenseTableParent";
 import "../Styles/SearchAudits.css";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { width } from "@fortawesome/free-solid-svg-icons/fa0";
-const SearchAudits = () => {
+
+const SearchAudits = ({ Url, setUrl }) => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isInputClicked, setIsInputClicked] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -19,25 +16,12 @@ const SearchAudits = () => {
   const [specificMonth, setSpecificMonth] = useState("");
   const [specificDay, setSpecificDay] = useState("");
   const suggestionsContainerRef = useRef(null);
-  const [startYear, setStartYear] = useState("");
-  const [endYear, setEndYear] = useState("");
-  const [startMonth, setStartMonth] = useState("");
-  const [endMonth, setEndMonth] = useState("");
-  const [fromDay, setFromDay] = useState("");
-  const [toDay, setToDay] = useState("");
-  const [expenseName, setExpenseName] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [category, setCategory] = useState("");
-  const [minAmount, setMinAmount] = useState("");
-  const [maxAmount, setMaxAmount] = useState("");
   const [expenseId, setExpenseId] = useState("");
   const [actionType, setActionType] = useState("");
   const [nMinutes, setNMinutes] = useState("");
   const [nSeconds, setNSeconds] = useState("");
   const [nHours, setNHours] = useState("");
   const [nDays, setNDays] = useState("");
-
-  const [Url, setUrl] = useState("");
 
   useEffect(() => {
     const fetchLogTypes = () => {
@@ -52,10 +36,9 @@ const SearchAudits = () => {
         });
     };
 
-    fetchLogTypes(); // Call it once initially
-    const interval = setInterval(fetchLogTypes, 1000000); // Call it every 5 seconds
+    fetchLogTypes();
+    const interval = setInterval(fetchLogTypes, 1000000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(interval);
   }, []);
 
@@ -72,7 +55,7 @@ const SearchAudits = () => {
       setFilteredLogTypes(logTypes);
     }
 
-    setSelectedIndex(-1); // Reset the selection index
+    setSelectedIndex(-1);
   };
 
   const handleClick = () => {
@@ -92,15 +75,15 @@ const SearchAudits = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevent form submission on Enter
+      e.preventDefault();
       const selectedSuggestion =
         selectedIndex >= 0
           ? filteredLogTypes[selectedIndex]
-          : filteredLogTypes[0]; // Default to the first item if none is selected
+          : filteredLogTypes[0];
 
       if (selectedSuggestion) {
-        setSearchTerm(selectedSuggestion); // Update the input with the selected suggestion
-        setFilteredLogTypes([]); // Clear suggestions after selecting
+        setSearchTerm(selectedSuggestion);
+        setFilteredLogTypes([]);
       }
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -133,122 +116,121 @@ const SearchAudits = () => {
     let params = {};
 
     switch (searchTerm) {
-      case "Today":
-        url = "http://localhost:3000/expenses/today";
+      case "Current Month Logs":
+        url = "http://localhost:3000/audit-logs/current-month";
         break;
-
-      case "Yesterday":
-        url = "http://localhost:3000/expenses/yesterday";
+      case "Last Month Logs":
+        url = "http://localhost:3000/audit-logs/last-month";
         break;
-
-      case "Last Week":
-        url = "http://localhost:3000/expenses/last-week";
+      case "Current Year Logs":
+        url = "http://localhost:3000/audit-logs/current-year";
         break;
-
-      case "Current Week":
-        url = "http://localhost:3000/expenses/current-week";
+      case "Last Year Logs":
+        url = "http://localhost:3000/audit-logs/last-year";
         break;
-
-      case "Current Month":
-        url = "http://localhost:3000/expenses/current-month";
+      case "Current Week Logs":
+        url = "http://localhost:3000/audit-logs/current-week";
         break;
-
-      case "Last Month":
-        url = "http://localhost:3000/expenses/last-month";
+      case "Last Week Logs":
+        url = "http://localhost:3000/audit-logs/last-week";
         break;
-
-      case "All Expenses":
-        url = "http://localhost:3000/fetch-expenses";
+      case "Today Logs":
+        url = "http://localhost:3000/audit-logs/today";
         break;
-
-      case "Monthly Summary":
+      case "Logs for Specific Year":
+        if (!specificYear) {
+          setError("Please provide a specific year.");
+          return;
+        }
+        url = `http://localhost:3000/audit-logs/year/${specificYear}`;
+        break;
+      case "Logs for Specific Month":
         if (!specificYear || !specificMonth) {
-          setError(
-            "Please provide both year and month for the Monthly Summary."
-          );
+          setError("Please provide both year and month.");
           return;
         }
-        url = `http://localhost:3000/monthly-summary/${specificYear}/${specificMonth}`;
+        url = "http://localhost:3000/audit-logs/month";
+        params.year = specificYear;
+        params.month = specificMonth;
         break;
-
-      case "Within Range Expenses":
-        if (!fromDay || !toDay) {
-          setError("Please provide both From and To dates");
+      case "Logs for Specific Day":
+        if (!specificDay) {
+          setError("Please provide a specific day.");
           return;
         }
-        url = "http://localhost:3000/fetch-expenses-by-date";
-        params.from = fromDay;
-        params.to = toDay;
+        url = "http://localhost:3000/audit-logs/day";
+        params.date = specificDay;
         break;
-
-      case "Expenses By Name":
-        if (!expenseName) {
-          setError("Please provide an expense name");
+      case "Logs by Action Type":
+        if (!actionType) {
+          setError("Please provide an action type.");
           return;
         }
-        url = "http://localhost:3000/expenses/search";
-        params.expenseName = expenseName;
+        url = `http://localhost:3000/audit-logs/action/${actionType}`;
         break;
-
-      case "Expenses By Payment Method":
-        if (!paymentMethod) {
-          setError("Please provide a payment method.");
+      case "Logs by Expense ID and Action Type":
+        const parsedExpenseId = parseInt(expenseId, 10);
+        if (isNaN(parsedExpenseId)) {
+          setError("Expense ID must be an integer.");
           return;
         }
-        url = `http://localhost:3000/payment-method/${paymentMethod}`;
-        break;
-
-      case "Expenses By Type and Payment Method":
-        if (!category || !paymentMethod) {
-          setError("Please provide type and payment");
+        if (!actionType) {
+          setError("Please provide an action type.");
           return;
         }
-        url = `http://localhost:3000/expenses/${category}/${paymentMethod}`;
+        url = `http://localhost:3000/audit-logs/expense/${parsedExpenseId}/action/${actionType}`;
         break;
-
-      case "Expenses By Type":
-        if (!category) {
-          setError("Please provide a category");
+      case "Logs from Last N Minutes":
+        if (!nMinutes) {
+          setError("Please provide the number of minutes.");
           return;
         }
-        url = `http://localhost:3000/expenses/${category}`;
+        url = "http://localhost:3000/audit-logs/last-n-minutes";
+        params.minutes = nMinutes;
         break;
-
-      case "Particular Month Expenses":
-        if (!startMonth || !startYear) {
-          setError("Please provide month and year");
+      case "Logs from Last N Hours":
+        if (!nHours) {
+          setError("Please provide the number of hours.");
           return;
         }
-        url = `http://localhost:3000/expenses/by-month`;
-        params.month = startMonth;
-        params.year = startYear;
+        url = "http://localhost:3000/audit-logs/last-n-hours";
+        params.hours = nHours;
         break;
-
-      case "Expenses Within Amount Range":
-        if (!minAmount || !maxAmount) {
-          setError("Please provide min or max value.");
+      case "Logs from Last N Days":
+        if (!nDays) {
+          setError("Please provide the number of days.");
           return;
         }
-        url = `http://localhost:3000/expenses/amount-range`;
-        params.minAmount = minAmount;
-        params.maxAmount = maxAmount;
+        url = "http://localhost:3000/audit-logs/last-n-days";
+        params.days = nDays;
         break;
-
-      case "Particular Date Expenses":
-        if (!fromDay) {
-          setError("Please provide a date");
+      case "Logs from Last N Seconds":
+        if (!nSeconds) {
+          setError("Please provide the number of seconds.");
           return;
         }
-        url = `http://localhost:3000/expenses/particular-date`;
-        params.date = fromDay;
+        url = "http://localhost:3000/audit-logs/last-n-seconds";
+        params.seconds = nSeconds;
         break;
-
+      case "Logs from Last 5 Minutes":
+        url = "http://localhost:3000/audit-logs/last-5-minutes";
+        break;
+      case "All Audit Logs":
+        url = "http://localhost:3000/audit-logs/all";
+        break;
+      case "Logs by Expense ID":
+        const parsedExpenseId1 = parseInt(expenseId, 10);
+        if (isNaN(parsedExpenseId1)) {
+          setError("Expense ID must be an integer.");
+          return;
+        }
+        url = `http://localhost:3000/audit-logs/expenses/${parsedExpenseId1}`;
+        break;
       default:
         setError("Please select a valid option.");
         return;
     }
 
-    // Append params to the URL if any
     if (Object.keys(params).length > 0) {
       const queryParams = new URLSearchParams(params).toString();
       url = `${url}?${queryParams}`;
@@ -259,27 +241,22 @@ const SearchAudits = () => {
   };
 
   const handleClearAll = () => {
-    // Reset all state variables
     setSearchTerm("");
     setSpecificYear("");
     setSpecificMonth("");
     setSpecificDay("");
-    setStartYear("");
-    setEndYear("");
-    setStartMonth("");
-    setEndMonth("");
-    setFromDay("");
-    setToDay("");
-    setExpenseName("");
-    setPaymentMethod("");
-    setCategory("");
-    setMinAmount("");
-    setMaxAmount("");
+    setExpenseId("");
+    setActionType("");
+    setNMinutes("");
+    setNSeconds("");
+    setNHours("");
+    setNDays("");
     setUrl("");
     setError("");
-    setFilteredLogTypes(logTypes); // Reset suggestions to default
+    setFilteredLogTypes(logTypes);
     setSelectedIndex(-1);
   };
+
   return (
     <div className="bg-white mt-0 d-flex flex-row">
       <div className="search-input">
@@ -505,7 +482,15 @@ const SearchAudits = () => {
         <div className="show-button">
           <button
             className=" mt-3 send-mail-btn"
-            style={{ width: "18vw" }}
+            style={{
+              width: "18vw",
+              border: "none",
+              outline: "none",
+              padding: "10px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              backgroundColor: "rgb(250, 113, 113)",
+            }}
             onClick={handleShowExpenses}
           >
             Show Expenses

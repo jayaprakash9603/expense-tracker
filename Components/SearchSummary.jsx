@@ -6,7 +6,7 @@ import ExpenseTableParent from "./ExpenseTableParent";
 import "../Styles/SearchSummary.css";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-const SearchSummary = () => {
+const SearchSummary = ({ Url, setUrl }) => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,7 +29,8 @@ const SearchSummary = () => {
   const [category, setCategory] = useState("");
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
-  const [Url, setUrl] = useState("");
+  const [specificDate, setSpecificDate] = useState("");
+  // const [Url, setUrl] = useState("");
 
   useEffect(() => {
     const fetchLogTypes = () => {
@@ -125,116 +126,44 @@ const SearchSummary = () => {
     let params = {};
 
     switch (searchTerm) {
-      case "Today":
-        url = "http://localhost:3000/expenses/today";
-        break;
-
-      case "Yesterday":
-        url = "http://localhost:3000/expenses/yesterday";
-        break;
-
-      case "Last Week":
-        url = "http://localhost:3000/expenses/last-week";
-        break;
-
-      case "Current Week":
-        url = "http://localhost:3000/expenses/current-week";
-        break;
-
-      case "Current Month":
-        url = "http://localhost:3000/expenses/current-month";
-        break;
-
-      case "Last Month":
-        url = "http://localhost:3000/expenses/last-month";
-        break;
-
-      case "All Expenses":
-        url = "http://localhost:3000/fetch-expenses";
-        break;
-
-      case "Monthly Summary":
+      case "Monthly Wise Daily Expense Summary":
         if (!specificYear || !specificMonth) {
-          setError(
-            "Please provide both year and month for the Monthly Summary."
-          );
+          setError("Please provide both year and month.");
           return;
         }
-        url = `http://localhost:3000/monthly-summary/${specificYear}/${specificMonth}`;
+        url = "http://localhost:3000/daily-summary/monthly";
+        params.year = specificYear;
+        params.month = specificMonth;
         break;
-
-      case "Within Range Expenses":
-        if (!fromDay || !toDay) {
-          setError("Please provide both From and To dates");
+      case "Summary Between Dates":
+        if (!startMonth || !startYear || !endMonth || !endYear) {
+          setError("Please provide start and end month and year.");
           return;
         }
-        url = "http://localhost:3000/fetch-expenses-by-date";
-        params.from = fromDay;
-        params.to = toDay;
+        url = `http://localhost:3000/between-dates`;
+        params.startMonth = startMonth;
+        params.startYear = startYear;
+        params.endMonth = endMonth;
+        params.endYear = endYear;
         break;
-
-      case "Expenses By Name":
-        if (!expenseName) {
-          setError("Please provide an expense name");
+      case "Yearly Wise Daily Expense Summary":
+        const parsedYear = parseInt(specificYear, 10);
+        if (isNaN(parsedYear)) {
+          setError("Year must be an integer.");
           return;
         }
-        url = "http://localhost:3000/expenses/search";
-        params.expenseName = expenseName;
+        url = `http://localhost:3000/daily-summary/yearly`;
+        params.year = parsedYear;
         break;
-
-      case "Expenses By Payment Method":
-        if (!paymentMethod) {
-          setError("Please provide a payment method.");
+      case "Expense Summary for Specific Date":
+        const parsedDate = specificDay;
+        if (!parsedDate) {
+          setError("Date must be provided.");
           return;
         }
-        url = `http://localhost:3000/payment-method/${paymentMethod}`;
+        url = `http://localhost:3000/daily-summary/date`;
+        params.date = specificDay;
         break;
-
-      case "Expenses By Type and Payment Method":
-        if (!category || !paymentMethod) {
-          setError("Please provide type and payment");
-          return;
-        }
-        url = `http://localhost:3000/expenses/${category}/${paymentMethod}`;
-        break;
-
-      case "Expenses By Type":
-        if (!category) {
-          setError("Please provide a category");
-          return;
-        }
-        url = `http://localhost:3000/expenses/${category}`;
-        break;
-
-      case "Particular Month Expenses":
-        if (!startMonth || !startYear) {
-          setError("Please provide month and year");
-          return;
-        }
-        url = `http://localhost:3000/expenses/by-month`;
-        params.month = startMonth;
-        params.year = startYear;
-        break;
-
-      case "Expenses Within Amount Range":
-        if (!minAmount || !maxAmount) {
-          setError("Please provide min or max value.");
-          return;
-        }
-        url = `http://localhost:3000/expenses/amount-range`;
-        params.minAmount = minAmount;
-        params.maxAmount = maxAmount;
-        break;
-
-      case "Particular Date Expenses":
-        if (!fromDay) {
-          setError("Please provide a date");
-          return;
-        }
-        url = `http://localhost:3000/expenses/particular-date`;
-        params.date = fromDay;
-        break;
-
       default:
         setError("Please select a valid option.");
         return;
@@ -360,147 +289,79 @@ const SearchSummary = () => {
             )}
           </div>
         </div>
-        {searchTerm === "Particular Date Expenses" && (
-          <div className="form-group mb-3 width">
-            <input
-              type="date"
-              className="form-control"
-              value={fromDay}
-              onChange={(e) => setFromDay(e.target.value)}
-              title="Enter Date (yyyy-MM-dd)" // Tooltip on hover
-            />
-          </div>
-        )}
-        {searchTerm === "Particular Month Expenses" && (
-          <div className="form-group mb-3 width">
-            <label>Enter Start Year:</label>
+        {searchTerm === "Summary Between Dates" && (
+          <div className="form-group mb-3">
             <input
               type="number"
-              className="form-control"
+              className="log-period mb-3"
               value={startYear}
+              placeholder="Enter Start Year"
               onChange={(e) => setStartYear(e.target.value)}
             />
-            <label>Enter Start Month:</label>
+
             <input
               type="number"
-              className="form-control"
+              className="log-period mb-3"
               value={startMonth}
+              placeholder="Enter Start Month"
               onChange={(e) => setStartMonth(e.target.value)}
             />
-          </div>
-        )}
-        {searchTerm === "Expenses By Name" && (
-          <div className="form-group mb-3 width">
+
             <input
-              type="text"
-              className="form-control"
-              value={expenseName}
-              placeholder="Enter expense name"
-              onChange={(e) => setExpenseName(e.target.value)}
+              type="number"
+              className="log-period mb-3"
+              value={endYear}
+              placeholder="Enter End Year"
+              onChange={(e) => setEndYear(e.target.value)}
+            />
+
+            <input
+              type="number"
+              className="log-period"
+              value={endMonth}
+              placeholder="Enter End Month"
+              onChange={(e) => setEndMonth(e.target.value)}
             />
           </div>
         )}
-        {searchTerm === "Expenses By Payment Method" && (
-          <div className="form-group mb-3 width">
-            <select
-              className="form-control"
-              value={paymentMethod}
-              onChange={(e) => setPaymentMethod(e.target.value)}
-            >
-              <option value="">-- Select Payment Method --</option>
-              <option value="cash">Cash</option>
-              <option value="creditNeedToPaid">Credit Due</option>
-              <option value="creditPaid">Credit Paid</option>
-            </select>
-          </div>
-        )}
-        {searchTerm === "Within Range Expenses" && (
-          <div className="form-group mb-3 width">
-            <div className="from-date">
-              <label>From</label>
-              <input
-                type="date"
-                className="form-control"
-                value={fromDay}
-                onChange={(e) => setFromDay(e.target.value)}
-              />
-            </div>
-            <div className="to-date">
-              <label>To</label>
-              <input
-                type="date"
-                className="form-control"
-                value={toDay}
-                onChange={(e) => setToDay(e.target.value)}
-              />
-            </div>
-          </div>
-        )}
-        {searchTerm === "Expenses By Type and Payment Method" && (
+        {searchTerm === "Yearly Wise Daily Expense Summary" && (
           <div className="form-group mb-3">
-            <div className="width">
-              <select
-                className="form-control mb-3"
-                value={category} // State variable for the first dropdown
-                onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
-              >
-                <option value="">-- Select Category --</option>
-                <option value="loss">Loss</option>
-                <option value="gain">Gain</option>
-              </select>
-            </div>
-            <div className="width">
-              <select
-                className="form-control"
-                value={paymentMethod} // State variable for the second dropdown
-                onChange={(e) => setPaymentMethod(e.target.value)} // Update the setter accordingly
-              >
-                <option value="">-- Select Payment Method --</option>
-                <option value="cash">Cash</option>
-                <option value="creditNeedToPaid">Credit Due</option>
-                <option value="creditPaid">Credit Paid</option>
-              </select>
-            </div>
+            <input
+              type="number"
+              className="log-period"
+              value={specificYear}
+              placeholder="Enter Year"
+              onChange={(e) => setSpecificYear(e.target.value)}
+            />
           </div>
         )}
 
-        {searchTerm === "Expenses By Type" && (
+        {searchTerm === "Expense Summary for Specific Date" && (
           <div className="form-group mb-3">
-            <div className="width">
-              <select
-                className="form-control mb-3"
-                value={category} // State variable for the first dropdown
-                onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
-              >
-                <option value="">-- Select Category --</option>
-                <option value="loss">Loss</option>
-                <option value="gain">Gain</option>
-              </select>
-            </div>
+            <input
+              type="date"
+              className="log-period"
+              value={specificDay}
+              onChange={(e) => setSpecificDay(e.target.value)}
+            />
           </div>
         )}
-        {searchTerm === "Expenses Within Amount Range" && (
-          <div className="form-group mb-3 ">
-            <div className="width">
-              <input
-                type="number"
-                step="0.01"
-                className="form-control mb-3"
-                value={minAmount} // State variable for min amount
-                onChange={(e) => setMinAmount(e.target.value)} // Update the setter for min amount
-                placeholder="Enter minimum amount"
-              />
-            </div>
-            <div className="width">
-              <input
-                type="number"
-                step="0.01"
-                className="form-control"
-                value={maxAmount} // State variable for max amount
-                onChange={(e) => setMaxAmount(e.target.value)} // Update the setter for max amount
-                placeholder="Enter maximum amount"
-              />
-            </div>
+        {searchTerm === "Monthly Wise Daily Expense Summary" && (
+          <div className="form-group mb-3">
+            <input
+              type="number"
+              className="log-period mb-3"
+              value={specificYear}
+              placeholder="Enter Year"
+              onChange={(e) => setSpecificYear(e.target.value)}
+            />
+            <input
+              type="number"
+              className="log-period"
+              value={specificMonth}
+              placeholder="Enter Month"
+              onChange={(e) => setSpecificMonth(e.target.value)}
+            />
           </div>
         )}
 

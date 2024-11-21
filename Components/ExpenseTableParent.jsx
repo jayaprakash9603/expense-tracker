@@ -5,24 +5,21 @@ import DailySummary from "./DailySummary";
 import ExpensesAudits from "./ExpensesAudits";
 
 const ExpenseTableParent = ({ Url, setUrl, selectedReport }) => {
-  // Separate state variables for each type of data
   const [expensesData, setExpensesData] = useState([]);
   const [summaryData, setSummaryData] = useState([]);
   const [auditsData, setAuditsData] = useState([]);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Determine which API to call based on selectedReport
     if (selectedReport) {
       fetchData(selectedReport);
     }
-  }, [selectedReport, Url]); // Trigger when selectedReport or Url changes
+  }, [selectedReport, Url]);
 
   const fetchData = async (reportType) => {
     setLoading(true);
-    setError(null); // Clear any existing errors
+    setError(null);
 
     try {
       let response;
@@ -32,6 +29,10 @@ const ExpenseTableParent = ({ Url, setUrl, selectedReport }) => {
           response = await axios.get(
             Url || "http://localhost:3000/fetch-expenses"
           );
+          if (response.status === 204 || response.data.length === 0) {
+            alert("No expenses found.");
+            response = await axios.get("http://localhost:3000/fetch-expenses");
+          }
           setExpensesData(response.data);
           break;
 
@@ -40,6 +41,12 @@ const ExpenseTableParent = ({ Url, setUrl, selectedReport }) => {
             Url ||
               "http://localhost:3000/daily-summary/monthly?year=2024&month=11"
           );
+          if (response.status === 204 || response.data.length === 0) {
+            alert("No summary found.");
+            response = await axios.get(
+              "http://localhost:3000/daily-summary/monthly?year=2024&month=11"
+            );
+          }
           setSummaryData(response.data);
           break;
 
@@ -47,6 +54,10 @@ const ExpenseTableParent = ({ Url, setUrl, selectedReport }) => {
           response = await axios.get(
             Url || "http://localhost:3000/audit-logs/all"
           );
+          if (response.status === 204 || response.data.length === 0) {
+            alert("No logs found.");
+            response = await axios.get("http://localhost:3000/audit-logs/all");
+          }
           setAuditsData(response.data);
           break;
 
@@ -57,7 +68,7 @@ const ExpenseTableParent = ({ Url, setUrl, selectedReport }) => {
     } catch (err) {
       setError("Failed to fetch data");
     } finally {
-      setLoading(false); // Ensure loading state is updated
+      setLoading(false);
     }
   };
 
