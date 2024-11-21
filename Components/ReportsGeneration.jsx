@@ -7,13 +7,14 @@ import ExpenseTableParent from "./ExpenseTableParent";
 import SearchExpenses from "./SearchExpenses";
 import SearchSummary from "./SearchSummary";
 import SearchAudits from "./SearchAudits";
+
 const ReportsGeneration = () => {
   const [selectedReport, setSelectedReport] = useState(null);
+  const [Url, setUrl] = useState(null);
 
   const handleDropdownChange = (event) => {
     setSelectedReport(event.target.value);
   };
-  const [Url, setUrl] = useState(null);
 
   return (
     <div className="main-container">
@@ -31,11 +32,12 @@ const ReportsGeneration = () => {
         </div>
         <div className="component-div">
           {selectedReport === "select" && <></>}
-
           {selectedReport === "auditLogsReport" && <AuditLogsEmailSender />}
           {selectedReport === "expenseReport" && <ExpensesEmail />}
           {selectedReport === "expenseSummary" && <ExpenseSummaryEmailSender />}
-          {selectedReport === "searchExpenses" && <SearchExpenses />}
+          {selectedReport === "searchExpenses" && (
+            <SearchExpenses Url={Url} setUrl={setUrl} />
+          )}
           {selectedReport === "searchSummary" && <SearchSummary />}
           {selectedReport === "searchAudits" && <SearchAudits />}
         </div>

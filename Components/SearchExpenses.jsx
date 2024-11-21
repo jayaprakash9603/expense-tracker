@@ -1,27 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { toDate } from "date-fns";
-import ExpenseTableParent from "./ExpenseTableParent";
 import "../Styles/SearchExpenses.css";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 const SearchExpenses = ({ Url, setUrl }) => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isInputClicked, setIsInputClicked] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [specificYear, setSpecificYear] = useState("");
   const [specificMonth, setSpecificMonth] = useState("");
-  const [specificDay, setSpecificDay] = useState("");
-  const suggestionsContainerRef = useRef(null);
-  const [startYear, setStartYear] = useState("");
-  const [endYear, setEndYear] = useState("");
-  const [startMonth, setStartMonth] = useState("");
-  const [endMonth, setEndMonth] = useState("");
   const [fromDay, setFromDay] = useState("");
   const [toDay, setToDay] = useState("");
   const [expenseName, setExpenseName] = useState("");
@@ -29,7 +21,7 @@ const SearchExpenses = ({ Url, setUrl }) => {
   const [category, setCategory] = useState("");
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
-  // const [Url, setUrl] = useState("");
+  const suggestionsContainerRef = useRef(null);
 
   useEffect(() => {
     const fetchLogTypes = () => {
@@ -44,10 +36,9 @@ const SearchExpenses = ({ Url, setUrl }) => {
         });
     };
 
-    fetchLogTypes(); // Call it once initially
-    const interval = setInterval(fetchLogTypes, 1000000); // Call it every 5 seconds
+    fetchLogTypes();
+    const interval = setInterval(fetchLogTypes, 1000000);
 
-    // Cleanup interval on component unmount
     return () => clearInterval(interval);
   }, []);
 
@@ -64,7 +55,7 @@ const SearchExpenses = ({ Url, setUrl }) => {
       setFilteredLogTypes(logTypes);
     }
 
-    setSelectedIndex(-1); // Reset the selection index
+    setSelectedIndex(-1);
   };
 
   const handleClick = () => {
@@ -84,15 +75,15 @@ const SearchExpenses = ({ Url, setUrl }) => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevent form submission on Enter
+      e.preventDefault();
       const selectedSuggestion =
         selectedIndex >= 0
           ? filteredLogTypes[selectedIndex]
-          : filteredLogTypes[0]; // Default to the first item if none is selected
+          : filteredLogTypes[0];
 
       if (selectedSuggestion) {
-        setSearchTerm(selectedSuggestion); // Update the input with the selected suggestion
-        setFilteredLogTypes([]); // Clear suggestions after selecting
+        setSearchTerm(selectedSuggestion);
+        setFilteredLogTypes([]);
       }
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -128,31 +119,24 @@ const SearchExpenses = ({ Url, setUrl }) => {
       case "Today":
         url = "http://localhost:3000/expenses/today";
         break;
-
       case "Yesterday":
         url = "http://localhost:3000/expenses/yesterday";
         break;
-
       case "Last Week":
         url = "http://localhost:3000/expenses/last-week";
         break;
-
       case "Current Week":
         url = "http://localhost:3000/expenses/current-week";
         break;
-
       case "Current Month":
         url = "http://localhost:3000/expenses/current-month";
         break;
-
       case "Last Month":
         url = "http://localhost:3000/expenses/last-month";
         break;
-
       case "All Expenses":
         url = "http://localhost:3000/fetch-expenses";
         break;
-
       case "Monthly Summary":
         if (!specificYear || !specificMonth) {
           setError(
@@ -162,7 +146,6 @@ const SearchExpenses = ({ Url, setUrl }) => {
         }
         url = `http://localhost:3000/monthly-summary/${specificYear}/${specificMonth}`;
         break;
-
       case "Within Range Expenses":
         if (!fromDay || !toDay) {
           setError("Please provide both From and To dates");
@@ -172,7 +155,6 @@ const SearchExpenses = ({ Url, setUrl }) => {
         params.from = fromDay;
         params.to = toDay;
         break;
-
       case "Expenses By Name":
         if (!expenseName) {
           setError("Please provide an expense name");
@@ -181,7 +163,6 @@ const SearchExpenses = ({ Url, setUrl }) => {
         url = "http://localhost:3000/expenses/search";
         params.expenseName = expenseName;
         break;
-
       case "Expenses By Payment Method":
         if (!paymentMethod) {
           setError("Please provide a payment method.");
@@ -189,7 +170,6 @@ const SearchExpenses = ({ Url, setUrl }) => {
         }
         url = `http://localhost:3000/payment-method/${paymentMethod}`;
         break;
-
       case "Expenses By Type and Payment Method":
         if (!category || !paymentMethod) {
           setError("Please provide type and payment");
@@ -197,7 +177,6 @@ const SearchExpenses = ({ Url, setUrl }) => {
         }
         url = `http://localhost:3000/expenses/${category}/${paymentMethod}`;
         break;
-
       case "Expenses By Type":
         if (!category) {
           setError("Please provide a category");
@@ -205,7 +184,6 @@ const SearchExpenses = ({ Url, setUrl }) => {
         }
         url = `http://localhost:3000/expenses/${category}`;
         break;
-
       case "Particular Month Expenses":
         if (!startMonth || !startYear) {
           setError("Please provide month and year");
@@ -215,7 +193,6 @@ const SearchExpenses = ({ Url, setUrl }) => {
         params.month = startMonth;
         params.year = startYear;
         break;
-
       case "Expenses Within Amount Range":
         if (!minAmount || !maxAmount) {
           setError("Please provide min or max value.");
@@ -225,7 +202,6 @@ const SearchExpenses = ({ Url, setUrl }) => {
         params.minAmount = minAmount;
         params.maxAmount = maxAmount;
         break;
-
       case "Particular Date Expenses":
         if (!fromDay) {
           setError("Please provide a date");
@@ -234,13 +210,11 @@ const SearchExpenses = ({ Url, setUrl }) => {
         url = `http://localhost:3000/expenses/particular-date`;
         params.date = fromDay;
         break;
-
       default:
         setError("Please select a valid option.");
         return;
     }
 
-    // Append params to the URL if any
     if (Object.keys(params).length > 0) {
       const queryParams = new URLSearchParams(params).toString();
       url = `${url}?${queryParams}`;
@@ -251,15 +225,9 @@ const SearchExpenses = ({ Url, setUrl }) => {
   };
 
   const handleClearAll = () => {
-    // Reset all state variables
     setSearchTerm("");
     setSpecificYear("");
     setSpecificMonth("");
-    setSpecificDay("");
-    setStartYear("");
-    setEndYear("");
-    setStartMonth("");
-    setEndMonth("");
     setFromDay("");
     setToDay("");
     setExpenseName("");
@@ -269,9 +237,10 @@ const SearchExpenses = ({ Url, setUrl }) => {
     setMaxAmount("");
     setUrl("");
     setError("");
-    setFilteredLogTypes(logTypes); // Reset suggestions to default
+    setFilteredLogTypes(logTypes);
     setSelectedIndex(-1);
   };
+
   return (
     <div className="bg-white mt-0 d-flex flex-row">
       <div className="search-input">
@@ -367,7 +336,7 @@ const SearchExpenses = ({ Url, setUrl }) => {
               className="form-control"
               value={fromDay}
               onChange={(e) => setFromDay(e.target.value)}
-              title="Enter Date (yyyy-MM-dd)" // Tooltip on hover
+              title="Enter Date (yyyy-MM-dd)"
             />
           </div>
         )}
@@ -441,8 +410,8 @@ const SearchExpenses = ({ Url, setUrl }) => {
             <div className="width">
               <select
                 className="form-control mb-3"
-                value={category} // State variable for the first dropdown
-                onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
               >
                 <option value="">-- Select Category --</option>
                 <option value="loss">Loss</option>
@@ -452,8 +421,8 @@ const SearchExpenses = ({ Url, setUrl }) => {
             <div className="width">
               <select
                 className="form-control"
-                value={paymentMethod} // State variable for the second dropdown
-                onChange={(e) => setPaymentMethod(e.target.value)} // Update the setter accordingly
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
               >
                 <option value="">-- Select Payment Method --</option>
                 <option value="cash">Cash</option>
@@ -463,14 +432,13 @@ const SearchExpenses = ({ Url, setUrl }) => {
             </div>
           </div>
         )}
-
         {searchTerm === "Expenses By Type" && (
           <div className="form-group mb-3">
             <div className="width">
               <select
                 className="form-control mb-3"
-                value={category} // State variable for the first dropdown
-                onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
               >
                 <option value="">-- Select Category --</option>
                 <option value="loss">Loss</option>
@@ -486,8 +454,8 @@ const SearchExpenses = ({ Url, setUrl }) => {
                 type="number"
                 step="0.01"
                 className="form-control mb-3"
-                value={minAmount} // State variable for min amount
-                onChange={(e) => setMinAmount(e.target.value)} // Update the setter for min amount
+                value={minAmount}
+                onChange={(e) => setMinAmount(e.target.value)}
                 placeholder="Enter minimum amount"
               />
             </div>
@@ -496,14 +464,13 @@ const SearchExpenses = ({ Url, setUrl }) => {
                 type="number"
                 step="0.01"
                 className="form-control"
-                value={maxAmount} // State variable for max amount
-                onChange={(e) => setMaxAmount(e.target.value)} // Update the setter for max amount
+                value={maxAmount}
+                onChange={(e) => setMaxAmount(e.target.value)}
                 placeholder="Enter maximum amount"
               />
             </div>
           </div>
         )}
-
         <div className="show-button">
           <button className="btn btn-primary mt-3" onClick={handleShowExpenses}>
             Show Expenses
