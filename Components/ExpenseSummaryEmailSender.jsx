@@ -4,6 +4,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../Styles/ExpenseSummaryEmailSender.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
+import EmailLoader from "./Loaders/EmailLoader";
+
 const ExpenseSummaryEmailSender = () => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
@@ -20,6 +22,7 @@ const ExpenseSummaryEmailSender = () => {
   const [endYear, setEndYear] = useState("");
   const [startMonth, setStartMonth] = useState("");
   const [endMonth, setEndMonth] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     axios
@@ -36,7 +39,11 @@ const ExpenseSummaryEmailSender = () => {
   const handleChange1 = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
+    filterLogTypes(value);
+    setSelectedIndex(-1); // Reset the selection index
+  };
 
+  const filterLogTypes = (value) => {
     if (value.length > 0) {
       const filtered = logTypes.filter((item) =>
         item.toLowerCase().includes(value.toLowerCase())
@@ -45,8 +52,6 @@ const ExpenseSummaryEmailSender = () => {
     } else {
       setFilteredLogTypes(logTypes);
     }
-
-    setSelectedIndex(-1); // Reset the selection index
   };
 
   const handleClick = () => {
@@ -67,15 +72,7 @@ const ExpenseSummaryEmailSender = () => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault(); // Prevent form submission on Enter
-      const selectedSuggestion =
-        selectedIndex >= 0
-          ? filteredLogTypes[selectedIndex]
-          : filteredLogTypes[0]; // Default to the first item if none is selected
-
-      if (selectedSuggestion) {
-        setSearchTerm(selectedSuggestion); // Update the input with the selected suggestion
-        setFilteredLogTypes([]); // Clear suggestions after selecting
-      }
+      selectSuggestion();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prevIndex) =>
@@ -84,6 +81,18 @@ const ExpenseSummaryEmailSender = () => {
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelectedIndex((prevIndex) => Math.max(0, prevIndex - 1));
+    }
+  };
+
+  const selectSuggestion = () => {
+    const selectedSuggestion =
+      selectedIndex >= 0
+        ? filteredLogTypes[selectedIndex]
+        : filteredLogTypes[0]; // Default to the first item if none is selected
+
+    if (selectedSuggestion) {
+      setSearchTerm(selectedSuggestion); // Update the input with the selected suggestion
+      setFilteredLogTypes([]); // Clear suggestions after selecting
     }
   };
 
@@ -107,7 +116,42 @@ const ExpenseSummaryEmailSender = () => {
     }
 
     setError(""); // Clear any previous errors
+    setLoading(true); // Set loading to true
 
+    const { url, params } = getEmailParams();
+
+    if (!url) {
+      setLoading(false); // Set loading to false
+      return;
+    }
+
+    console.log("Sending request to:", url, "with params:", params);
+
+    axios
+      .get(url, { params })
+      .then((response) => {
+        handleClearAll();
+        setLoading(false);
+        // Set loading to false
+        if (response.status === 204) {
+          alert("No summaries were found.");
+        } else {
+          alert("Email sent successfully!");
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        handleClearAll(); // Set loading to false
+        if (error.response && error.response.status === 400) {
+          alert(error.response.data.message);
+        } else {
+          console.error("Error sending email:", error);
+          alert("Failed to send email.");
+        }
+      });
+  };
+
+  const getEmailParams = () => {
     let url = "";
     let params = { email };
 
@@ -134,7 +178,7 @@ const ExpenseSummaryEmailSender = () => {
         const parsedYear = parseInt(specificYear, 10);
         if (isNaN(parsedYear)) {
           setError("Year must be an integer.");
-          return;
+          return { url: "", params: {} };
         }
         url = `http://localhost:3000/daily-summary/yearly/email`;
         params.year = parsedYear;
@@ -143,7 +187,7 @@ const ExpenseSummaryEmailSender = () => {
         const parsedYear1 = parseInt(specificYear, 10);
         if (isNaN(parsedYear1)) {
           setError("Year must be an integer.");
-          return;
+          return { url: "", params: {} };
         }
         url = `http://localhost:3000/daily-summary/yearly/email`;
         params.year = parsedYear1;
@@ -152,36 +196,37 @@ const ExpenseSummaryEmailSender = () => {
         const parsedDate = specificDay;
         if (!parsedDate) {
           setError("Date must be provided.");
-          return;
+          return { url: "", params: {} };
         }
         url = `http://localhost:3000/daily-summary/date/email/${parsedDate}`;
-        // params.date = parsedDate;
         break;
       default:
         setError("Please select a valid option.");
-        return;
+        return { url: "", params: {} };
     }
 
-    console.log("Sending request to:", url, "with params:", params);
-
-    axios
-      .get(url, { params })
-      .then((response) => {
-        if (response.status === 204) {
-          alert("No summaries were found.");
-        } else {
-          alert("Email sent successfully!");
-        }
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 400) {
-          alert(error.response.data.message);
-        } else {
-          console.error("Error sending email:", error);
-          alert("Failed to send email.");
-        }
-      });
+    return { url, params };
   };
+
+  const handleClearAll = () => {
+    // Reset all state variables
+    setSearchTerm("");
+    setSpecificYear("");
+    setSpecificMonth("");
+    setSpecificDay("");
+    setStartYear("");
+    setEndYear("");
+    setStartMonth("");
+    setEndMonth("");
+    setError("");
+    setFilteredLogTypes(logTypes); // Reset suggestions to default
+    setSelectedIndex(-1);
+    setEmail("");
+  };
+
+  if (loading) {
+    return <div className="loader-container">{<EmailLoader />}</div>;
+  }
 
   return (
     <div className="audit-container">
@@ -199,6 +244,12 @@ const ExpenseSummaryEmailSender = () => {
             </div>
           </div>
         )}
+      </div>
+      <div className="width main-text">
+        <p className="filters-text">Filters</p>
+        <p className="clear-all-text" onClick={handleClearAll}>
+          Clear All
+        </p>
       </div>
       <div className="header">
         <h5>Send Expense Summaries</h5>
@@ -354,17 +405,17 @@ const ExpenseSummaryEmailSender = () => {
       )}
       {searchTerm === "Monthly Summary" && (
         <div className="form-group mb-3">
-          <label>Enter Year:</label>
+          <label className="label">Enter Year:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
             value={specificYear}
             onChange={(e) => setSpecificYear(e.target.value)}
           />
-          <label>Enter Month:</label>
+          <label className="label">Enter Month:</label>
           <input
             type="number"
-            className="form-control"
+            className="log-period mb-3"
             value={specificMonth}
             onChange={(e) => setSpecificMonth(e.target.value)}
           />

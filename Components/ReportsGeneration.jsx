@@ -14,13 +14,14 @@ const ReportsGeneration = () => {
 
   const handleDropdownChange = (event) => {
     setSelectedReport(event.target.value);
+    setUrl(null);
   };
 
   return (
     <div className="main-container">
       <div>
         <div className="select-div">
-          <select onChange={handleDropdownChange}>
+          <select onChange={handleDropdownChange} className="select-dropdown">
             <option value="select">Select Report</option>
             <option value="auditLogsReport">Audit Logs Report</option>
             <option value="expenseReport">Expense Report</option>

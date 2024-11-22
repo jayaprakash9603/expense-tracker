@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { toDate } from "date-fns";
 import "../Styles/ExpensesEmail.css";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import EmailLoader from "./Loaders/EmailLoader";
+
 const ExpensesEmail = () => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
@@ -16,7 +17,6 @@ const ExpensesEmail = () => {
   const [specificYear, setSpecificYear] = useState("");
   const [specificMonth, setSpecificMonth] = useState("");
   const [specificDay, setSpecificDay] = useState("");
-  const suggestionsContainerRef = useRef(null);
   const [startYear, setStartYear] = useState("");
   const [endYear, setEndYear] = useState("");
   const [startMonth, setStartMonth] = useState("");
@@ -28,23 +28,33 @@ const ExpensesEmail = () => {
   const [category, setCategory] = useState("");
   const [minAmount, setMinAmount] = useState("");
   const [maxAmount, setMaxAmount] = useState("");
+  const [loading, setLoading] = useState(false);
+  const suggestionsContainerRef = useRef(null);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/expenses/expenses-types")
-      .then((response) => {
-        setLogTypes(response.data);
-        setFilteredLogTypes(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching log types:", error);
-      });
+    fetchLogTypes();
   }, []);
+
+  const fetchLogTypes = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/expenses/expenses-types"
+      );
+      setLogTypes(response.data);
+      setFilteredLogTypes(response.data);
+    } catch (error) {
+      console.error("Error fetching log types:", error);
+    }
+  };
 
   const handleChange1 = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
+    filterLogTypes(value);
+    setSelectedIndex(-1);
+  };
 
+  const filterLogTypes = (value) => {
     if (value.length > 0) {
       const filtered = logTypes.filter((item) =>
         item.toLowerCase().includes(value.toLowerCase())
@@ -53,8 +63,6 @@ const ExpensesEmail = () => {
     } else {
       setFilteredLogTypes(logTypes);
     }
-
-    setSelectedIndex(-1); // Reset the selection index
   };
 
   const handleClick = () => {
@@ -74,16 +82,8 @@ const ExpensesEmail = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevent form submission on Enter
-      const selectedSuggestion =
-        selectedIndex >= 0
-          ? filteredLogTypes[selectedIndex]
-          : filteredLogTypes[0]; // Default to the first item if none is selected
-
-      if (selectedSuggestion) {
-        setSearchTerm(selectedSuggestion); // Update the input with the selected suggestion
-        setFilteredLogTypes([]); // Clear suggestions after selecting
-      }
+      e.preventDefault();
+      selectSuggestion();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prevIndex) =>
@@ -92,6 +92,17 @@ const ExpensesEmail = () => {
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelectedIndex((prevIndex) => Math.max(0, prevIndex - 1));
+    }
+  };
+
+  const selectSuggestion = () => {
+    const selectedSuggestion =
+      selectedIndex >= 0
+        ? filteredLogTypes[selectedIndex]
+        : filteredLogTypes[0];
+    if (selectedSuggestion) {
+      setSearchTerm(selectedSuggestion);
+      setFilteredLogTypes([]);
     }
   };
 
@@ -108,14 +119,42 @@ const ExpensesEmail = () => {
     }
   }, [selectedIndex, filteredLogTypes]);
 
-  const handleSendEmail = () => {
+  const handleSendEmail = async () => {
     if (!email) {
       setError("Please enter an email.");
       return;
     }
 
-    setError(""); // Clear any previous errors
+    setError("");
+    setLoading(true);
 
+    const { url, params } = getEmailParams();
+
+    if (!url) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(url, { params });
+      setLoading(false);
+      if (response.status === 204) {
+        alert("No summaries were found.");
+      } else {
+        alert("Email sent successfully!");
+      }
+    } catch (error) {
+      setLoading(false);
+      if (error.response && error.response.status === 400) {
+        alert(error.response.data.message);
+      } else {
+        console.error("Error sending email:", error);
+        alert("Failed to send email.");
+      }
+    }
+  };
+
+  const getEmailParams = () => {
     let url = "";
     let params = { email };
 
@@ -163,13 +202,11 @@ const ExpensesEmail = () => {
         url = `http://localhost:3000/expenses/amount-range/email`;
         params.minAmount = minAmount;
         params.maxAmount = maxAmount;
-        // params.date = parsedDate;
         break;
       case "Particular Month Expenses":
         url = `http://localhost:3000/expenses/by-month/email`;
         params.month = startMonth;
         params.year = startYear;
-        // params.date = parsedDate;
         break;
       case "Particular Date Expenses":
         url = `http://localhost:3000/expenses/date/email`;
@@ -177,29 +214,37 @@ const ExpensesEmail = () => {
         break;
       default:
         setError("Please select a valid option.");
-        return;
+        return { url: "", params: {} };
     }
 
-    console.log("Sending request to:", url, "with params:", params);
-
-    axios
-      .get(url, { params })
-      .then((response) => {
-        if (response.status === 204) {
-          alert("No summaries were found.");
-        } else {
-          alert("Email sent successfully!");
-        }
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 400) {
-          alert(error.response.data.message);
-        } else {
-          console.error("Error sending email:", error);
-          alert("Failed to send email.");
-        }
-      });
+    return { url, params };
   };
+
+  const handleClearAll = () => {
+    setSearchTerm("");
+    setSpecificYear("");
+    setSpecificMonth("");
+    setSpecificDay("");
+    setStartYear("");
+    setEndYear("");
+    setStartMonth("");
+    setEndMonth("");
+    setFromDay("");
+    setToDay("");
+    setExpenseName("");
+    setPaymentMethod("");
+    setCategory("");
+    setMinAmount("");
+    setMaxAmount("");
+    setError("");
+    setFilteredLogTypes(logTypes);
+    setSelectedIndex(-1);
+    setEmail("");
+  };
+
+  if (loading) {
+    return <div className="loader-container">{<EmailLoader />}</div>;
+  }
 
   return (
     <div className="audit-container">
@@ -217,6 +262,12 @@ const ExpensesEmail = () => {
             </div>
           </div>
         )}
+      </div>
+      <div className="width main-text">
+        <p className="filters-text">Filters</p>
+        <p className="clear-all-text" onClick={handleClearAll}>
+          Clear All
+        </p>
       </div>
       <div className="header">
         <h5>Send Expenses by Email</h5>
@@ -360,8 +411,8 @@ const ExpensesEmail = () => {
         <div className="form-group mb-3">
           <select
             className="log-period mb-3"
-            value={category} // State variable for the first dropdown
-            onChange={(e) => setCategory(e.target.value)} // Update the setter accordingly
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
           >
             <option value="">-- Select Category --</option>
             <option value="loss">Loss</option>
@@ -370,8 +421,8 @@ const ExpensesEmail = () => {
 
           <select
             className="log-period"
-            value={paymentMethod} // State variable for the second dropdown
-            onChange={(e) => setPaymentMethod(e.target.value)} // Update the setter accordingly
+            value={paymentMethod}
+            onChange={(e) => setPaymentMethod(e.target.value)}
           >
             <option value="">-- Select Payment Method --</option>
             <option value="cash">Cash</option>
@@ -380,29 +431,26 @@ const ExpensesEmail = () => {
           </select>
         </div>
       )}
-
       {searchTerm === "Expenses Within Amount Range" && (
         <div className="form-group mb-3">
           <input
             type="number"
             step="0.01"
             className="log-period mb-3"
-            value={minAmount} // State variable for min amount
-            onChange={(e) => setMinAmount(e.target.value)} // Update the setter for min amount
+            value={minAmount}
+            onChange={(e) => setMinAmount(e.target.value)}
             placeholder="Enter minimum amount"
           />
-
           <input
             type="number"
             step="0.01"
             className="log-period"
-            value={maxAmount} // State variable for max amount
-            onChange={(e) => setMaxAmount(e.target.value)} // Update the setter for max amount
+            value={maxAmount}
+            onChange={(e) => setMaxAmount(e.target.value)}
             placeholder="Enter maximum amount"
           />
         </div>
       )}
-
       <div className="form-group mb-3">
         <input
           type="email"

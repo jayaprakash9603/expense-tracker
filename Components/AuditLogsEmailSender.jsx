@@ -1,18 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import {
-  faAlignCenter,
-  faCircleExclamation,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import "../Styles/AuditLogsEmailSender.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import EmailLoader from "./Loaders/EmailLoader";
+
 const AuditLogsEmailSender = () => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [email, setEmail] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isInputClicked, setIsInputClicked] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -26,23 +24,32 @@ const AuditLogsEmailSender = () => {
   const [nDays, setNDays] = useState("");
   const [nSeconds, setNSeconds] = useState("");
   const suggestionsContainerRef = useRef(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/audit-logs/log-types")
-      .then((response) => {
-        setLogTypes(response.data);
-        setFilteredLogTypes(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching log types:", error);
-      });
+    fetchLogTypes();
   }, []);
+
+  const fetchLogTypes = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3000/audit-logs/audit-types"
+      );
+      setLogTypes(response.data);
+      setFilteredLogTypes(response.data);
+    } catch (error) {
+      console.error("Error fetching log types:", error);
+    }
+  };
 
   const handleChange1 = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
+    filterLogTypes(value);
+    setSelectedIndex(-1); // Reset the selection index
+  };
 
+  const filterLogTypes = (value) => {
     if (value.length > 0) {
       const filtered = logTypes.filter((item) =>
         item.toLowerCase().includes(value.toLowerCase())
@@ -51,8 +58,6 @@ const AuditLogsEmailSender = () => {
     } else {
       setFilteredLogTypes(logTypes);
     }
-
-    setSelectedIndex(-1); // Reset the selection index
   };
 
   const handleClick = () => {
@@ -73,15 +78,7 @@ const AuditLogsEmailSender = () => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault(); // Prevent form submission on Enter
-      const selectedSuggestion =
-        selectedIndex >= 0
-          ? filteredLogTypes[selectedIndex]
-          : filteredLogTypes[0]; // Default to the first item if none is selected
-
-      if (selectedSuggestion) {
-        setSearchTerm(selectedSuggestion); // Update the input with the selected suggestion
-        setFilteredLogTypes([]); // Clear suggestions after selecting
-      }
+      selectSuggestion();
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prevIndex) =>
@@ -90,6 +87,18 @@ const AuditLogsEmailSender = () => {
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelectedIndex((prevIndex) => Math.max(0, prevIndex - 1));
+    }
+  };
+
+  const selectSuggestion = () => {
+    const selectedSuggestion =
+      selectedIndex >= 0
+        ? filteredLogTypes[selectedIndex]
+        : filteredLogTypes[0]; // Default to the first item if none is selected
+
+    if (selectedSuggestion) {
+      setSearchTerm(selectedSuggestion); // Update the input with the selected suggestion
+      setFilteredLogTypes([]); // Clear suggestions after selecting
     }
   };
 
@@ -106,82 +115,42 @@ const AuditLogsEmailSender = () => {
     }
   }, [selectedIndex, filteredLogTypes]);
 
-  const handleSendEmail = () => {
+  const handleSendEmail = async () => {
     if (!email) {
       setError("Please enter an email.");
       return;
     }
 
     setError(""); // Clear any previous errors
+    setLoading(true); // Set loading to true
 
+    const { url, params } = getEmailParams();
+
+    if (!url) {
+      setLoading(false); // Set loading to false
+      return;
+    }
+
+    console.log("Sending request to:", url, "with params:", params);
+
+    try {
+      const response = await axios.get(url, { params });
+      handleClearAll();
+      setLoading(false);
+      if (response.status === 204) {
+        alert("No expenses were found.");
+      } else {
+        alert("Email sent successfully!");
+      }
+    } catch (error) {
+      console.error("Error sending email:", error);
+      alert("Failed to send email.");
+    }
+  };
+
+  const getEmailParams = () => {
     let url = "";
     let params = { email };
-
-    // Validation function to check if required params are missing
-    const validateParams = () => {
-      switch (searchTerm) {
-        case "Logs for Specific Year":
-          if (!specificYear) {
-            setError("Please enter a year.");
-            return false;
-          }
-          break;
-        case "Logs for Specific Month":
-          if (!specificYear || !specificMonth) {
-            setError("Please enter a year and month.");
-            return false;
-          }
-          break;
-        case "Logs for Specific Day":
-          if (!specificDay) {
-            setError("Please enter a day.");
-            return false;
-          }
-          break;
-        case "Logs by Action Type":
-          if (!actionType) {
-            setError("Please enter an action type.");
-            return false;
-          }
-          break;
-        case "Logs by Expense ID and Action Type":
-          if (!expenseId || !actionType) {
-            setError("Please enter ID and action type.");
-            return false;
-          }
-          break;
-        case "Logs from Last N Minutes":
-          if (!nMinutes) {
-            setError("Please enter the no of minutes.");
-            return false;
-          }
-          break;
-        case "Logs from Last N Hours":
-          if (!nHours) {
-            setError("Please enter the no of hours.");
-            return false;
-          }
-          break;
-        case "Logs from Last N Days":
-          if (!nDays) {
-            setError("Please enter the no of days.");
-            return false;
-          }
-          break;
-        case "Logs from Last N Seconds":
-          if (!nSeconds) {
-            setError("Please enter the no of seconds.");
-            return false;
-          }
-          break;
-        default:
-          // No additional params needed for other cases
-          break;
-      }
-      return true; // All required params are valid
-    };
-
-    if (!validateParams()) return; // If validation fails, stop further execution
 
     switch (searchTerm) {
       case "Current Month Logs":
@@ -224,7 +193,7 @@ const AuditLogsEmailSender = () => {
         const parsedExpenseId = parseInt(expenseId, 10);
         if (isNaN(parsedExpenseId)) {
           setError("Expense ID must be an integer.");
-          return;
+          return { url: "", params: {} };
         }
         url = `http://localhost:3000/audit-logs/expense/${parsedExpenseId}/action/${actionType}/email`;
         break;
@@ -254,31 +223,39 @@ const AuditLogsEmailSender = () => {
         const parsedExpenseId1 = parseInt(expenseId, 10);
         if (isNaN(parsedExpenseId1)) {
           setError("Expense ID must be an integer.");
-          return;
+          return { url: "", params: {} };
         }
         url = `http://localhost:3000/audit-logs/expenses/${parsedExpenseId1}/email`;
         break;
       default:
         setError("Please select a valid option.");
-        return;
+        return { url: "", params: {} };
     }
 
-    console.log("Sending request to:", url, "with params:", params);
-
-    axios
-      .get(url, { params })
-      .then((response) => {
-        if (response.status === 204) {
-          alert("No expenses were found.");
-        } else {
-          alert("Email sent successfully!");
-        }
-      })
-      .catch((error) => {
-        console.error("Error sending email:", error);
-        alert("Failed to send email.");
-      });
+    return { url, params };
   };
+
+  const handleClearAll = () => {
+    // Reset all state variables
+    setSearchTerm("");
+    setSpecificYear("");
+    setSpecificMonth("");
+    setSpecificDay("");
+    setActionType("");
+    setExpenseId("");
+    setNMinutes("");
+    setNHours("");
+    setNDays("");
+    setNSeconds("");
+    setError("");
+    setEmail("");
+    setFilteredLogTypes(logTypes); // Reset suggestions to default
+    setSelectedIndex(-1);
+  };
+
+  if (loading) {
+    return <div className="loader-container">{<EmailLoader />}</div>;
+  }
 
   return (
     <div className="audit-container">
@@ -296,6 +273,12 @@ const AuditLogsEmailSender = () => {
             </div>
           </div>
         )}
+      </div>
+      <div className="width main-text">
+        <p className="filters-text">Filters</p>
+        <p className="clear-all-text" onClick={handleClearAll}>
+          Clear All
+        </p>
       </div>
       <div className="header">
         <h5>Send Audit Logs by Email</h5>
@@ -383,7 +366,6 @@ const AuditLogsEmailSender = () => {
             placeholder="Enter Year"
             onChange={(e) => setSpecificYear(e.target.value)}
           />
-
           <input
             type="number"
             className="log-period"
@@ -428,7 +410,6 @@ const AuditLogsEmailSender = () => {
             value={expenseId}
             onChange={(e) => setExpenseId(e.target.value)}
           />
-
           <select
             className="log-period"
             value={actionType}
@@ -506,7 +487,7 @@ const AuditLogsEmailSender = () => {
         />
       </div>
       <div className="form-group">
-        <button className=" send-mail-btn mt-3 width" onClick={handleSendEmail}>
+        <button className="send-mail-btn mt-3 width" onClick={handleSendEmail}>
           Send Email
         </button>
       </div>
