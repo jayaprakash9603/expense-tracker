@@ -5,7 +5,7 @@ import "../Styles/ExpensesEmail.css";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EmailLoader from "./Loaders/EmailLoader";
-
+import { expensesTypesEmail } from "./Input Fields/InputFields";
 const ExpensesEmail = () => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
@@ -37,11 +37,11 @@ const ExpensesEmail = () => {
 
   const fetchLogTypes = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3000/expenses/expenses-types"
-      );
-      setLogTypes(response.data);
-      setFilteredLogTypes(response.data);
+      // const response = await axios.get(
+      //   "http://localhost:3000/expenses/expenses-types"
+      // );
+      setLogTypes(expensesTypesEmail);
+      setFilteredLogTypes(expensesTypesEmail);
     } catch (error) {
       console.error("Error fetching log types:", error);
     }
@@ -137,18 +137,23 @@ const ExpensesEmail = () => {
 
     try {
       const response = await axios.get(url, { params });
-      setLoading(false);
+      // setLoading(false);
       if (response.status === 204) {
         alert("No summaries were found.");
+        handleClearAll();
       } else {
         alert("Email sent successfully!");
+        handleClearAll();
+        setLoading(false);
       }
     } catch (error) {
       setLoading(false);
       if (error.response && error.response.status === 400) {
         alert(error.response.data.message);
+        handleClearAll();
       } else {
         console.error("Error sending email:", error);
+        handleClearAll();
         alert("Failed to send email.");
       }
     }

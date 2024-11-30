@@ -5,6 +5,7 @@ import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import "../Styles/AuditLogsEmailSender.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import EmailLoader from "./Loaders/EmailLoader";
+import { AuditLogsDataEmail } from "./Input Fields/InputFields";
 
 const AuditLogsEmailSender = () => {
   const [logTypes, setLogTypes] = useState([]);
@@ -35,8 +36,8 @@ const AuditLogsEmailSender = () => {
       const response = await axios.get(
         "http://localhost:3000/audit-logs/audit-types"
       );
-      setLogTypes(response.data);
-      setFilteredLogTypes(response.data);
+      setLogTypes(AuditLogsDataEmail);
+      setFilteredLogTypes(AuditLogsDataEmail);
     } catch (error) {
       console.error("Error fetching log types:", error);
     }

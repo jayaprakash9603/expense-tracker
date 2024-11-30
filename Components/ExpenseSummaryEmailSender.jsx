@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import EmailLoader from "./Loaders/EmailLoader";
 
+import { expenseSummaryEmail } from "./Input Fields/InputFields";
+
 const ExpenseSummaryEmailSender = () => {
   const [logTypes, setLogTypes] = useState([]);
   const [filteredLogTypes, setFilteredLogTypes] = useState([]);
@@ -28,8 +30,8 @@ const ExpenseSummaryEmailSender = () => {
     axios
       .get("http://localhost:3000/expenses/summary-types")
       .then((response) => {
-        setLogTypes(response.data);
-        setFilteredLogTypes(response.data);
+        setLogTypes(expenseSummaryEmail);
+        setFilteredLogTypes(expenseSummaryEmail);
       })
       .catch((error) => {
         console.error("Error fetching log types:", error);
