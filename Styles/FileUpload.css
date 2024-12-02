@@ -1,0 +1,28 @@
+.choose-file {
+  width: 25vw;
+  display: flex;
+  height: 60px;
+  /* background-color: aqua; */
+}
+.file-name {
+  margin: 10px 5px;
+  width: 10vw;
+}
+
+.choose-button {
+  margin: 10px;
+  /* background-color: red; */
+}
+.upload-button-div {
+  width: 25%;
+  height: 30%;
+
+  /* background-color: rebeccapurple; */
+}
+
+.file-upload-div {
+  width: 30vw;
+  height: 20vh;
+
+  /* background-color: yellow; */
+}

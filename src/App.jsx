@@ -30,6 +30,7 @@ import ExpenseTableParent from "../Components/ExpenseTableParent";
 import TestTable from "../Components/TestTable";
 import SearchExpenses from "../Components/SearchExpenses";
 import DetailedExpensesTable from "../Components/DetailedExpensesTable";
+import FileUpload from "../Components/FileUpload";
 
 const App = () => {
   return (
@@ -57,6 +58,7 @@ const App = () => {
           <Route path="/search1" element={<ExpenseTableParent />} />
           <Route path="/test" element={<TestTable />} />
           <Route path="/searchexpenses" element={<SearchExpenses />} />
+          <Route path="/fileupload" element={<FileUpload />} />
         </Routes>
       </BrowserRouter>
     </ExpensesProvider>
