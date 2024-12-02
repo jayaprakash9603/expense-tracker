@@ -5,20 +5,21 @@ import {
   Box,
   Button,
   Typography,
-  Alert,
   Snackbar,
   CircularProgress,
+  Alert,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const FileUpload = () => {
-  const [message, setMessage] = useState("");
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [alertSeverity, setAlertSeverity] = useState("info");
-  const [fileName, setFileName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const fileInputRef = useRef(null);
+  const [message, setMessage] = useState(""); // To display upload messages
+  const [alertOpen, setAlertOpen] = useState(false); // To control Snackbar visibility
+  const [alertSeverity, setAlertSeverity] = useState("info"); // Severity of Alert (success, error, etc.)
+  const [fileName, setFileName] = useState(""); // Display selected file name
+  const [loading, setLoading] = useState(false); // Loading indicator during file upload
+  const fileInputRef = useRef(null); // Ref to reset the file input
 
+  // Triggered when file is selected
   const onFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -29,6 +30,7 @@ const FileUpload = () => {
     }
   };
 
+  // Handles file upload to the server
   const onFileUpload = async (file) => {
     if (!file) {
       setMessage("Please select a file to upload.");
@@ -43,19 +45,17 @@ const FileUpload = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://localhost:3000/upload",
+        "http://localhost:3000/expenses/upload", // Update this to your API endpoint
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      setMessage(response.data);
+      setMessage(response.data.message || "File uploaded successfully!"); // Ensure the response has a message
       setAlertSeverity("success");
       setAlertOpen(true);
-      fileInputRef.current.value = ""; // Clear the file input
-      setFileName(""); // Clear the file name
+      fileInputRef.current.value = ""; // Clear file input
+      setFileName(""); // Clear file name
     } catch (error) {
       setMessage(
         "Failed to upload file: " +
@@ -68,22 +68,23 @@ const FileUpload = () => {
     }
   };
 
+  // Closes the Snackbar
   const handleClose = () => {
     setAlertOpen(false);
   };
 
   return (
     <Container maxWidth="sm">
-      <Box sx={{ mt: 5 }}>
+      <Box sx={{ mt: 5, textAlign: "center" }}>
         <input
-          accept=".xlsx, .xls"
-          style={{ display: "none" }}
-          id="raised-button-file"
+          accept=".xlsx, .xls" // Restrict file types
+          style={{ display: "none" }} // Hide the file input
+          id="file-upload"
           type="file"
           ref={fileInputRef}
           onChange={onFileChange}
         />
-        <label htmlFor="raised-button-file">
+        <label htmlFor="file-upload">
           <Button
             variant="contained"
             component="span"
@@ -92,18 +93,25 @@ const FileUpload = () => {
             disabled={loading}
             sx={{ padding: "10px 20px" }}
           >
-            <Box display="flex" alignItems="center">
-              Upload
-              {loading && (
+            {loading ? (
+              <>
+                Upload
                 <CircularProgress
                   size={24}
                   color="inherit"
                   sx={{ marginLeft: 2 }}
                 />
-              )}
-            </Box>
+              </>
+            ) : (
+              "Upload"
+            )}
           </Button>
         </label>
+        {fileName && (
+          <Typography variant="body2" sx={{ mt: 2, color: "gray" }}>
+            Selected File: {fileName}
+          </Typography>
+        )}
         <Snackbar
           open={alertOpen}
           autoHideDuration={3000}
