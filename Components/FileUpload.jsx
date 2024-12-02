@@ -10,6 +10,7 @@ import {
   Alert,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import UploadTable from "./UploadTable";
 
 const FileUpload = () => {
   const [message, setMessage] = useState(""); // To display upload messages
@@ -18,7 +19,7 @@ const FileUpload = () => {
   const [fileName, setFileName] = useState(""); // Display selected file name
   const [loading, setLoading] = useState(false); // Loading indicator during file upload
   const fileInputRef = useRef(null); // Ref to reset the file input
-
+  const [expenses, setExpenses] = useState([]);
   // Triggered when file is selected
   const onFileChange = (event) => {
     const file = event.target.files[0];
@@ -51,6 +52,8 @@ const FileUpload = () => {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+      setExpenses(response.data);
+      console.log(response.data);
       setMessage(response.data.message || "File uploaded successfully!"); // Ensure the response has a message
       setAlertSeverity("success");
       setAlertOpen(true);
@@ -127,6 +130,7 @@ const FileUpload = () => {
           </Alert>
         </Snackbar>
       </Box>
+      <UploadTable expenses={expenses} setExpenses={setExpenses} />
     </Container>
   );
 };
