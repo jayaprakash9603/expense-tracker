@@ -7,32 +7,29 @@ import {
   Typography,
   Alert,
   Snackbar,
-  TextField,
-  Card,
+  CircularProgress,
 } from "@mui/material";
-import UploadFileIcon from "@mui/icons-material/UploadFile";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-
-import "../Styles/FileUpload.css";
 
 const FileUpload = () => {
   const [message, setMessage] = useState("");
   const [alertOpen, setAlertOpen] = useState(false);
   const [alertSeverity, setAlertSeverity] = useState("info");
   const [fileName, setFileName] = useState("");
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
   const onFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
       setFileName(file.name);
+      onFileUpload(file);
     } else {
       setFileName("");
     }
   };
 
-  const onFileUpload = async () => {
-    const file = fileInputRef.current.files[0];
+  const onFileUpload = async (file) => {
     if (!file) {
       setMessage("Please select a file to upload.");
       setAlertSeverity("warning");
@@ -43,6 +40,7 @@ const FileUpload = () => {
     const formData = new FormData();
     formData.append("file", file);
 
+    setLoading(true);
     try {
       const response = await axios.post(
         "http://localhost:3000/upload",
@@ -65,6 +63,8 @@ const FileUpload = () => {
       );
       setAlertSeverity("error");
       setAlertOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,9 +75,6 @@ const FileUpload = () => {
   return (
     <Container maxWidth="sm">
       <Box sx={{ mt: 5 }}>
-        <Typography variant="h4" gutterBottom>
-          Upload Excel File
-        </Typography>
         <input
           accept=".xlsx, .xls"
           style={{ display: "none" }}
@@ -86,48 +83,32 @@ const FileUpload = () => {
           ref={fileInputRef}
           onChange={onFileChange}
         />
-        <Card className="file-upload-div">
-          <div className="choose-file">
-            <label htmlFor="raised-button-file">
-              <div className="choose-button">
-                <Button
-                  variant="contained"
-                  component="span"
-                  color="primary"
-                  startIcon={<UploadFileIcon />}
-                >
-                  Select File
-                </Button>
-              </div>
-            </label>
-            <div className="file-name">
-              {fileName && (
-                <Typography variant="body1" sx={{ mt: 1 }}>
-                  {fileName}
-                </Typography>
+        <label htmlFor="raised-button-file">
+          <Button
+            variant="contained"
+            component="span"
+            color="primary"
+            startIcon={<CloudUploadIcon />}
+            disabled={loading}
+            sx={{ padding: "10px 20px" }}
+          >
+            <Box display="flex" alignItems="center">
+              Upload
+              {loading && (
+                <CircularProgress
+                  size={24}
+                  color="inherit"
+                  sx={{ marginLeft: 2 }}
+                />
               )}
-            </div>
-          </div>
-          <div className="upload-button-div">
-            <Box sx={{ mt: 1 }}>
-              <div className="upload-button">
-                <Button
-                  variant="contained"
-                  sx={{ margin: 1.2 }}
-                  color="primary"
-                  onClick={onFileUpload}
-                  startIcon={<CloudUploadIcon />}
-                >
-                  Upload
-                </Button>
-              </div>
             </Box>
-          </div>
-        </Card>
+          </Button>
+        </label>
         <Snackbar
           open={alertOpen}
           autoHideDuration={3000}
           onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <Alert
             onClose={handleClose}
