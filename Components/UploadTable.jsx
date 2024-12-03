@@ -1,13 +1,10 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import {
   Container,
   Box,
   Button,
   Typography,
-  Alert,
-  Snackbar,
-  CircularProgress,
   Table,
   TableBody,
   TableCell,
@@ -26,10 +23,9 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import "../Styles/UploadTable.css"; // Import the CSS file
 
-const UploadTable = ({ expenses, setExpenses }) => {
+const UploadTable = ({ expenses, setExpenses, isNewData }) => {
   const [checkedExpenses, setCheckedExpenses] = useState([]);
   const [order, setOrder] = useState("asc");
   const [orderBy, setOrderBy] = useState("date");
@@ -39,7 +35,23 @@ const UploadTable = ({ expenses, setExpenses }) => {
     expenseName: "",
   });
   const [openDialog, setOpenDialog] = useState(false);
+  const [checkboxDisabled, setCheckboxDisabled] = useState(false);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    if (isNewData) {
+      localStorage.setItem("expenses", JSON.stringify(expenses));
+    } else {
+      const savedExpenses = localStorage.getItem("expenses");
+      if (savedExpenses) {
+        setExpenses(JSON.parse(savedExpenses));
+      }
+    }
+    const savedCheckboxState = localStorage.getItem("checkboxDisabled");
+    if (savedCheckboxState) {
+      setCheckboxDisabled(JSON.parse(savedCheckboxState));
+    }
+  }, [isNewData, expenses, setExpenses]);
 
   const tableHeaders = [
     { label: "Date", name: "date", width: 150 },
@@ -210,6 +222,20 @@ const UploadTable = ({ expenses, setExpenses }) => {
     handleCloseDialog();
   };
 
+  const handleComplete = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/expenses/save",
+        expenses
+      );
+      console.log("Saved data---", response);
+      setCheckboxDisabled(true);
+      localStorage.setItem("checkboxDisabled", true);
+    } catch (error) {
+      console.error("Error saving expenses:", error);
+    }
+  };
+
   return (
     <Container className="upload-main-container">
       <Grid container spacing={0} mb={2} className="upload-table-container">
@@ -255,6 +281,7 @@ const UploadTable = ({ expenses, setExpenses }) => {
                       checkedExpenses.length === expenses.length
                     }
                     onChange={handleSelectAllClick}
+                    disabled={checkboxDisabled}
                   />
                 </TableCell>
                 {tableHeaders.map((header) => (
@@ -296,6 +323,7 @@ const UploadTable = ({ expenses, setExpenses }) => {
                       <Checkbox
                         checked={isItemSelected}
                         onChange={(event) => handleClick(event, expense.id)}
+                        disabled={checkboxDisabled}
                       />
                     </TableCell>
                     {tableCells.map((cell) => (
@@ -343,6 +371,15 @@ const UploadTable = ({ expenses, setExpenses }) => {
         sx={{ mt: 2 }}
       >
         Delete
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleComplete}
+        sx={{ mt: 2, ml: 2 }}
+        disabled={checkboxDisabled}
+      >
+        Complete
       </Button>
       <Dialog
         open={openDialog}

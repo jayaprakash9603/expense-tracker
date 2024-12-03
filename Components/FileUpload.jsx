@@ -21,6 +21,7 @@ const FileUpload = () => {
   const [loading, setLoading] = useState(false); // Loading indicator during file upload
   const fileInputRef = useRef(null); // Ref to reset the file input
   const [expenses, setExpenses] = useState([]);
+  const [isNewData, setIsNewData] = useState(false);
   // Triggered when file is selected
   const onFileChange = (event) => {
     const file = event.target.files[0];
@@ -58,6 +59,7 @@ const FileUpload = () => {
       setMessage(response.data.message || "File uploaded successfully!"); // Ensure the response has a message
       setAlertSeverity("success");
       setAlertOpen(true);
+      setIsNewData(true);
       fileInputRef.current.value = ""; // Clear file input
       setFileName(""); // Clear file name
     } catch (error) {
@@ -133,7 +135,11 @@ const FileUpload = () => {
         </Snackbar>
       </Box>
       <div>
-        <UploadTable expenses={expenses} setExpenses={setExpenses} />
+        <UploadTable
+          expenses={expenses}
+          setExpenses={setExpenses}
+          isNewData={isNewData}
+        />
       </div>
     </Container>
   );
