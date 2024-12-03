@@ -22,6 +22,7 @@ import {
   Grid,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import "../Styles/UploadTable.css"; // Import the CSS file
 
 const UploadTable = ({ expenses, setExpenses }) => {
   const [checkedExpenses, setCheckedExpenses] = useState([]);
@@ -171,9 +172,9 @@ const UploadTable = ({ expenses, setExpenses }) => {
   };
 
   return (
-    <Container maxWidth="lg">
-      <Grid container spacing={2} mb={2}>
-        <Grid item xs={5}>
+    <Container className="upload-main-container">
+      <Grid container spacing={0} mb={2} className="upload-table-container">
+        <Grid item xs={4}>
           <TextField
             label="Expense Name"
             variant="outlined"
@@ -187,11 +188,12 @@ const UploadTable = ({ expenses, setExpenses }) => {
       {expenses.length > 0 ? (
         <TableContainer
           component={Paper}
+          className="custom-scrollbar " // Apply the custom scrollbar class
           sx={{
             mt: 5,
             width: "80vw",
             margin: "0 auto",
-            maxHeight: "500px", // Optional: Scrollable container
+            maxHeight: "50vh", // Optional: Scrollable container
           }}
         >
           <Table
@@ -284,7 +286,8 @@ const UploadTable = ({ expenses, setExpenses }) => {
       {expenses.length > 0 && (
         <Box display="flex" justifyContent="center" mt={2}>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            className="table-pagination"
+            rowsPerPageOptions={[5, 10, 25, 50, 100]}
             component="div"
             count={filteredExpenses.length}
             rowsPerPage={rowsPerPage}

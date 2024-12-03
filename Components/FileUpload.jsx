@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import UploadTable from "./UploadTable";
+import "../Styles/FileUpload.css";
 
 const FileUpload = () => {
   const [message, setMessage] = useState(""); // To display upload messages
@@ -77,13 +78,14 @@ const FileUpload = () => {
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 5, textAlign: "center" }}>
+    <Container className="file-upload-container">
+      <Box className="upload-button">
         <input
           accept=".xlsx, .xls" // Restrict file types
           style={{ display: "none" }} // Hide the file input
           id="file-upload"
           type="file"
+          className="upload-button"
           ref={fileInputRef}
           onChange={onFileChange}
         />
