@@ -20,6 +20,11 @@ import {
   TableSortLabel,
   TextField,
   Grid,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import "../Styles/UploadTable.css"; // Import the CSS file
@@ -33,6 +38,7 @@ const UploadTable = ({ expenses, setExpenses }) => {
   const [filters, setFilters] = useState({
     expenseName: "",
   });
+  const [openDialog, setOpenDialog] = useState(false);
   const fileInputRef = useRef(null);
 
   const tableHeaders = [
@@ -191,6 +197,19 @@ const UploadTable = ({ expenses, setExpenses }) => {
     }
   };
 
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleConfirmDelete = () => {
+    handleDeleteAndFetch();
+    handleCloseDialog();
+  };
+
   return (
     <Container className="upload-main-container">
       <Grid container spacing={0} mb={2} className="upload-table-container">
@@ -320,11 +339,32 @@ const UploadTable = ({ expenses, setExpenses }) => {
       <Button
         variant="contained"
         color="danger"
-        onClick={handleDeleteAndFetch}
+        onClick={handleOpenDialog}
         sx={{ mt: 2 }}
       >
         Delete
       </Button>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete the selected expenses?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
