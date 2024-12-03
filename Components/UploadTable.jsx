@@ -41,15 +41,16 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
   useEffect(() => {
     if (isNewData) {
       localStorage.setItem("expenses", JSON.stringify(expenses));
+      setCheckboxDisabled(false);
     } else {
       const savedExpenses = localStorage.getItem("expenses");
       if (savedExpenses) {
         setExpenses(JSON.parse(savedExpenses));
       }
-    }
-    const savedCheckboxState = localStorage.getItem("checkboxDisabled");
-    if (savedCheckboxState) {
-      setCheckboxDisabled(JSON.parse(savedCheckboxState));
+      const savedCheckboxState = localStorage.getItem("checkboxDisabled");
+      if (savedCheckboxState) {
+        setCheckboxDisabled(JSON.parse(savedCheckboxState));
+      }
     }
   }, [isNewData, expenses, setExpenses]);
 
@@ -198,12 +199,13 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
         "http://localhost:3000/expenses/delete-and-send",
         {
           expenses,
-          deleteid: deleteIds,
+          deleteid: deleteIds || [],
         }
       );
       console.log("deleted data---", response);
       setExpenses(response.data);
       setCheckedExpenses([]);
+      localStorage.setItem("expenses", JSON.stringify(response.data));
     } catch (error) {
       console.error("Error deleting expenses:", error);
     }
@@ -234,6 +236,11 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
     } catch (error) {
       console.error("Error saving expenses:", error);
     }
+  };
+
+  const handleRework = () => {
+    setCheckboxDisabled(false);
+    localStorage.setItem("checkboxDisabled", false);
   };
 
   return (
@@ -380,6 +387,14 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
         disabled={checkboxDisabled}
       >
         Complete
+      </Button>
+      <Button
+        variant="contained"
+        color="secondary"
+        onClick={handleRework}
+        sx={{ mt: 2, ml: 2 }}
+      >
+        Rework
       </Button>
       <Dialog
         open={openDialog}
