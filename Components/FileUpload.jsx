@@ -130,7 +130,9 @@ const FileUpload = () => {
           </Alert>
         </Snackbar>
       </Box>
-      <UploadTable expenses={expenses} setExpenses={setExpenses} />
+      <div>
+        <UploadTable expenses={expenses} setExpenses={setExpenses} />
+      </div>
     </Container>
   );
 };

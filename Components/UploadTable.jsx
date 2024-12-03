@@ -29,41 +29,20 @@ const UploadTable = ({ expenses, setExpenses }) => {
   const [orderBy, setOrderBy] = useState("date");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [message, setMessage] = useState("");
-  const [alertOpen, setAlertOpen] = useState(false);
-  const [alertSeverity, setAlertSeverity] = useState("info");
-  const [fileName, setFileName] = useState("");
-  const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
-    date: "",
     expenseName: "",
-    amount: "",
-    type: "",
-    paymentMethod: "",
-    comments: "",
-    creditDue: "",
   });
   const fileInputRef = useRef(null);
 
-  const filterConfig = [
-    { label: "Date", name: "date", width: 1.5 },
-    { label: "Expense Name", name: "expenseName", width: 2 },
-    { label: "Amount", name: "amount", width: 1 },
-    { label: "Type", name: "type", width: 1 },
-    { label: "Payment Method", name: "paymentMethod", width: 1.5 },
-    { label: "Comments", name: "comments", width: 2 },
-    { label: "Credit Due", name: "creditDue", width: 1 },
-  ];
-
   const tableHeaders = [
     { label: "Date", name: "date", width: 150 },
-    { label: "Expense Name", name: "expenseName", width: 200 },
-    { label: "Amount", name: "amount", width: 100 },
-    { label: "Type", name: "type", width: 100 },
-    { label: "Payment Method", name: "paymentMethod", width: 150 },
-    { label: "Net Amount", name: "netAmount", width: 100 },
-    { label: "Comments", name: "comments", width: 200 },
-    { label: "Credit Due", name: "creditDue", width: 100 },
+    { label: "Expense Name", name: "expense.expenseName", width: 200 },
+    { label: "Amount", name: "expense.amount", width: 100 },
+    { label: "Type", name: "expense.type", width: 100 },
+    { label: "Payment Method", name: "expense.paymentMethod", width: 150 },
+    { label: "Net Amount", name: "expense.netAmount", width: 120 },
+    { label: "Comments", name: "expense.comments", width: 200 },
+    { label: "Credit Due", name: "expense.creditDue", width: 100 },
   ];
 
   const tableCells = [
@@ -76,60 +55,6 @@ const UploadTable = ({ expenses, setExpenses }) => {
     { key: "expense.comments", width: 200 },
     { key: "expense.creditDue", width: 100 },
   ];
-
-  const onFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setFileName(file.name);
-    } else {
-      setFileName("");
-    }
-  };
-
-  const onFileUpload = async () => {
-    const file = fileInputRef.current.files[0];
-    if (!file) {
-      setMessage("Please select a file to upload.");
-      setAlertSeverity("warning");
-      setAlertOpen(true);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    setLoading(true);
-    try {
-      const response = await axios.post(
-        "http://localhost:3000/expenses/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      setExpenses(response.data);
-      setMessage("File uploaded and data saved successfully.");
-      setAlertSeverity("success");
-      setAlertOpen(true);
-      fileInputRef.current.value = ""; // Clear the file input
-      setFileName(""); // Clear the file name
-    } catch (error) {
-      setMessage(
-        "Failed to upload file: " +
-          (error.response?.data?.message || error.message)
-      );
-      setAlertSeverity("error");
-      setAlertOpen(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleClose = () => {
-    setAlertOpen(false);
-  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -185,43 +110,32 @@ const UploadTable = ({ expenses, setExpenses }) => {
 
   const applyFilters = (expenses) => {
     return expenses.filter((expense) => {
-      return (
-        expense.date.includes(filters.date) &&
-        expense.expense.expenseName
-          .toLowerCase()
-          .includes(filters.expenseName.toLowerCase()) &&
-        expense.expense.amount.toString().includes(filters.amount) &&
-        expense.expense.type
-          .toLowerCase()
-          .includes(filters.type.toLowerCase()) &&
-        expense.expense.paymentMethod
-          .toLowerCase()
-          .includes(filters.paymentMethod.toLowerCase()) &&
-        expense.expense.comments
-          .toLowerCase()
-          .includes(filters.comments.toLowerCase()) &&
-        expense.expense.creditDue.toString().includes(filters.creditDue)
-      );
+      return expense.expense.expenseName
+        .toLowerCase()
+        .includes(filters.expenseName.toLowerCase());
     });
   };
 
   const filteredExpenses = applyFilters(expenses);
 
   const sortedExpenses = filteredExpenses.sort((a, b) => {
-    const aValue = orderBy.split(".").reduce((o, i) => o[i], a);
-    const bValue = orderBy.split(".").reduce((o, i) => o[i], b);
-    if (orderBy === "date") {
+    const getNestedValue = (obj, path) => {
+      return path.split(".").reduce((o, i) => (o ? o[i] : null), obj);
+    };
+
+    const aValue = getNestedValue(a, orderBy);
+    const bValue = getNestedValue(b, orderBy);
+
+    if (typeof aValue === "string" && typeof bValue === "string") {
+      return order === "asc"
+        ? aValue.localeCompare(bValue)
+        : bValue.localeCompare(aValue);
+    } else if (!isNaN(new Date(aValue)) && !isNaN(new Date(bValue))) {
       return order === "asc"
         ? new Date(aValue) - new Date(bValue)
         : new Date(bValue) - new Date(aValue);
     } else {
-      return order === "asc"
-        ? aValue < bValue
-          ? -1
-          : 1
-        : aValue > bValue
-        ? -1
-        : 1;
+      return order === "asc" ? aValue - bValue : bValue - aValue;
     }
   });
 
@@ -231,44 +145,62 @@ const UploadTable = ({ expenses, setExpenses }) => {
   );
 
   const getCheckedExpensesData = () => {
-    return checkedExpenses.map((id) => {
-      const expense = expenses.find((expense) => expense.id === id);
-      return {
-        id: expense.id,
-        date: expense.date,
-        expense: {
-          id: expense.id,
-          expenseName: expense.expense.expenseName,
-          amount: expense.expense.amount,
-          type: expense.expense.type,
-          paymentMethod: expense.expense.paymentMethod,
-          netAmount: expense.expense.netAmount,
-          comments: expense.expense.comments,
-          creditDue: expense.expense.creditDue,
-        },
-      };
-    });
+    const filteredExpenses = applyFilters(expenses);
+    return checkedExpenses
+      .map((id) => {
+        const expense = filteredExpenses.find((expense) => expense.id === id);
+        if (expense) {
+          return {
+            id: expense.id,
+            date: expense.date,
+            expense: {
+              id: expense.id,
+              expenseName: expense.expense.expenseName,
+              amount: expense.expense.amount,
+              type: expense.expense.type,
+              paymentMethod: expense.expense.paymentMethod,
+              netAmount: expense.expense.netAmount,
+              comments: expense.expense.comments,
+              creditDue: expense.expense.creditDue,
+            },
+          };
+        }
+        return undefined;
+      })
+      .filter((expense) => expense !== undefined);
   };
 
   return (
     <Container maxWidth="lg">
       <Grid container spacing={2} mb={2}>
-        {filterConfig.map((filter) => (
-          <Grid item xs={filter.width} key={filter.name}>
-            <TextField
-              label={filter.label}
-              variant="outlined"
-              name={filter.name}
-              value={filters[filter.name]}
-              onChange={handleFilterChange}
-              fullWidth
-            />
-          </Grid>
-        ))}
+        <Grid item xs={5}>
+          <TextField
+            label="Expense Name"
+            variant="outlined"
+            name="expenseName"
+            value={filters.expenseName}
+            onChange={handleFilterChange}
+            fullWidth
+          />
+        </Grid>
       </Grid>
-      {expenses.length > 0 && (
-        <TableContainer component={Paper} sx={{ mt: 5, width: "90vw" }}>
-          <Table stickyHeader aria-label="sticky table">
+      {expenses.length > 0 ? (
+        <TableContainer
+          component={Paper}
+          sx={{
+            mt: 5,
+            width: "80vw",
+            margin: "0 auto",
+            maxHeight: "500px", // Optional: Scrollable container
+          }}
+        >
+          <Table
+            stickyHeader
+            aria-label="sticky table"
+            sx={{
+              tableLayout: "fixed", // Ensures columns have a fixed width
+            }}
+          >
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox" sx={{ width: 50 }}>
@@ -285,7 +217,15 @@ const UploadTable = ({ expenses, setExpenses }) => {
                   />
                 </TableCell>
                 {tableHeaders.map((header) => (
-                  <TableCell key={header.name} sx={{ width: header.width }}>
+                  <TableCell
+                    key={header.name}
+                    sx={{
+                      width: header.width,
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
                     <TableSortLabel
                       active={orderBy === header.name}
                       direction={orderBy === header.name ? order : "asc"}
@@ -309,7 +249,7 @@ const UploadTable = ({ expenses, setExpenses }) => {
                     tabIndex={-1}
                     key={expense.id}
                     selected={isItemSelected}
-                    sx={{ height: 60 }} // Set fixed row height
+                    sx={{ height: 60 }} // Fixed row height
                   >
                     <TableCell padding="checkbox" sx={{ width: 50 }}>
                       <Checkbox
@@ -318,7 +258,15 @@ const UploadTable = ({ expenses, setExpenses }) => {
                       />
                     </TableCell>
                     {tableCells.map((cell) => (
-                      <TableCell key={cell.key} sx={{ width: cell.width }}>
+                      <TableCell
+                        key={cell.key}
+                        sx={{
+                          width: cell.width, // Fixed column width
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
                         {cell.key.split(".").reduce((o, i) => o[i], expense)}
                       </TableCell>
                     ))}
@@ -328,18 +276,24 @@ const UploadTable = ({ expenses, setExpenses }) => {
             </TableBody>
           </Table>
         </TableContainer>
+      ) : (
+        <Typography variant="h6" align="center" sx={{ mt: 5 }}>
+          No data available to display.
+        </Typography>
       )}
-      <Box display="flex" justifyContent="center" mt={2}>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredExpenses.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Box>
+      {expenses.length > 0 && (
+        <Box display="flex" justifyContent="center" mt={2}>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={filteredExpenses.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Box>
+      )}
       <Button
         variant="contained"
         color="primary"
