@@ -36,12 +36,14 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
   });
   const [openDialog, setOpenDialog] = useState(false);
   const [checkboxDisabled, setCheckboxDisabled] = useState(false);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (isNewData) {
       localStorage.setItem("expenses", JSON.stringify(expenses));
       setCheckboxDisabled(false);
+      setButtonsDisabled(false);
     } else {
       const savedExpenses = localStorage.getItem("expenses");
       if (savedExpenses) {
@@ -50,6 +52,10 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
       const savedCheckboxState = localStorage.getItem("checkboxDisabled");
       if (savedCheckboxState) {
         setCheckboxDisabled(JSON.parse(savedCheckboxState));
+      }
+      const savedButtonsState = localStorage.getItem("buttonsDisabled");
+      if (savedButtonsState) {
+        setButtonsDisabled(JSON.parse(savedButtonsState));
       }
     }
   }, [isNewData, expenses, setExpenses]);
@@ -232,7 +238,9 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
       );
       console.log("Saved data---", response);
       setCheckboxDisabled(true);
+      setButtonsDisabled(true);
       localStorage.setItem("checkboxDisabled", true);
+      localStorage.setItem("buttonsDisabled", true);
     } catch (error) {
       console.error("Error saving expenses:", error);
     }
@@ -240,7 +248,9 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
 
   const handleRework = () => {
     setCheckboxDisabled(false);
+    setButtonsDisabled(false);
     localStorage.setItem("checkboxDisabled", false);
+    localStorage.setItem("buttonsDisabled", false);
   };
 
   return (
@@ -376,6 +386,7 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
         color="danger"
         onClick={handleOpenDialog}
         sx={{ mt: 2 }}
+        disabled={buttonsDisabled}
       >
         Delete
       </Button>
