@@ -171,6 +171,26 @@ const UploadTable = ({ expenses, setExpenses }) => {
       .filter((expense) => expense !== undefined);
   };
 
+  const handleDeleteAndFetch = async () => {
+    const checkedExpensesData = getCheckedExpensesData();
+    const deleteIds = checkedExpensesData.map((expense) => expense.id);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/expenses/delete-and-send",
+        {
+          expenses,
+          deleteid: deleteIds,
+        }
+      );
+      console.log("deleted data---", response);
+      setExpenses(response.data);
+      setCheckedExpenses([]);
+    } catch (error) {
+      console.error("Error deleting expenses:", error);
+    }
+  };
+
   return (
     <Container className="upload-main-container">
       <Grid container spacing={0} mb={2} className="upload-table-container">
@@ -299,11 +319,11 @@ const UploadTable = ({ expenses, setExpenses }) => {
       )}
       <Button
         variant="contained"
-        color="primary"
-        onClick={() => console.log(getCheckedExpensesData())}
+        color="danger"
+        onClick={handleDeleteAndFetch}
         sx={{ mt: 2 }}
       >
-        Get Checked Expenses Data
+        Delete
       </Button>
     </Container>
   );
