@@ -57,8 +57,16 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
       if (savedButtonsState) {
         setButtonsDisabled(JSON.parse(savedButtonsState));
       }
+      const savedCheckedExpenses = localStorage.getItem("checkedExpenses");
+      if (savedCheckedExpenses) {
+        setCheckedExpenses(JSON.parse(savedCheckedExpenses));
+      }
     }
   }, [isNewData, expenses, setExpenses]);
+
+  useEffect(() => {
+    localStorage.setItem("checkedExpenses", JSON.stringify(checkedExpenses));
+  }, [checkedExpenses]);
 
   const tableHeaders = [
     { label: "Date", name: "date", width: 150 },
@@ -254,7 +262,7 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
   };
 
   return (
-    <Container className="upload-main-container">
+    <div className="upload-main-container">
       <Grid container spacing={0} mb={2} className="upload-table-container">
         <Grid item xs={4}>
           <TextField
@@ -273,7 +281,7 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
           className="custom-scrollbar " // Apply the custom scrollbar class
           sx={{
             mt: 5,
-            width: "80vw",
+            width: "100%",
             margin: "0 auto",
             maxHeight: "50vh", // Optional: Scrollable container
           }}
@@ -381,32 +389,33 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
           />
         </Box>
       )}
-      <Button
-        variant="contained"
-        color="danger"
-        onClick={handleOpenDialog}
-        sx={{ mt: 2 }}
-        disabled={buttonsDisabled}
-      >
-        Delete
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleComplete}
-        sx={{ mt: 2, ml: 2 }}
-        disabled={checkboxDisabled}
-      >
-        Complete
-      </Button>
-      <Button
-        variant="contained"
-        color="secondary"
-        onClick={handleRework}
-        sx={{ mt: 2, ml: 2 }}
-      >
-        Rework
-      </Button>
+      <div className="buttons">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenDialog}
+          disabled={buttonsDisabled}
+        >
+          Delete
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleComplete}
+          sx={{ ml: 2 }}
+          disabled={checkboxDisabled}
+        >
+          Complete
+        </Button>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleRework}
+          sx={{ ml: 2 }}
+        >
+          Rework
+        </Button>
+      </div>
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -428,7 +437,7 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+    </div>
   );
 };
 

@@ -80,60 +80,62 @@ const FileUpload = () => {
   };
 
   return (
-    <Container className="file-upload-container">
-      <Box className="upload-button">
-        <input
-          accept=".xlsx, .xls" // Restrict file types
-          style={{ display: "none" }} // Hide the file input
-          id="file-upload"
-          type="file"
-          className="upload-button"
-          ref={fileInputRef}
-          onChange={onFileChange}
-        />
-        <label htmlFor="file-upload">
-          <Button
-            variant="contained"
-            component="span"
-            color="primary"
-            startIcon={<CloudUploadIcon />}
-            disabled={loading}
-            sx={{ padding: "10px 20px" }}
-          >
-            {loading ? (
-              <>
-                Upload
-                <CircularProgress
-                  size={24}
-                  color="inherit"
-                  sx={{ marginLeft: 2 }}
-                />
-              </>
-            ) : (
-              "Upload"
-            )}
-          </Button>
-        </label>
-        {fileName && (
-          <Typography variant="body2" sx={{ mt: 2, color: "gray" }}>
-            Selected File: {fileName}
-          </Typography>
-        )}
-        <Snackbar
-          open={alertOpen}
-          autoHideDuration={3000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert
+    <div className="file-upload-container">
+      <div className="upload-button">
+        <Box>
+          <input
+            accept=".xlsx, .xls" // Restrict file types
+            style={{ display: "none" }} // Hide the file input
+            id="file-upload"
+            type="file"
+            className="upload-button"
+            ref={fileInputRef}
+            onChange={onFileChange}
+          />
+          <label htmlFor="file-upload">
+            <Button
+              variant="contained"
+              component="span"
+              color="primary"
+              startIcon={<CloudUploadIcon />}
+              disabled={loading}
+              sx={{ padding: "10px 20px" }}
+            >
+              {loading ? (
+                <>
+                  Upload
+                  <CircularProgress
+                    size={24}
+                    color="inherit"
+                    sx={{ marginLeft: 2 }}
+                  />
+                </>
+              ) : (
+                "Upload"
+              )}
+            </Button>
+          </label>
+          {fileName && (
+            <Typography variant="body2" sx={{ mt: 2, color: "gray" }}>
+              Selected File: {fileName}
+            </Typography>
+          )}
+          <Snackbar
+            open={alertOpen}
+            autoHideDuration={3000}
             onClose={handleClose}
-            severity={alertSeverity}
-            sx={{ width: "100%" }}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
           >
-            {message}
-          </Alert>
-        </Snackbar>
-      </Box>
+            <Alert
+              onClose={handleClose}
+              severity={alertSeverity}
+              sx={{ width: "100%" }}
+            >
+              {message}
+            </Alert>
+          </Snackbar>
+        </Box>
+      </div>
       <div>
         <UploadTable
           expenses={expenses}
@@ -141,7 +143,7 @@ const FileUpload = () => {
           isNewData={isNewData}
         />
       </div>
-    </Container>
+    </div>
   );
 };
 
