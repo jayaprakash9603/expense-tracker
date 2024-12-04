@@ -37,11 +37,19 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [checkboxDisabled, setCheckboxDisabled] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  const [showContainer, setShowContainer] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
+    const savedIsNewData = localStorage.getItem("isNewData");
+    if (savedIsNewData) {
+      setShowContainer(JSON.parse(savedIsNewData));
+    }
+
     if (isNewData) {
+      setShowContainer(true);
       localStorage.setItem("expenses", JSON.stringify(expenses));
+      localStorage.setItem("isNewData", JSON.stringify(isNewData));
       setCheckboxDisabled(false);
       setButtonsDisabled(false);
     } else {
@@ -62,7 +70,7 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
         setCheckedExpenses(JSON.parse(savedCheckedExpenses));
       }
     }
-  }, [isNewData, expenses, setExpenses]);
+  }, [isNewData, setExpenses]);
 
   useEffect(() => {
     localStorage.setItem("checkedExpenses", JSON.stringify(checkedExpenses));
@@ -262,182 +270,198 @@ const UploadTable = ({ expenses, setExpenses, isNewData }) => {
   };
 
   return (
-    <div className="upload-main-container">
-      <Grid container spacing={0} mb={2} className="upload-table-container">
-        <Grid item xs={4}>
-          <TextField
-            label="Expense Name"
-            variant="outlined"
-            name="expenseName"
-            value={filters.expenseName}
-            onChange={handleFilterChange}
-            fullWidth
-          />
-        </Grid>
-      </Grid>
-      {expenses.length > 0 ? (
-        <TableContainer
-          component={Paper}
-          className="custom-scrollbar " // Apply the custom scrollbar class
-          sx={{
-            mt: 5,
-            width: "100%",
-            margin: "0 auto",
-            maxHeight: "50vh", // Optional: Scrollable container
-          }}
-        >
-          <Table
-            stickyHeader
-            aria-label="sticky table"
-            sx={{
-              tableLayout: "fixed", // Ensures columns have a fixed width
-            }}
-          >
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox" sx={{ width: 50 }}>
-                  <Checkbox
-                    indeterminate={
-                      checkedExpenses.length > 0 &&
-                      checkedExpenses.length < expenses.length
-                    }
-                    checked={
-                      expenses.length > 0 &&
-                      checkedExpenses.length === expenses.length
-                    }
-                    onChange={handleSelectAllClick}
-                    disabled={checkboxDisabled}
-                  />
-                </TableCell>
-                {tableHeaders.map((header) => (
-                  <TableCell
-                    key={header.name}
-                    sx={{
-                      width: header.width,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}
-                  >
-                    <TableSortLabel
-                      active={orderBy === header.name}
-                      direction={orderBy === header.name ? order : "asc"}
-                      onClick={(event) => handleRequestSort(event, header.name)}
-                    >
-                      {header.label}
-                    </TableSortLabel>
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedExpenses.map((expense) => {
-                const isItemSelected =
-                  checkedExpenses.indexOf(expense.id) !== -1;
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={expense.id}
-                    selected={isItemSelected}
-                    sx={{ height: 60 }} // Fixed row height
-                  >
+    showContainer && (
+      <div className="upload-main-container">
+        {expenses.length > 0 && (
+          <>
+            <Grid
+              container
+              spacing={0}
+              mb={2}
+              className="upload-table-container"
+            >
+              <Grid item xs={4}>
+                <TextField
+                  label="Expense Name"
+                  variant="outlined"
+                  name="expenseName"
+                  value={filters.expenseName}
+                  onChange={handleFilterChange}
+                  fullWidth
+                />
+              </Grid>
+            </Grid>
+            <TableContainer
+              component={Paper}
+              className="custom-scrollbar " // Apply the custom scrollbar class
+              sx={{
+                mt: 5,
+                width: "100%",
+                margin: "0 auto",
+                maxHeight: "50vh", // Optional: Scrollable container
+              }}
+            >
+              <Table
+                stickyHeader
+                aria-label="sticky table"
+                sx={{
+                  tableLayout: "fixed", // Ensures columns have a fixed width
+                }}
+              >
+                <TableHead>
+                  <TableRow>
                     <TableCell padding="checkbox" sx={{ width: 50 }}>
                       <Checkbox
-                        checked={isItemSelected}
-                        onChange={(event) => handleClick(event, expense.id)}
+                        indeterminate={
+                          checkedExpenses.length > 0 &&
+                          checkedExpenses.length < expenses.length
+                        }
+                        checked={
+                          expenses.length > 0 &&
+                          checkedExpenses.length === expenses.length
+                        }
+                        onChange={handleSelectAllClick}
                         disabled={checkboxDisabled}
                       />
                     </TableCell>
-                    {tableCells.map((cell) => (
+                    {tableHeaders.map((header) => (
                       <TableCell
-                        key={cell.key}
+                        key={header.name}
                         sx={{
-                          width: cell.width, // Fixed column width
+                          width: header.width,
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis",
                         }}
                       >
-                        {cell.key.split(".").reduce((o, i) => o[i], expense)}
+                        <TableSortLabel
+                          active={orderBy === header.name}
+                          direction={orderBy === header.name ? order : "asc"}
+                          onClick={(event) =>
+                            handleRequestSort(event, header.name)
+                          }
+                        >
+                          {header.label}
+                        </TableSortLabel>
                       </TableCell>
                     ))}
                   </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      ) : (
-        <Typography variant="h6" align="center" sx={{ mt: 5 }}>
-          No data available to display.
-        </Typography>
-      )}
-      {expenses.length > 0 && (
-        <Box display="flex" justifyContent="center" mt={2}>
-          <TablePagination
-            className="table-pagination"
-            rowsPerPageOptions={[5, 10, 25, 50, 100]}
-            component="div"
-            count={filteredExpenses.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Box>
-      )}
-      <div className="buttons">
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleOpenDialog}
-          disabled={buttonsDisabled}
+                </TableHead>
+                <TableBody>
+                  {paginatedExpenses.map((expense) => {
+                    const isItemSelected =
+                      checkedExpenses.indexOf(expense.id) !== -1;
+                    return (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={expense.id}
+                        selected={isItemSelected}
+                        sx={{ height: 60 }} // Fixed row height
+                      >
+                        <TableCell padding="checkbox" sx={{ width: 50 }}>
+                          <Checkbox
+                            checked={isItemSelected}
+                            onChange={(event) => handleClick(event, expense.id)}
+                            disabled={checkboxDisabled}
+                          />
+                        </TableCell>
+                        {tableCells.map((cell) => (
+                          <TableCell
+                            key={cell.key}
+                            sx={{
+                              width: cell.width, // Fixed column width
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                            }}
+                          >
+                            {cell.key
+                              .split(".")
+                              .reduce((o, i) => o[i], expense)}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <div className="pagination-div">
+              <Box display="flex" justifyContent="center" mt={2}>
+                <TablePagination
+                  className="table-pagination"
+                  rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                  component="div"
+                  count={filteredExpenses.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Box>
+            </div>
+            <div className="buttons">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleOpenDialog}
+                disabled={buttonsDisabled}
+              >
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleComplete}
+                sx={{ ml: 2 }}
+                disabled={checkboxDisabled}
+              >
+                Complete
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleRework}
+                sx={{ ml: 2 }}
+              >
+                Rework
+              </Button>
+            </div>
+          </>
+        )}
+        {expenses.length === 0 && (
+          <Typography variant="h6" align="center" sx={{ mt: 5 }}>
+            No data available to display.
+          </Typography>
+        )}
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
         >
-          Delete
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleComplete}
-          sx={{ ml: 2 }}
-          disabled={checkboxDisabled}
-        >
-          Complete
-        </Button>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleRework}
-          sx={{ ml: 2 }}
-        >
-          Rework
-        </Button>
+          <DialogTitle id="alert-dialog-title">
+            {"Confirm Deletion"}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Are you sure you want to delete the selected expenses?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
-      <Dialog
-        open={openDialog}
-        onClose={handleCloseDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"Confirm Deletion"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete the selected expenses?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    )
   );
 };
 

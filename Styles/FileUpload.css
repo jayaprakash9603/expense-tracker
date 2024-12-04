@@ -6,5 +6,7 @@
 
 .upload-button {
   width: 100vw;
-  background-color: aqua;
+
+  /* background-color: aqua; */
+  height: 12vh;
 }
