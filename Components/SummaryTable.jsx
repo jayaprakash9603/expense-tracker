@@ -21,68 +21,7 @@ const DefaultColumnFilter = ({
   );
 };
 
-const DailySummary = ({ data, loading, error }) => {
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: "Date",
-        accessor: "date",
-        Filter: DefaultColumnFilter,
-        sortType: "basic",
-      },
-      {
-        Header: "Amount",
-        accessor: "totalAmount",
-        Cell: ({ value }) => value.toFixed(2),
-        Filter: DefaultColumnFilter,
-        sortType: "basic",
-      },
-      {
-        Header: "Loss",
-        accessor: "categoryBreakdown.loss",
-        Cell: ({ value }) => (value ? value.toFixed(2) : "0.00"),
-        Filter: DefaultColumnFilter,
-        sortType: "basic",
-      },
-      {
-        Header: "Gain",
-        accessor: "categoryBreakdown.gain",
-        Cell: ({ value }) => (value ? value.toFixed(2) : "0.00"),
-        Filter: DefaultColumnFilter,
-        sortType: "basic",
-      },
-      {
-        Header: "Remaining",
-        accessor: "balanceRemaining",
-        Cell: ({ value }) => value.toFixed(2),
-        Filter: DefaultColumnFilter,
-        sortType: "basic",
-      },
-      {
-        Header: "Due",
-        accessor: "creditDue",
-        Cell: ({ value }) => value.toFixed(2),
-        Filter: DefaultColumnFilter,
-        sortType: "basic",
-      },
-      {
-        Header: "Credit Paid",
-        accessor: "creditPaid",
-        Cell: ({ value }) => value.toFixed(2),
-        Filter: DefaultColumnFilter,
-        sortType: "basic",
-      },
-      //   {
-      //     Header: "Due",
-      //     accessor: "creditDue",
-      //     Cell: ({ value }) => value.toFixed(2),
-      //     Filter: DefaultColumnFilter,
-      //     sortType: "basic",
-      //   },
-    ],
-    []
-  );
-
+const SummaryTable = ({ data, loading, error, columns }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -136,7 +75,7 @@ const DailySummary = ({ data, loading, error }) => {
         <table {...getTableProps()} className="budget-table">
           <thead>
             {headerGroups.map((headerGroup) => (
-              <>
+              <React.Fragment key={headerGroup.id}>
                 {/* Render Header Row */}
                 <tr
                   {...headerGroup.getHeaderGroupProps()}
@@ -167,21 +106,23 @@ const DailySummary = ({ data, loading, error }) => {
                 {/* Render Filter Row (Always Visible) */}
                 <tr className="filter-row">
                   {headerGroup.headers.map((column) => (
-                    <td className="showfilters-td">
+                    <td className="showfilters-td" key={column.id}>
                       {column.canFilter ? column.render("Filter") : null}
                     </td>
                   ))}
                 </tr>
-              </>
+              </React.Fragment>
             ))}
           </thead>
           <tbody {...getTableBodyProps()}>
             {page.map((row) => {
               prepareRow(row);
               return (
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()} key={row.id}>
                   {row.cells.map((cell) => (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                    <td {...cell.getCellProps()} key={cell.column.id}>
+                      {cell.render("Cell")}
+                    </td>
                   ))}
                 </tr>
               );
@@ -226,4 +167,4 @@ const DailySummary = ({ data, loading, error }) => {
   );
 };
 
-export default DailySummary;
+export default SummaryTable;

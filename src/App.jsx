@@ -33,6 +33,8 @@ import DetailedExpensesTable from "../Components/DetailedExpensesTable";
 import FileUpload from "../Components/FileUpload";
 import UploadTable from "../Components/UploadTable";
 import UploadTabletest from "../Components/UploadTabletest";
+import SummaryTable from "../Components/SummaryTable";
+import SummaryTableHelper from "../Components/SummaryTableHelper";
 
 const App = () => {
   return (
@@ -62,6 +64,7 @@ const App = () => {
           <Route path="/searchexpenses" element={<SearchExpenses />} />
           <Route path="/fileupload" element={<FileUpload />} />
           <Route path="/uploadtable" element={<UploadTabletest />} />
+          <Route path="/summaryTable" element={<SummaryTableHelper />} />
         </Routes>
       </BrowserRouter>
     </ExpensesProvider>
