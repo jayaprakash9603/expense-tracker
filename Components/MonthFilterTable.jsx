@@ -13,8 +13,8 @@ import {
   isWeekend,
   isEqual,
 } from "date-fns";
-import FilteredTable from "./FilteredTable";
-import FilterComponent from "./FilterComponent";
+import FilteredTable from "./MuiFilterTable/FilteredTable";
+import FilterComponent from "./Filter/FilterComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalculator } from "@fortawesome/free-solid-svg-icons";
 

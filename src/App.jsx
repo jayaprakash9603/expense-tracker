@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "../Components/Home";
+
 import CreateExpense from "../Components/CreateExpense";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import SortExpenses from "../Components/SortExpenses";
@@ -35,6 +35,7 @@ import UploadTable from "../Components/UploadTable";
 import UploadTabletest from "../Components/UploadTabletest";
 import SummaryTable from "../Components/SummaryTable";
 import SummaryTableHelper from "../Components/SummaryTableHelper";
+import Home from "../Components/Home/Home";
 
 const App = () => {
   return (
