@@ -1,42 +1,38 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../Styles/SearchAudits.css";
-import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useFetchLogTypes from "./SearchAudits/useFetchLogTypes";
-import ErrorMessage from "./SearchExpenses/ErrorMessage";
-import SearchInput from "./SearchExpenses/SearchInput";
-import FiltersHeader from "./SearchExpenses/FilterHeader";
-import handleClearAll from "./SearchAudits/handleClearAll";
-import handleShowExpenses from "./SearchAudits/handleShowExpenses";
-import ShowExpensesButton from "./SearchExpenses/ShowExpensesButton";
-import Filters from "./SearchAudits/Filters";
-import {
-  handleClick,
-  handleBlur,
-  handleKeyDown,
-} from "../Components/SearchExpenses/handleSearchEvents";
+import "../../Styles/SearchExpenses.css";
+import useFetchLogTypes from "./useFetchLogTypes";
+import ErrorMessage from "./ErrorMessage";
+import ShowExpensesButton from "./ShowExpensesButton";
+import Filters from "./Filters";
+import SearchInput from "./SearchInput";
+import handleShowExpenses from "./handleShowExpenses"; // Import the utility function
+import handleClearAll from "./handleClearAll"; // Import the utility function
+import { handleClick, handleBlur, handleKeyDown } from "./handleSearchEvents"; // Import event handler functions
+import FiltersHeader from "./FilterHeader";
 
-const SearchAudits = ({ Url, setUrl }) => {
+const SearchExpenses = ({ Url, setUrl }) => {
   const { logTypes, filteredLogTypes, setFilteredLogTypes } =
     useFetchLogTypes();
+
   const [searchTerm, setSearchTerm] = useState("");
+  const [specificYear, setSpecificYear] = useState("");
+  const [specificMonth, setSpecificMonth] = useState("");
+  const [fromDay, setFromDay] = useState("");
+  const [toDay, setToDay] = useState("");
+  const [expenseName, setExpenseName] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [category, setCategory] = useState("");
+  const [minAmount, setMinAmount] = useState("");
+  const [maxAmount, setMaxAmount] = useState("");
+  const [startYear, setStartYear] = useState("");
+  const [startMonth, setStartMonth] = useState("");
   const [error, setError] = useState("");
   const [isInputClicked, setIsInputClicked] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [specificYear, setSpecificYear] = useState("");
-  const [specificMonth, setSpecificMonth] = useState("");
-  const [specificDay, setSpecificDay] = useState("");
   const suggestionsContainerRef = useRef(null);
-  const [expenseId, setExpenseId] = useState("");
-  const [actionType, setActionType] = useState("");
-  const [nMinutes, setNMinutes] = useState("");
-  const [nSeconds, setNSeconds] = useState("");
-  const [nHours, setNHours] = useState("");
-  const [nDays, setNDays] = useState("");
 
-  const handleChange1 = (e) => {
+  const handleChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
 
@@ -64,19 +60,20 @@ const SearchAudits = ({ Url, setUrl }) => {
       }
     }
   }, [selectedIndex, filteredLogTypes]);
-
   const handleShowExpensesClick = () => {
     handleShowExpenses(
       searchTerm,
       specificYear,
       specificMonth,
-      specificDay,
-      expenseId,
-      actionType,
-      nMinutes,
-      nSeconds,
-      nHours,
-      nDays,
+      fromDay,
+      toDay,
+      expenseName,
+      paymentMethod,
+      category,
+      startYear,
+      startMonth,
+      minAmount,
+      maxAmount,
       logTypes,
       setUrl,
       setError
@@ -88,13 +85,13 @@ const SearchAudits = ({ Url, setUrl }) => {
       setSearchTerm,
       setSpecificYear,
       setSpecificMonth,
-      setSpecificDay,
-      setExpenseId,
-      setActionType,
-      setNMinutes,
-      setNSeconds,
-      setNHours,
-      setNDays,
+      setFromDay,
+      setToDay,
+      setExpenseName,
+      setPaymentMethod,
+      setCategory,
+      setMinAmount,
+      setMaxAmount,
       setUrl,
       setError,
       setFilteredLogTypes,
@@ -107,11 +104,12 @@ const SearchAudits = ({ Url, setUrl }) => {
     <div className="bg-white mt-0 d-flex flex-row">
       <div className="search-input">
         <ErrorMessage error={error} />
+        {/* Use the new FiltersHeader component here */}
         <FiltersHeader handleClearAllClick={handleClearAllClick} />
         <div className="form-group mb-3">
           <SearchInput
             searchTerm={searchTerm}
-            handleChange={handleChange1}
+            handleChange={handleChange}
             handleClick={() =>
               handleClick(
                 searchTerm,
@@ -143,27 +141,29 @@ const SearchAudits = ({ Url, setUrl }) => {
         </div>
         <Filters
           searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
           specificYear={specificYear}
           setSpecificYear={setSpecificYear}
           specificMonth={specificMonth}
           setSpecificMonth={setSpecificMonth}
-          specificDay={specificDay}
-          setSpecificDay={setSpecificDay}
-          expenseId={expenseId}
-          setExpenseId={setExpenseId}
-          actionType={actionType}
-          setActionType={setActionType}
-          nMinutes={nMinutes}
-          setNMinutes={setNMinutes}
-          nSeconds={nSeconds}
-          setNSeconds={setNSeconds}
-          nHours={nHours}
-          setNHours={setNHours}
-          nDays={nDays}
-          setNDays={setNDays}
+          fromDay={fromDay}
+          setFromDay={setFromDay}
+          toDay={toDay}
+          setToDay={setToDay}
+          expenseName={expenseName}
+          setExpenseName={setExpenseName}
+          paymentMethod={paymentMethod}
+          setPaymentMethod={setPaymentMethod}
+          category={category}
+          setCategory={setCategory}
+          minAmount={minAmount}
+          setMinAmount={setMinAmount}
+          maxAmount={maxAmount}
+          setMaxAmount={setMaxAmount}
+          startYear={startYear}
+          setStartYear={setStartYear}
+          startMonth={startMonth}
+          setStartMonth={setStartMonth}
         />
-
         <ShowExpensesButton handleShowExpenses={handleShowExpensesClick} />
         {console.log(Url)}
       </div>
@@ -171,4 +171,4 @@ const SearchAudits = ({ Url, setUrl }) => {
   );
 };
 
-export default SearchAudits;
+export default SearchExpenses;

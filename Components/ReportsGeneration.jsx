@@ -4,7 +4,7 @@ import AuditLogsEmailSender from "./AuditLogsEmailSender";
 import ExpenseSummaryEmailSender from "./ExpenseSummaryEmailSender";
 import "../Styles/ReportsGeneration.css";
 import ExpenseTableParent from "./ExpenseTableParent";
-import SearchExpenses from "./SearchExpenses";
+import SearchExpenses from "./SearchExpenses/SearchExpenses";
 import SearchSummary from "./SearchSummary";
 import SearchAudits from "./SearchAudits";
 

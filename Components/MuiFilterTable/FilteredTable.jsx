@@ -53,7 +53,7 @@ const FilteredTable = ({ filteredData }) => {
         Object.keys(filteredData).map((date) => (
           <div key={date} className="mb-4">
             <h3 className="text-center">{formatDate(date)}</h3>
-            <TableContainer component={Paper} className="table-container">
+            <TableContainer component={Paper} className="container">
               <Table className="table-info table">
                 <TableHeader
                   date={date}

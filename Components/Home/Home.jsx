@@ -55,7 +55,9 @@ const Home = () => {
           <TotalSalary filteredData={filteredData} />
           <CreditDue filteredData={filteredData} />
         </div>
-        <FilteredTable filteredData={filteredData} />
+        <div>
+          <FilteredTable filteredData={filteredData} />
+        </div>
       </div>
     </div>
   );

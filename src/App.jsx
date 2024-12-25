@@ -28,7 +28,7 @@ import ReportsGeneration from "../Components/ReportsGeneration";
 import ExpensesTable from "../Components/ExpensesTable";
 import ExpenseTableParent from "../Components/ExpenseTableParent";
 import TestTable from "../Components/TestTable";
-import SearchExpenses from "../Components/SearchExpenses";
+import SearchExpenses from "../Components/SearchExpenses/SearchExpenses";
 import DetailedExpensesTable from "../Components/DetailedExpensesTable";
 import FileUpload from "../Components/FileUpload";
 import UploadTable from "../Components/UploadTable";
