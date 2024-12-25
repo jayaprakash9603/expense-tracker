@@ -1,24 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "../Styles/SearchAudits.css";
+import { toDate } from "date-fns";
+import ExpenseTableParent from "../ExpenseTableParent";
+import "../../Styles/SearchSummary.css";
 import { faCircleExclamation } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useFetchLogTypes from "./SearchAudits/useFetchLogTypes";
-import ErrorMessage from "./SearchExpenses/ErrorMessage";
-import SearchInput from "./SearchExpenses/SearchInput";
-import FiltersHeader from "./SearchExpenses/FilterHeader";
-import handleClearAll from "./SearchAudits/handleClearAll";
-import handleShowExpenses from "./SearchAudits/handleShowExpenses";
-import ShowExpensesButton from "./SearchExpenses/ShowExpensesButton";
-import Filters from "./SearchAudits/Filters";
+import ErrorMessage from "../SearchExpenses/ErrorMessage";
+import useFetchLogTypes from "./useFetchLogTypes";
+import handleClearAll from "./handleClearAll";
+import FiltersHeader from "../SearchExpenses/FilterHeader";
+import handleShowExpenses from "./handleShowExpenses";
+import ShowExpensesButton from "../SearchExpenses/ShowExpensesButton";
+import Filters from "./Filters";
+import SearchInput from "../SearchExpenses/SearchInput";
 import {
   handleClick,
   handleBlur,
   handleKeyDown,
-} from "../Components/SearchExpenses/handleSearchEvents";
-
-const SearchAudits = ({ Url, setUrl }) => {
+} from "../SearchExpenses/handleSearchEvents";
+const SearchSummary = ({ Url, setUrl }) => {
   const { logTypes, filteredLogTypes, setFilteredLogTypes } =
     useFetchLogTypes();
   const [searchTerm, setSearchTerm] = useState("");
@@ -29,12 +30,10 @@ const SearchAudits = ({ Url, setUrl }) => {
   const [specificMonth, setSpecificMonth] = useState("");
   const [specificDay, setSpecificDay] = useState("");
   const suggestionsContainerRef = useRef(null);
-  const [expenseId, setExpenseId] = useState("");
-  const [actionType, setActionType] = useState("");
-  const [nMinutes, setNMinutes] = useState("");
-  const [nSeconds, setNSeconds] = useState("");
-  const [nHours, setNHours] = useState("");
-  const [nDays, setNDays] = useState("");
+  const [startYear, setStartYear] = useState("");
+  const [endYear, setEndYear] = useState("");
+  const [startMonth, setStartMonth] = useState("");
+  const [endMonth, setEndMonth] = useState("");
 
   const handleChange1 = (e) => {
     const value = e.target.value;
@@ -49,7 +48,7 @@ const SearchAudits = ({ Url, setUrl }) => {
       setFilteredLogTypes(logTypes);
     }
 
-    setSelectedIndex(-1);
+    setSelectedIndex(-1); // Reset the selection index
   };
 
   useEffect(() => {
@@ -66,21 +65,18 @@ const SearchAudits = ({ Url, setUrl }) => {
   }, [selectedIndex, filteredLogTypes]);
 
   const handleShowExpensesClick = () => {
-    handleShowExpenses(
+    handleShowExpenses({
       searchTerm,
       specificYear,
       specificMonth,
       specificDay,
-      expenseId,
-      actionType,
-      nMinutes,
-      nSeconds,
-      nHours,
-      nDays,
-      logTypes,
+      startYear,
+      endYear,
+      startMonth,
+      endMonth,
       setUrl,
-      setError
-    );
+      setError,
+    });
   };
 
   const handleClearAllClick = () => {
@@ -89,12 +85,10 @@ const SearchAudits = ({ Url, setUrl }) => {
       setSpecificYear,
       setSpecificMonth,
       setSpecificDay,
-      setExpenseId,
-      setActionType,
-      setNMinutes,
-      setNSeconds,
-      setNHours,
-      setNDays,
+      setStartYear,
+      setEndYear,
+      setStartMonth,
+      setEndMonth,
       setUrl,
       setError,
       setFilteredLogTypes,
@@ -141,34 +135,31 @@ const SearchAudits = ({ Url, setUrl }) => {
             setSelectedIndex={setSelectedIndex}
           />
         </div>
+
         <Filters
           searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
           specificYear={specificYear}
           setSpecificYear={setSpecificYear}
           specificMonth={specificMonth}
           setSpecificMonth={setSpecificMonth}
           specificDay={specificDay}
           setSpecificDay={setSpecificDay}
-          expenseId={expenseId}
-          setExpenseId={setExpenseId}
-          actionType={actionType}
-          setActionType={setActionType}
-          nMinutes={nMinutes}
-          setNMinutes={setNMinutes}
-          nSeconds={nSeconds}
-          setNSeconds={setNSeconds}
-          nHours={nHours}
-          setNHours={setNHours}
-          nDays={nDays}
-          setNDays={setNDays}
+          startYear={startYear}
+          setStartYear={setStartYear}
+          startMonth={startMonth}
+          setStartMonth={setStartMonth}
+          endYear={endYear}
+          setEndYear={setEndYear}
+          endMonth={endMonth}
+          setEndMonth={setEndMonth}
         />
 
         <ShowExpensesButton handleShowExpenses={handleShowExpensesClick} />
+
         {console.log(Url)}
       </div>
     </div>
   );
 };
 
-export default SearchAudits;
+export default SearchSummary;

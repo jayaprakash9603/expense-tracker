@@ -5,8 +5,8 @@ import ExpenseSummaryEmailSender from "./ExpenseSummaryEmailSender";
 import "../Styles/ReportsGeneration.css";
 import ExpenseTableParent from "./ExpenseTableParent";
 import SearchExpenses from "./SearchExpenses/SearchExpenses";
-import SearchSummary from "./SearchSummary";
-import SearchAudits from "./SearchAudits";
+import SearchSummary from "./SearchSummary/SearchSummary";
+import SearchAudits from "./SearchAudits/SearchAudits";
 
 const ReportsGeneration = () => {
   const [selectedReport, setSelectedReport] = useState(null);
