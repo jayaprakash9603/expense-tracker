@@ -3,6 +3,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import CreateExpense from "./CreateExpense";
 import ExpenseFormLogic from "./ExpenseFormLogic";
+import { useDispatch } from "react-redux";
+import {
+  createExpenseAction,
+  getExpensesAction,
+} from "./Redux/Expenses/expense.action";
 
 function CreateExpenses() {
   const initialState = {
@@ -24,7 +29,7 @@ function CreateExpenses() {
     isSalaryDate,
     validateForm,
   } = ExpenseFormLogic(initialState);
-
+  const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -134,23 +139,15 @@ function CreateExpenses() {
 
     // Send the request to the backend
     try {
-      const response = await axios.post(
-        `http://localhost:3000/add-expense`, // Ensure your backend endpoint is correct
-        {
-          date, // This is the date field from formState
-          expense: newExpense, // Send the nested expense data
-        },
-        {
-          headers: {
-            "Content-Type": "application/json", // Set content type to JSON
-          },
-        }
+      dispatch(
+        createExpenseAction({
+          date,
+          expense: newExpense,
+        })
       );
 
-      // Handle the response
-      setFinalData(response.data);
-      console.log(response.data);
       navigate("/"); // Navigate to the appropriate page after submission
+      dispatch(getExpensesAction());
     } catch (error) {
       console.error(
         "Error adding expense:",
@@ -165,7 +162,6 @@ function CreateExpenses() {
     setFormState((prevState) => {
       // If the value is for paymentMethod, we need to make sure we update correctly
       if (id === "paymentMethod") {
-        // Directly use the value as the id might be the mapped name like 'Cash', 'Credit Paid'
         return {
           ...prevState,
           [id]: value,
@@ -289,7 +285,7 @@ function CreateExpenses() {
   return (
     <div className="d-flex w-100 vh-100 justify-content-center align-items-center bg-light">
       <div className="w-50 border bg-white shadow px-5 pt-3 pb-5 rounded">
-        <h1>Edit an Expense</h1>
+        <h1>Add an Expense</h1>
         <form onKeyDown={handleKeyDown1} onSubmit={handleSubmit}>
           <div className="mb-2">
             <label htmlFor="expenseName">Expense Name:</label>

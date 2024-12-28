@@ -1,6 +1,11 @@
 import axios from "axios";
 import React, { useState, useEffect, useRef } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  editExpenseAction,
+  getExpensesAction,
+} from "./Redux/Expenses/expense.action";
 
 const convertToNewFormat = (data) => {
   return data.reduce((acc, { id, date, expense }) => {
@@ -67,6 +72,7 @@ function EditExpense() {
     comments: "",
     creditDue: 0,
   });
+  const dispatch = useDispatch();
   const [suggestions, setSuggestions] = useState([]);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -148,21 +154,29 @@ function EditExpense() {
     ];
 
     // Update data on the server
-    axios
-      .put(
-        `http://localhost:3000/edit-expense/${id}`,
+    // axios
+    //   .put(
+    //     `http://localhost:3000/edit-expense/${id}`,
+    //     convertToOldFormat(convertToNewFormat(updatedData))[0]
+    //   )
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       alert("Expense updated successfully!");
+    //       navigate("/"); // Redirect after update
+    //     }
+    //   })
+    //   .catch((err) => {
+    //     console.error("Error updating expense:", err);
+    //     alert("Failed to update expense. Please try again.");
+    //   });
+    dispatch(
+      editExpenseAction(
+        id,
         convertToOldFormat(convertToNewFormat(updatedData))[0]
       )
-      .then((res) => {
-        if (res.status === 200) {
-          alert("Expense updated successfully!");
-          navigate("/"); // Redirect after update
-        }
-      })
-      .catch((err) => {
-        console.error("Error updating expense:", err);
-        alert("Failed to update expense. Please try again.");
-      });
+    );
+    dispatch(getExpensesAction());
+    navigate("/");
   };
 
   // Update state and filter suggestions on change

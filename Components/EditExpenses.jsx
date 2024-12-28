@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import SearchInput from "./EditExpense";
+import { useDispatch } from "react-redux";
+import {
+  editExpenseAction,
+  getExpensesAction,
+} from "./Redux/Expenses/expense.action";
 
 // Helper function to convert to new format
 const convertToNewFormat = (data) => {
@@ -68,6 +73,7 @@ const EditExpenses = () => {
     comments: "",
     creditDue: 0,
   });
+  const dispatch = useDispatch();
   const [newFormatData, setNewFormatData] = useState({});
   const { id } = useParams();
   const navigate = useNavigate();
@@ -149,22 +155,9 @@ const EditExpenses = () => {
       },
     ];
 
-    // Update data on the server
-    axios
-      .put(
-        `http://localhost:3000/edit-expense/${id}`,
-        convertToOldFormat(convertToNewFormat(updatedData))[0]
-      )
-      .then((res) => {
-        if (res.status === 200) {
-          alert("Expense updated successfully!");
-          navigate("/"); // Redirect after update
-        }
-      })
-      .catch((err) => {
-        console.error("Error updating expense:", err);
-        alert("Failed to update expense. Please try again.");
-      });
+    dispatch(editExpenseAction(id, updatedData));
+
+    navigate("/");
   };
   const handleKeyDown1 = (e) => {
     if (e.key === "Enter") {
@@ -188,6 +181,11 @@ const EditExpenses = () => {
     }
   };
 
+  useEffect(() => {
+    if (!expenses.length) {
+      dispatch(getExpensesAction());
+    }
+  }, [dispatch]);
   useEffect(() => {
     fetchSuggestions();
   }, []);

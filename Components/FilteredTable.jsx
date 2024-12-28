@@ -8,7 +8,9 @@ import "../Styles/FilteredTable.css";
 const FilteredTable = ({ filteredData }) => {
   const [sortConfig, setSortConfig] = useState({});
   const [data, setData] = useState(filteredData);
-
+  {
+    console.log(filteredData);
+  }
   const methodMapping = {
     cash: "Cash",
     creditNeedToPaid: "Credit Card Due",

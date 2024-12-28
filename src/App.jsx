@@ -1,25 +1,19 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import CreateExpense from "../Components/CreateExpense";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import SortExpenses from "../Components/SortExpenses";
 
 import FilteredTable from "../Components/FilteredTable";
-import EditExpenses from "../Components/EditExpenses";
 import ExpenseCalendar from "../Components/ExpenseCalendar";
 import ReadExpenses from "../Components/ReadExpenses";
 import MonthlyBudget from "../Components/MonthlyBudget";
 import MonthFilterTable from "../Components/MonthFilterTable";
-import { PieChart } from "recharts";
-import BudgetPieChart from "../Components/BudgetPieChart";
+
 import InvestmentCalculator from "../Components/InvestmentCalculator";
 import { ExpensesProvider } from "../Contexts/ExpensesContext"; // Adjust the path based on your folder structure
-import SearchInput from "../Components/EditExpense";
-import ExpenseForm from "../Components/ExpenseFormLogic";
-import ExpenseFormLogic from "../Components/ExpenseFormLogic";
+
 import CreateExpenses from "../Components/CreateExpenses";
-import EditExpense from "../Components/EditExpense";
 import AuditLogsEmailSender from "../Components/AuditLogsEmailSender";
 import AuditLogsEmailSender1 from "../Components/AuditLogsEmailSender1";
 import ExpenseSummaryEmailSender from "../Components/ExpenseSummaryEmailSender";
@@ -35,8 +29,8 @@ import UploadTable from "../Components/UploadTable";
 import UploadTabletest from "../Components/UploadTabletest";
 import SummaryTable from "../Components/SummaryTable";
 import SummaryTableHelper from "../Components/SummaryTableHelper";
-import Home from "../Components/Home/Home";
-
+import Home from "../Components/Home";
+import EditExpense from "../Components/EditExpense";
 const App = () => {
   return (
     <ExpensesProvider>

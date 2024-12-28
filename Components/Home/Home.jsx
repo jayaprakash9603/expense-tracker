@@ -5,14 +5,23 @@ import FilterComponent from "../Filter/FilterComponent";
 import FilteredTable from "../MuiFilterTable/FilteredTable";
 import TotalSalary from "./TotalSalary";
 import CreditDue from "./CreditDue";
-import useFetchExpenses from "./useFetchExpenses";
+import { useSelector, useDispatch } from "react-redux";
+import { getExpensesAction } from "../Redux/Expenses/expense.action";
 import { convertAndSortData } from "./dataHelper";
+import Loader from "../Loaders/Loader";
 
 const Home = () => {
-  const { expenses } = useFetchExpenses("http://localhost:3000/fetch-expenses");
+  const { expenses, loading, error } = useSelector((state) => state.expense);
   const [convertedData, setConvertedData] = useState({});
   const [filteredData, setFilteredData] = useState({});
   const [sortOrder, setSortOrder] = useState("desc");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!expenses.length) {
+      dispatch(getExpensesAction());
+    }
+  }, [expenses, dispatch]);
 
   useEffect(() => {
     if (expenses.length > 0) {
@@ -25,6 +34,9 @@ const Home = () => {
   const handleSortOrderChange = (e) => {
     setSortOrder(e.target.value);
   };
+
+  if (loading) return <Loader />;
+  if (error) return <div>Error loading expenses: {error.message}</div>;
 
   return (
     <div>

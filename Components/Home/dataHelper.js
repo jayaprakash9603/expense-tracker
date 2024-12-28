@@ -1,5 +1,10 @@
 export const convertAndSortData = (data, order) => {
   const convertedData = data.reduce((acc, item) => {
+    if (!item.expense) {
+      console.warn("Missing expense for item:", item);
+      return acc;
+    }
+
     const date = item.date;
 
     if (!acc[date]) {
@@ -11,11 +16,11 @@ export const convertAndSortData = (data, order) => {
     acc[date].push({
       id: item.id,
       index: index,
-      expenseName: item.expense.expenseName,
-      amount: item.expense.amount,
-      type: item.expense.type,
-      paymentMethod: item.expense.paymentMethod,
-      netAmount: item.expense.netAmount,
+      expenseName: item.expense.expenseName || "Unnamed Expense",
+      amount: item.expense.amount || 0,
+      type: item.expense.type || "Unknown",
+      paymentMethod: item.expense.paymentMethod || "Unknown",
+      netAmount: item.expense.netAmount || 0,
     });
 
     return acc;

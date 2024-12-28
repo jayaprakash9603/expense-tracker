@@ -20,10 +20,15 @@ import TotalRow from "./TotalRow";
 import { formatDate } from "../FilterTable/dateUtils";
 import { getExpenses, deleteExpense } from "./apiService";
 import "./FilteredTable.css";
+import { useDispatch } from "react-redux";
+import {
+  deleteExpenseAction,
+  getExpensesAction,
+} from "../Redux/Expenses/expense.action";
 const FilteredTable = ({ filteredData }) => {
   const [data, setData] = useState(filteredData);
   const { sortedData, handleSort, sortConfig } = useSortedData(filteredData);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     setData(filteredData);
   }, [filteredData]);
@@ -38,8 +43,11 @@ const FilteredTable = ({ filteredData }) => {
     const confirm = window.confirm("Would you like to delete?");
     if (confirm) {
       try {
-        await deleteExpense(id);
+        // await deleteExpense(id);
+        dispatch(deleteExpenseAction(id));
         const response = await getExpenses();
+        console.log(response);
+        dispatch(getExpensesAction());
         setData(response);
       } catch (error) {
         console.error("Error deleting data:", error);
